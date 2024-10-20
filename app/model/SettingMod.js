@@ -169,14 +169,15 @@ class SettingMod {
 
   async backupVertex (options) {
     const backupsFile = `/tmp/Vertex-backups-${moment().format('YYYY-MM-DD_HH:mm:ss')}.tar.gz`;
-    const backupsFileds = ['storage/db', 'storage/data'];
+    const backupsFileds = ['db', 'data'];
+
     if (options.bt + '' === 'true') {
-      backupsFileds.push('storage/torrents');
+      backupsFileds.push('torrents');
     }
     await util.tar.c({
       gzip: true,
       file: backupsFile,
-      cwd: global.dataPath
+      cwd: path.join(__dirname, '../../storage')
     }, backupsFileds);
     return backupsFile;
   }
@@ -186,7 +187,8 @@ class SettingMod {
     await util.tar.x({
       gzip: true,
       file: backupsFile,
-      C: '/tmp'
+      C: path.join(__dirname, '../../storage'),
+      '--overwrite': true
     });
     return '数据导入成功, 重启容器后生效。';
   }

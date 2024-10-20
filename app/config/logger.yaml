@@ -32,7 +32,7 @@ appenders:
       pattern: '%[[%d{ISO8601}][%p %c] %z (%f{3} %l:%o)%] %m'
   trace:
     type: dateFile
-    filename: logs/app-access.log
+    filename: storage/logs/app-access.log
     pattern: yyyy-MM-dd
     compress: true
     numBackups: 30
@@ -46,7 +46,7 @@ appenders:
     maxLevel: trace
   info:
     type: dateFile
-    filename: logs/app-info.log
+    filename: storage/logs/app-info.log
     pattern: yyyy-MM-dd
     compress: true
     numBackups: 30
@@ -55,7 +55,7 @@ appenders:
       pattern: '[%d{ISO8601}][%p %c] %z (%f{3} %l:%o) %m'
   advanced:
     type: dateFile
-    filename: logs/app-advanced.log
+    filename: storage/logs/app-advanced.log
     pattern: yyyy-MM-dd
     compress: true
     numBackups: 30
@@ -64,7 +64,7 @@ appenders:
       pattern: '[%d{ISO8601}][%p %c] %z (%f{3} %l:%o) %m'
   advanceddebug:
     type: dateFile
-    filename: logs/app-advanced-debug.log
+    filename: storage/logs/app-advanced-debug.log
     pattern: yyyy-MM-dd
     compress: true
     numBackups: 30
@@ -73,7 +73,7 @@ appenders:
       pattern: '[%d{ISO8601}][%p %c] %z (%f{3} %l:%o) %m'
   watch:
     type: dateFile
-    filename: logs/app-watch.log
+    filename: storage/logs/app-watch.log
     pattern: yyyy-MM-dd
     compress: true
     numBackups: 30
@@ -82,7 +82,7 @@ appenders:
       pattern: '[%d{ISO8601}][%p %c] %z (%f{3} %l:%o) %m'
   watchdebug:
     type: dateFile
-    filename: logs/app-watch-debug.log
+    filename: storage/logs/app-watch-debug.log
     pattern: yyyy-MM-dd
     compress: true
     numBackups: 30
@@ -91,7 +91,7 @@ appenders:
       pattern: '[%d{ISO8601}][%p %c] %z (%f{3} %l:%o) %m'
   binge:
     type: dateFile
-    filename: logs/app-binge.log
+    filename: storage/logs/app-binge.log
     pattern: yyyy-MM-dd
     compress: true
     numBackups: 30
@@ -100,7 +100,7 @@ appenders:
       pattern: '[%d{ISO8601}][%p %c] %z (%f{3} %l:%o) %m'
   bingedebug:
     type: dateFile
-    filename: logs/app-binge-debug.log
+    filename: storage/logs/app-binge-debug.log
     pattern: yyyy-MM-dd
     compress: true
     numBackups: 30
@@ -109,7 +109,7 @@ appenders:
       pattern: '[%d{ISO8601}][%p %c] %z (%f{3} %l:%o) %m'
   sc:
     type: dateFile
-    filename: logs/app-sc.log
+    filename: storage/logs/app-sc.log
     pattern: yyyy-MM-dd
     compress: true
     numBackups: 30
@@ -118,7 +118,7 @@ appenders:
       pattern: '[%d{ISO8601}][%p %c] %z (%f{3} %l:%o) %m'
   scdebug:
     type: dateFile
-    filename: logs/app-sc-debug.log
+    filename: storage/logs/app-sc-debug.log
     pattern: yyyy-MM-dd
     compress: true
     numBackups: 30
@@ -127,7 +127,7 @@ appenders:
       pattern: '[%d{ISO8601}][%p %c] %z (%f{3} %l:%o) %m'
   debug:
     type: dateFile
-    filename: logs/app-debug.log
+    filename: storage/logs/app-debug.log
     pattern: yyyy-MM-dd
     compress: true
     numBackups: 30
@@ -186,7 +186,7 @@ appenders:
     maxLevel: debug
   error:
     type: dateFile
-    filename: logs/app-error.log
+    filename: storage/logs/app-error.log
     pattern: yyyy-MM-dd
     compress: true
     numBackups: 30
