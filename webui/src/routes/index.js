@@ -1,59 +1,25 @@
 import { createRouter, createWebHistory } from 'vue-router';
-
 import Index from '@/pages/Index';
-
 import Layout from '@/pages/Layout';
-
 import DashboardIndex from '@/pages/dashboard/Index';
-
-import BaseServer from '@/pages/base/Server';
 import BaseDownloader from '@/pages/base/Downloader';
-import BaseSite from '@/pages/base/Site';
 import BaseNotification from '@/pages/base/Notification';
-
-import MetricServer from '@/pages/metric/Server';
 import MetricDownloader from '@/pages/metric/Downloader';
-import MetricSite from '@/pages/metric/Site';
-
 import RuleDelete from '@/pages/rule/Delete';
-import RuleLink from '@/pages/rule/Link';
 import RuleRss from '@/pages/rule/Rss';
-import RuleSelect from '@/pages/rule/Select';
-
 import TaskRss from '@/pages/task/Rss';
-import TaskSubscribe from '@/pages/task/Subscribe';
-import TaskLink from '@/pages/task/Link';
-import TaskBulkLink from '@/pages/task/BulkLink';
-import TaskWatchCategory from '@/pages/task/WatchCategory';
 import TaskScript from '@/pages/task/Script';
-
-
-import ToolMikanHistory from '@/pages/tool/MikanHistory';
 import ToolNetworkTest from '@/pages/tool/NetworkTest';
-import ToolMTeamLogin from '@/pages/tool/MTeamLogin';
 import ToolHosts from '@/pages/tool/Hosts';
 import ToolProxy from '@/pages/tool/Proxy';
-import ToolShell from '@/pages/tool/Shell';
-import ToolPathGenerator from '@/pages/tool/PathGenerator';
 import ToolClientLog from '@/pages/tool/ClientLog';
-
 import InfoInfo from '@/pages/info/Info';
 import InfoLog from '@/pages/info/Log';
-
 import SettingBase from '@/pages/setting/Base';
 import SettingStyle from '@/pages/setting/Style';
 import SettingSecurity from '@/pages/setting/Security';
-import SettingInteraction from '@/pages/setting/Interaction';
-import SettingMenu from '@/pages/setting/Menu';
 import SettingBackup from '@/pages/setting/Backup';
-import SettingCookieCloud from '@/pages/setting/CookieCloud';
-
-
 import HistoryRss from '@/pages/history/Rss';
-import HistorySubsribe from '@/pages/history/Subscribe';
-import HistoryWatchCategory from '@/pages/history/WatchCategory';
-
-
 import Login from '@/pages/user/Login';
 
 const user = {
@@ -85,91 +51,74 @@ const index = {
   ]
 };
 
-const metric = {
-  path: 'metric',
+const metricDownloaderRoute = {
+  path: 'metric/downloader',
   component: Layout,
-  redirect: '/metric/server',
+  redirect: 'metric/downloader',
   children: [
     {
-      path: 'server',
-      component: MetricServer,
-      meta: {
-        title: '服务器 - 数据监控'
-      }
-    }, {
-      path: 'downloader',
+      path: '',
       component: MetricDownloader,
       meta: {
         title: '下载器 - 数据监控'
       }
-    }, {
-      path: 'site',
-      component: MetricSite,
-      meta: {
-        title: '站点 - 数据监控'
-      }
     }
   ]
 };
 
-const rule = {
-  path: 'rule',
+const ruleDeleteRoute = {
+  path: 'rule/delete',
   component: Layout,
-  redirect: '/rule/delete',
+  redirect: 'rule/delete',
   children: [
     {
-      path: 'delete',
+      path: '',
       component: RuleDelete,
       meta: {
         title: '删种规则 - 规则组件'
       }
-    }, {
-      path: 'rss',
+    }
+  ]
+};
+
+const ruleRssRoute = {
+  path: 'rule/rss',
+  component: Layout,
+  redirect: 'rule/rss',
+  children: [
+    {
+      path: '',
       component: RuleRss,
       meta: {
         title: 'RSS 规则 - 规则组件'
-      }
-    }, {
-      path: 'select',
-      component: RuleSelect,
-      meta: {
-        title: '选种规则 - 规则组件'
-      }
-    }, {
-      path: 'link',
-      component: RuleLink,
-      meta: {
-        title: '链接规则 - 规则组件'
       }
     }
   ]
 };
 
-const base = {
-  path: 'base',
+
+const baseDownloaderRoute = {
+  path: 'base/downloader',
   component: Layout,
-  redirect: '/base/server',
+  redirect: 'base/downloader',
   children: [
     {
-      path: 'server',
-      component: BaseServer,
-      meta: {
-        title: '服务器 - 基础组件'
-      }
-    }, {
-      path: 'downloader',
+      path: '',
       component: BaseDownloader,
       meta: {
         title: '下载器 - 基础组件'
       }
-    }, {
-      path: 'site',
-      component: BaseSite,
-      meta: {
-        title: '站点 - 基础组件'
-      }
-    }, {
-      path: 'notification',
+    }
+  ]
+};
+
+const baseNotificationRoute = {
+  path: 'base/notification',
+  component: Layout,
+  redirect: 'base/notification',
+  children: [
+    {
+      path: '',
       component: BaseNotification,
       meta: {
         title: '通知工具 - 基础组件'
@@ -178,19 +127,28 @@ const base = {
   ]
 };
 
-const info = {
-  path: 'info',
+const infoInfoRoute = {
+  path: 'info/info',
   component: Layout,
-  redirect: '/info/log',
+  redirect: 'info/info',
   children: [
     {
-      path: 'info',
+      path: '',
       component: InfoInfo,
       meta: {
         title: '相关信息'
       }
-    }, {
-      path: 'log',
+    }
+  ]
+};
+
+const infoLogRoute = {
+  path: 'info/log',
+  component: Layout,
+  redirect: 'info/log',
+  children: [
+    {
+      path: '',
       component: InfoLog,
       meta: {
         title: '系统日志'
@@ -199,49 +157,58 @@ const info = {
   ]
 };
 
-const setting = {
-  path: 'setting',
+const settingBaseRoute = {
+  path: 'setting/base',
   component: Layout,
-  redirect: '/setting/base',
+  redirect: 'setting/base',
   children: [
     {
-      path: 'base',
+      path: '',
       component: SettingBase,
       meta: {
         title: '基础设置 - 系统设置'
       }
-    }, {
-      path: 'style',
+    }
+  ]
+};
+
+const settingStyleRoute = {
+  path: 'setting/style',
+  component: Layout,
+  redirect: 'setting/style',
+  children: [
+    {
+      path: '',
       component: SettingStyle,
       meta: {
         title: '主题设置 - 系统设置'
       }
-    }, {
-      path: 'security',
+    }
+  ]
+};
+
+const settingSecurityRoute = {
+  path: 'setting/security',
+  component: Layout,
+  redirect: 'setting/security',
+  children: [
+    {
+      path: '',
       component: SettingSecurity,
       meta: {
         title: '安全设置 - 系统设置'
       }
-    }, {
-      path: 'interaction',
-      component: SettingInteraction,
-      meta: {
-        title: '交互设置 - 系统设置'
-      }
-    }, {
-      path: 'menu',
-      component: SettingMenu,
-      meta: {
-        title: '菜单设置 - 系统设置'
-      }
-    }, {
-      path: 'cc',
-      component: SettingCookieCloud,
-      meta: {
-        title: 'CookieCloud - 系统设置'
-      }
-    }, {
-      path: 'backup',
+    }
+  ]
+};
+
+const settingBackupRoute = {
+  path: 'setting/backup',
+  component: Layout,
+  redirect: 'setting/backup',
+  children: [
+    {
+      path: '',
       component: SettingBackup,
       meta: {
         title: '备份还原 - 系统设置'
@@ -250,19 +217,28 @@ const setting = {
   ]
 };
 
-const task = {
-  path: 'task',
+const taskRssRoute = {
+  path: 'task/rss',
   component: Layout,
-  redirect: '/task/rss',
+  redirect: 'task/rss',
   children: [
     {
-      path: 'rss',
+      path: '',
       component: TaskRss,
       meta: {
         title: 'Rss 任务 - 任务配置'
       }
-    }, {
-      path: 'script',
+    }
+  ]
+};
+
+const taskScriptRoute = {
+  path: 'task/script',
+  component: Layout,
+  redirect: 'task/script',
+  children: [
+    {
+      path: '',
       component: TaskScript,
       meta: {
         title: '定时脚本 - 任务配置'
@@ -271,82 +247,73 @@ const task = {
   ]
 };
 
-const history = {
-  path: 'history',
+const historyRssRoute = {
+  path: 'history/rss',
   component: Layout,
-  redirect: '/history/rss',
+  redirect: 'history/rss',
   children: [
     {
-      path: 'rss',
+      path: '',
       component: HistoryRss,
       meta: {
         title: 'RSS 历史 - 任务历史'
-      }
-    }, {
-      path: 'subscribe',
-      component: HistorySubsribe,
-      meta: {
-        title: '订阅历史 - 任务历史'
-      }
-    }, {
-      path: 'watchCategory',
-      component: HistoryWatchCategory,
-      meta: {
-        title: '监控分类历史 - 任务历史'
       }
     }
   ]
 };
 
-const tool = {
-  path: 'tool',
+const toolNetworkTestRoute = {
+  path: 'tool/networkTest',
   component: Layout,
-  redirect: '/tool/networkTest',
+  redirect: 'tool/networkTest',
   children: [
     {
-      path: 'mikanHistory',
-      component: ToolMikanHistory,
-      meta: {
-        title: '蜜柑番剧历史 - 常用工具'
-      }
-    }, {
-      path: 'networkTest',
+      path: '',
       component: ToolNetworkTest,
       meta: {
         title: '网络测试 - 常用工具'
       }
-    }, {
-      path: 'mteamLogin',
-      component: ToolMTeamLogin,
-      meta: {
-        title: 'MTEAM 登录 - 常用工具'
-      }
-    }, {
-      path: 'hosts',
+    }
+  ]
+};
+
+const toolHostsRoute = {
+  path: 'tool/hosts',
+  component: Layout,
+  redirect: 'tool/hosts',
+  children: [
+    {
+      path: '',
       component: ToolHosts,
       meta: {
         title: '修改 HOSTS - 常用工具'
       }
-    }, {
-      path: 'proxy',
+    }
+  ]
+};
+
+const toolProxyRoute = {
+  path: 'tool/proxy',
+  component: Layout,
+  redirect: 'tool/proxy',
+  children: [
+    {
+      path: '',
       component: ToolProxy,
       meta: {
         title: 'HTTP 代理 - 常用工具'
       }
-    }, {
-      path: 'pathGenerator',
-      component: ToolPathGenerator,
-      meta: {
-        title: '路径生成器 - 常用工具'
-      }
-    }, {
-      path: 'shell/:id',
-      component: ToolShell,
-      meta: {
-        title: 'Shell - 常用工具'
-      }
-    }, {
-      path: 'clientLog',
+    }
+  ]
+};
+
+const toolClientLogRoute = {
+  path: 'tool/clientLog',
+  component: Layout,
+  redirect: 'tool/clientLog',
+  children: [
+    {
+      path: '',
       component: ToolClientLog,
       meta: {
         title: '下载器日志 - 常用工具'
@@ -355,24 +322,35 @@ const tool = {
   ]
 };
 
-
-const routes = [{
-  path: '/',
-  component: Index,
-  redirect: '/index',
-  children: [
-    user,
-    index,
-    metric,
-    rule,
-    base,
-    task,
-    tool,
-    info,
-    setting,
-    history
-  ]
-}];
+const routes = [
+  {
+    path: '/',
+    component: Index,
+    redirect: '/index',
+    children: [
+      user,
+      index,
+      metricDownloaderRoute,
+      baseDownloaderRoute,
+      baseNotificationRoute,
+      ruleRssRoute,
+      taskRssRoute,
+      ruleDeleteRoute,
+      taskScriptRoute,
+      historyRssRoute,
+      toolNetworkTestRoute,
+      toolHostsRoute,
+      toolProxyRoute,
+      toolClientLogRoute,
+      settingBaseRoute,
+      settingStyleRoute,
+      settingSecurityRoute,
+      infoLogRoute,
+      settingBackupRoute,
+      infoInfoRoute
+    ]
+  }
+];
 
 export default createRouter({
   history: createWebHistory(),

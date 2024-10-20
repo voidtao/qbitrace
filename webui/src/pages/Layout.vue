@@ -10,11 +10,11 @@
         style="height: calc(var(--vh, 1vh) * 100); overflow: auto; overflow-x: hidden; "
       >
         <div class="logo" @click="gotoWiki">
-          <div style="width: 32px; float: left;">
+          <div style="width: 24px; float: left;">
             <img src="/assets/images/logo.svg"/>
           </div>
-          <span style="font-size: 28px; line-height: 32px; padding-left: 12px;">
-            Vertex
+          <span style="font-size: 21px; line-height: 24px; padding-left: 9px;">
+            qbitrace
           </span>
         </div>
         <template v-for="item of menu">
@@ -54,8 +54,8 @@
           <div style="width: 32px; float: left;">
             <img src="/assets/images/logo.svg"/>
           </div>
-          <span style="font-size: 22px; line-height: 32px; padding-left: 12px;">
-            Vertex
+          <span style="font-size: 21px; line-height: 24px; padding-left: 9px;">
+            qbitrace
           </span>
         </div>
         <template v-for="item of menu">
@@ -93,7 +93,7 @@
               <img style="background: rgba(255,255,255,0.2); border-radius: 4px;" src="/assets/images/logo.svg"/>
             </div>
             <span style="font-size: 22px; padding-left: 6px; line-height: 68px;">
-              Vertex
+              qbitrace
             </span>
           </div>
         </div>
@@ -171,8 +171,8 @@ export default {
 </script>
 <style scoped>
 .logo {
-  height: 32px;
-  margin: 24px auto;
+  height: 30px;
+  margin: 10px auto;
   width: 148px;
   cursor: pointer;
 }
