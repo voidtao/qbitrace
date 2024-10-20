@@ -51,16 +51,16 @@ const init = function () {
   global.CONFIG = config;
   global.LOGGER = logger;
   global.SITE = sites;
-  global.linkMapping = JSON.parse(fs.readFileSync(path.join(__dirname, './data/link-mapping.json')));
-  const setting = JSON.parse(fs.readFileSync(path.join(__dirname, './data/setting.json')));
+  global.linkMapping = JSON.parse(fs.readFileSync(path.join(__dirname, '../storage/data/link-mapping.json')));
+  const setting = JSON.parse(fs.readFileSync(path.join(__dirname, '../storage/data/setting.json')));
   if (!setting.password) {
     const password = util.uuid.v4();
     setting.username = 'admin';
     setting.password = util.md5(password);
-    fs.writeFileSync(path.join(__dirname, './data/password'), password);
-    fs.writeFileSync(path.join(__dirname, './data/setting.json'), JSON.stringify(setting, null, 2));
+    fs.writeFileSync(path.join(__dirname, '../storage/data/password'), password);
+    fs.writeFileSync(path.join(__dirname, '../storage/data/setting.json'), JSON.stringify(setting, null, 2));
   }
-  const proxySetting = JSON.parse(fs.readFileSync(path.join(__dirname, './data/setting/proxy.json')));
+  const proxySetting = JSON.parse(fs.readFileSync(path.join(__dirname, '../storage/data/setting/proxy.json')));
   global.proxy = proxySetting.proxy;
   global.domains = proxySetting.domains;
   global.auth = {
@@ -170,8 +170,8 @@ const init = function () {
   if (process.env.HTTPS_ENABLE === 'true') {
     try {
       const options = {
-        key: fs.readFileSync(path.join(__dirname, './data/ssl/https.key')),
-        cert: fs.readFileSync(path.join(__dirname, './data/ssl/https.crt'))
+        key: fs.readFileSync(path.join(__dirname, '../storage/data/ssl/https.key')),
+        cert: fs.readFileSync(path.join(__dirname, '../storage/data/ssl/https.crt'))
       };
       const server = https.createServer(options, app).listen(process.env.HTTPS_PORT, '127.0.0.1');
       ws(app, server);

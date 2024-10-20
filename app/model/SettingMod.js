@@ -6,11 +6,11 @@ const redis = require('../libs/redis');
 const Push = require('../common/Push');
 const otp = require('../libs/otp');
 
-const settingPath = path.join(__dirname, '../data/setting.json');
-const proxyPath = path.join(__dirname, '../data/setting/proxy.json');
-const torrentHistorySettingPath = path.join(__dirname, '../data/setting/torrent-history-setting.json');
-const torrentMixSettingPath = path.join(__dirname, '../data/setting/torrent-mix-setting.json');
-const torrentPushSettingPath = path.join(__dirname, '../data/setting/torrent-push-setting.json');
+const settingPath = path.join(__dirname, '../../storage/data/setting.json');
+const proxyPath = path.join(__dirname, '../../storage/data/setting/proxy.json');
+const torrentHistorySettingPath = path.join(__dirname, '../../storage/data/setting/torrent-history-setting.json');
+const torrentMixSettingPath = path.join(__dirname, '../../storage/data/setting/torrent-mix-setting.json');
+const torrentPushSettingPath = path.join(__dirname, '../../storage/data/setting/torrent-push-setting.json');
 
 class SettingMod {
   get () {
@@ -169,9 +169,9 @@ class SettingMod {
 
   async backupVertex (options) {
     const backupsFile = `/tmp/Vertex-backups-${moment().format('YYYY-MM-DD_HH:mm:ss')}.tar.gz`;
-    const backupsFileds = ['vertex/db', 'vertex/data', 'vertex/config'];
+    const backupsFileds = ['storage/db', 'storage/data'];
     if (options.bt + '' === 'true') {
-      backupsFileds.push('vertex/torrents');
+      backupsFileds.push('storage/torrents');
     }
     await util.tar.c({
       gzip: true,
@@ -230,17 +230,17 @@ class SettingMod {
 
   save (options) {
     fs.writeFileSync('/etc/hosts', options.hosts);
-    fs.copyFileSync('/etc/hosts', path.join(__dirname, '../data/hosts'));
+    fs.copyFileSync('/etc/hosts', path.join(__dirname, '../../storage/data/hosts'));
     return '保存成功';
   };
 
   import () {
-    fs.copyFileSync(path.join(__dirname, '../data/hosts'), '/etc/hosts');
+    fs.copyFileSync(path.join(__dirname, '../../storage/data/hosts'), '/etc/hosts');
     return '导入成功';
   };
 
   export () {
-    fs.copyFileSync('/etc/hosts', path.join(__dirname, '../data/hosts'));
+    fs.copyFileSync('/etc/hosts', path.join(__dirname, '../../storage/data/hosts'));
     return '导出成功';
   };
 

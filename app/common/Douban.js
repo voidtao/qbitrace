@@ -501,7 +501,7 @@ class Douban {
       id: this.id,
       wishes: this.wishes
     };
-    fs.writeFileSync(path.join(__dirname, '../data/douban/set', this.id + '.json'), JSON.stringify(set, null, 2));
+    fs.writeFileSync(path.join(__dirname, '../../storage/data/douban/set', this.id + '.json'), JSON.stringify(set, null, 2));
   };
 
   _fitConditions (_torrent, conditions, wish) {

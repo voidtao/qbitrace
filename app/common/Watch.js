@@ -329,7 +329,7 @@ class Watch {
       id: this.id,
       torrents: this.torrents
     };
-    fs.writeFileSync(path.join(__dirname, '../data/watch/set', this.id + '.json'), JSON.stringify(set, null, 2));
+    fs.writeFileSync(path.join(__dirname, '../../storage/data/watch/set', this.id + '.json'), JSON.stringify(set, null, 2));
   };
 
   destroy () {

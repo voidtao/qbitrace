@@ -13,35 +13,35 @@ npm i --save
 
 # 创建目录
 mkdir -p \
-  app/data/rss \
-  app/data/client \
-  app/data/server \
-  app/data/rule/{delete,rss,race,raceSet,link} \
-  app/data/push \
-  app/data/script \
-  app/data/watch/set \
-  app/data/site \
-  app/data/irc \
-  app/data/race \
-  app/data/setting \
-  app/data/douban/set \
+  storage/data/rss \
+  storage/data/client \
+  storage/data/server \
+  storage/data/rule/{delete,rss,race,raceSet,link} \
+  storage/data/push \
+  storage/data/script \
+  storage/data/watch/set \
+  storage/data/site \
+  storage/data/irc \
+  storage/data/race \
+  storage/data/setting \
+  storage/data/douban/set \
   webui/public/assets/styles \
-  logs \
-  app/data \
-  app/db \
-  torrents
+  storage/logs \
+  storage/data \
+  storage/db \
+  storage/torrents
 
 # 备份和复制配置文件
-cp app/config_backup/sql.db app/db/sql.db
+cp app/config_backup/sql.db storage/db/sql.db
 cp app/config_backup/*.yaml app/config/
-cp app/config_backup/setting.json app/data/
-cp app/config_backup/setting.json app/data/link-mapping.json
-cp app/config_backup/setting.json app/data/bulk-link-history.json
-cp app/config_backup/torrent-history-setting.json app/data/setting/
-cp app/config_backup/torrent-mix-setting.json app/data/setting/
-cp app/config_backup/site-push-setting.json app/data/setting/
-cp app/config_backup/torrent-push-setting.json app/data/setting/
-cp app/config_backup/proxy.json app/data/setting/
+cp app/config_backup/setting.json storage/data/
+cp app/config_backup/setting.json storage/data/link-mapping.json
+cp app/config_backup/setting.json storage/data/bulk-link-history.json
+cp app/config_backup/torrent-history-setting.json storage/data/setting/
+cp app/config_backup/torrent-mix-setting.json storage/data/setting/
+cp app/config_backup/site-push-setting.json storage/data/setting/
+cp app/config_backup/torrent-push-setting.json storage/data/setting/
+cp app/config_backup/proxy.json storage/data/setting/
 
 # 前端构建
 cd webui

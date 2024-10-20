@@ -9,7 +9,7 @@ class DoubanMod {
     const id = util.uuid.v4().split('-')[0];
     const doubanSet = { ...options };
     doubanSet.id = id;
-    fs.writeFileSync(path.join(__dirname, '../data/douban/', id + '.json'), JSON.stringify(doubanSet, null, 2));
+    fs.writeFileSync(path.join(__dirname, '../../storage/data/douban/', id + '.json'), JSON.stringify(doubanSet, null, 2));
     if (doubanSet.enable) {
       global.runningDouban[id] = new Douban(doubanSet);
     }
@@ -20,9 +20,9 @@ class DoubanMod {
     if (global.runningDouban[options.id]) {
       global.runningDouban[options.id].destroy();
     }
-    fs.unlinkSync(path.join(__dirname, '../data/douban/', options.id + '.json'));
+    fs.unlinkSync(path.join(__dirname, '../../storage/data/douban/', options.id + '.json'));
     try {
-      fs.unlinkSync(path.join(__dirname, '../data/douban/set', options.id + '.json'));
+      fs.unlinkSync(path.join(__dirname, '../../storage/data/douban/set', options.id + '.json'));
     } catch (e) {
       logger.error('删除豆瓣 set 报错:\n', e);
     }
@@ -37,7 +37,7 @@ class DoubanMod {
     if (doubanSet.enable) {
       global.runningDouban[doubanSet.id] = new Douban(doubanSet);
     }
-    fs.writeFileSync(path.join(__dirname, '../data/douban/', doubanSet.id + '.json'), JSON.stringify(doubanSet, null, 2));
+    fs.writeFileSync(path.join(__dirname, '../../storage/data/douban/', doubanSet.id + '.json'), JSON.stringify(doubanSet, null, 2));
     return '修改豆瓣成功';
   };
 

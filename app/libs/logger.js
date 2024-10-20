@@ -3,7 +3,7 @@ const config = require('./config');
 let redis = null;
 
 const loggerConfig = config.getLoggerConfig();
-const setting = JSON.parse(require('fs').readFileSync(require('path').join(__dirname, '../data/setting.json'), { encoding: 'utf-8' }));
+const setting = JSON.parse(require('fs').readFileSync(require('path').join(__dirname, '../../storage/data/setting.json'), { encoding: 'utf-8' }));
 loggerConfig.categories.default.level = setting.loggerLevel || loggerConfig.categories.default.level;
 loggerConfig.appenders.error.layout.tokens = {
   redis: (logEvent) => {

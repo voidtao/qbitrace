@@ -11,13 +11,13 @@ const openApiMod = new OpenApiMod();
 class SiteMod {
   add (options) {
     const set = { ...options };
-    fs.writeFileSync(path.join(__dirname, '../data/site', set.name + '.json'), JSON.stringify(set, null, 2));
+    fs.writeFileSync(path.join(__dirname, '../../storage/data/site', set.name + '.json'), JSON.stringify(set, null, 2));
     if (set.enable) global.runningSite[set.name] = new Site(set);
     return '添加站点成功';
   };
 
   delete (options) {
-    fs.unlinkSync(path.join(__dirname, '../data/site', options.name + '.json'));
+    fs.unlinkSync(path.join(__dirname, '../../storage/data/site', options.name + '.json'));
     if (global.runningSite[options.name]) {
       global.runningSite[options.name].destroy();
     }
@@ -26,7 +26,7 @@ class SiteMod {
 
   modify (options) {
     const set = { ...options };
-    fs.writeFileSync(path.join(__dirname, '../data/site', options.name + '.json'), JSON.stringify(set, null, 2));
+    fs.writeFileSync(path.join(__dirname, '../../storage/data/site', options.name + '.json'), JSON.stringify(set, null, 2));
     if (global.runningSite[options.name]) {
       global.runningSite[options.name].adult = set.adult;
       global.runningSite[options.name].cookie = set.cookie;

@@ -112,7 +112,7 @@ class Site {
     for (const v of md5) {
       hash += v < 16 ? '0' + v.toString(16) : v.toString(16);
     };
-    const filepath = path.join(__dirname, '../../torrents', hash + '.torrent');
+    const filepath = path.join(__dirname, '../../storage/torrents', hash + '.torrent');
     fs.writeFileSync(filepath, buffer);
     return {
       filepath,

@@ -18,7 +18,7 @@ const redlock = require('./redlock');
 const logger = require('./logger');
 const scrape = require('./scrape');
 
-const db = new Database(path.join(__dirname, '../db/sql.db'));
+const db = new Database(path.join(__dirname, '../../storage/db/sql.db'));
 puppeteer.use(StealthPlugin());
 
 let browser;
@@ -259,55 +259,55 @@ exports.scrapeEpisodeByFilename = function (_filename, ignoreKeys = '') {
 };
 
 exports.listSite = function () {
-  const files = fs.readdirSync(path.join(__dirname, '../data/site'));
+  const files = fs.readdirSync(path.join(__dirname, '../../storage/data/site'));
   const list = [];
   for (const file of files) {
     if (path.extname(file) === '.json') {
-      list.push(_importJson(path.join(__dirname, '../data/site', file)));
+      list.push(_importJson(path.join(__dirname, '../../storage/data/site', file)));
     }
   }
   return list;
 };
 
 exports.listPush = function () {
-  const files = fs.readdirSync(path.join(__dirname, '../data/push'));
+  const files = fs.readdirSync(path.join(__dirname, '../../storage/data/push'));
   const list = [];
   for (const file of files) {
     if (path.extname(file) === '.json') {
-      list.push(_importJson(path.join(__dirname, '../data/push', file)));
+      list.push(_importJson(path.join(__dirname, '../../storage/data/push', file)));
     }
   }
   return list;
 };
 
 exports.listClient = function () {
-  const files = fs.readdirSync(path.join(__dirname, '../data/client'));
+  const files = fs.readdirSync(path.join(__dirname, '../../storage/data/client'));
   const clientList = [];
   for (const file of files) {
     if (path.extname(file) === '.json') {
-      clientList.push(_importJson(path.join(__dirname, '../data/client', file)));
+      clientList.push(_importJson(path.join(__dirname, '../../storage/data/client', file)));
     }
   }
   return clientList;
 };
 
 exports.listServer = function () {
-  const files = fs.readdirSync(path.join(__dirname, '../data/server'));
+  const files = fs.readdirSync(path.join(__dirname, '../../storage/data/server'));
   const serverList = [];
   for (const file of files) {
     if (path.extname(file) === '.json') {
-      serverList.push(_importJson(path.join(__dirname, '../data/server', file)));
+      serverList.push(_importJson(path.join(__dirname, '../../storage/data/server', file)));
     }
   }
   return serverList;
 };
 
 exports.listRss = function () {
-  const files = fs.readdirSync(path.join(__dirname, '../data/rss'));
+  const files = fs.readdirSync(path.join(__dirname, '../../storage/data/rss'));
   const rssList = [];
   for (const file of files) {
     if (path.extname(file) === '.json') {
-      const rss = _importJson(path.join(__dirname, '../data/rss', file));
+      const rss = _importJson(path.join(__dirname, '../../storage/data/rss', file));
       if (rss.rssUrl && !rss.rssUrls) {
         rss.rssUrls = [rss.rssUrl];
       }
@@ -318,66 +318,66 @@ exports.listRss = function () {
 };
 
 exports.listDeleteRule = function () {
-  const files = fs.readdirSync(path.join(__dirname, '../data/rule/delete'));
+  const files = fs.readdirSync(path.join(__dirname, '../../storage/data/rule/delete'));
   const deleteRuleList = [];
   for (const file of files) {
     if (path.extname(file) === '.json') {
-      deleteRuleList.push(_importJson(path.join(__dirname, '../data/rule/delete', file)));
+      deleteRuleList.push(_importJson(path.join(__dirname, '../../storage/data/rule/delete', file)));
     }
   }
   return deleteRuleList;
 };
 
 exports.listLinkRule = function () {
-  const files = fs.readdirSync(path.join(__dirname, '../data/rule/link'));
+  const files = fs.readdirSync(path.join(__dirname, '../../storage/data/rule/link'));
   const linkRuleList = [];
   for (const file of files) {
     if (path.extname(file) === '.json') {
-      linkRuleList.push(_importJson(path.join(__dirname, '../data/rule/link', file)));
+      linkRuleList.push(_importJson(path.join(__dirname, '../../storage/data/rule/link', file)));
     }
   }
   return linkRuleList;
 };
 
 exports.listRssRule = function () {
-  const files = fs.readdirSync(path.join(__dirname, '../data/rule/rss'));
+  const files = fs.readdirSync(path.join(__dirname, '../../storage/data/rule/rss'));
   const rssRuleList = [];
   for (const file of files) {
     if (path.extname(file) === '.json') {
-      rssRuleList.push(_importJson(path.join(__dirname, '../data/rule/rss', file)));
+      rssRuleList.push(_importJson(path.join(__dirname, '../../storage/data/rule/rss', file)));
     }
   }
   return rssRuleList;
 };
 
 exports.listRaceRule = function () {
-  const files = fs.readdirSync(path.join(__dirname, '../data/rule/race'));
+  const files = fs.readdirSync(path.join(__dirname, '../../storage/data/rule/race'));
   const raceRuleList = [];
   for (const file of files) {
     if (path.extname(file) === '.json') {
-      raceRuleList.push(_importJson(path.join(__dirname, '../data/rule/race', file)));
+      raceRuleList.push(_importJson(path.join(__dirname, '../../storage/data/rule/race', file)));
     }
   }
   return raceRuleList;
 };
 
 exports.listRaceRuleSet = function () {
-  const files = fs.readdirSync(path.join(__dirname, '../data/rule/raceSet'));
+  const files = fs.readdirSync(path.join(__dirname, '../../storage/data/rule/raceSet'));
   const raceRuleSetList = [];
   for (const file of files) {
     if (path.extname(file) === '.json') {
-      raceRuleSetList.push(_importJson(path.join(__dirname, '../data/rule/raceSet', file)));
+      raceRuleSetList.push(_importJson(path.join(__dirname, '../../storage/data/rule/raceSet', file)));
     }
   }
   return raceRuleSetList;
 };
 
 exports.listDouban = function () {
-  const files = fs.readdirSync(path.join(__dirname, '../data/douban'));
+  const files = fs.readdirSync(path.join(__dirname, '../../storage/data/douban'));
   const DoubanList = [];
   for (const file of files) {
     if (path.extname(file) === '.json') {
-      const douban = _importJson(path.join(__dirname, '../data/douban', file));
+      const douban = _importJson(path.join(__dirname, '../../storage/data/douban', file));
       if (douban.enable === undefined) {
         douban.enable = true;
       }
@@ -388,66 +388,66 @@ exports.listDouban = function () {
 };
 
 exports.listDoubanSet = function () {
-  const files = fs.readdirSync(path.join(__dirname, '../data/douban/set'));
+  const files = fs.readdirSync(path.join(__dirname, '../../storage/data/douban/set'));
   const doubanSetList = [];
   for (const file of files) {
     if (path.extname(file) === '.json') {
-      doubanSetList.push(_importJson(path.join(__dirname, '../data/douban/set', file)));
+      doubanSetList.push(_importJson(path.join(__dirname, '../../storage/data/douban/set', file)));
     }
   }
   return doubanSetList;
 };
 
 exports.listCrontabJavaScript = function () {
-  const files = fs.readdirSync(path.join(__dirname, '../data/script'));
+  const files = fs.readdirSync(path.join(__dirname, '../../storage/data/script'));
   const scriptList = [];
   for (const file of files) {
     if (path.extname(file) === '.json') {
-      scriptList.push(_importJson(path.join(__dirname, '../data/script', file)));
+      scriptList.push(_importJson(path.join(__dirname, '../../storage/data/script', file)));
     }
   }
   return scriptList;
 };
 
 exports.listWatch = function () {
-  const files = fs.readdirSync(path.join(__dirname, '../data/watch'));
+  const files = fs.readdirSync(path.join(__dirname, '../../storage/data/watch'));
   const watchList = [];
   for (const file of files) {
     if (path.extname(file) === '.json') {
-      watchList.push(_importJson(path.join(__dirname, '../data/watch', file)));
+      watchList.push(_importJson(path.join(__dirname, '../../storage/data/watch', file)));
     }
   }
   return watchList;
 };
 
 exports.listWatchSet = function () {
-  const files = fs.readdirSync(path.join(__dirname, '../data/watch/set'));
+  const files = fs.readdirSync(path.join(__dirname, '../../storage/data/watch/set'));
   const watchSetList = [];
   for (const file of files) {
     if (path.extname(file) === '.json') {
-      watchSetList.push(_importJson(path.join(__dirname, '../data/watch/set', file)));
+      watchSetList.push(_importJson(path.join(__dirname, '../../storage/data/watch/set', file)));
     }
   }
   return watchSetList;
 };
 
 exports.listIRC = function () {
-  const files = fs.readdirSync(path.join(__dirname, '../data/irc'));
+  const files = fs.readdirSync(path.join(__dirname, '../../storage/data/irc'));
   const ircList = [];
   for (const file of files) {
     if (path.extname(file) === '.json') {
-      ircList.push(_importJson(path.join(__dirname, '../data/irc', file)));
+      ircList.push(_importJson(path.join(__dirname, '../../storage/data/irc', file)));
     }
   }
   return ircList;
 };
 
 exports.getLinkMapping = function () {
-  return _importJson(path.join(__dirname, '../data/link-mapping.json'));
+  return _importJson(path.join(__dirname, '../../storage/data/link-mapping.json'));
 };
 
 exports.saveLinkMapping = function () {
-  const mappingPath = path.join(__dirname, '../data/link-mapping.json');
+  const mappingPath = path.join(__dirname, '../../storage/data/link-mapping.json');
   return fs.writeFileSync(mappingPath, JSON.stringify(global.linkMapping, null, 2));
 };
 
@@ -583,7 +583,7 @@ exports.syncCookieCloud = async (cc) => {
     }
     __site.cookie = cookie;
     // 写入文件
-    fs.writeFileSync(path.join(__dirname, '../data/site', __site.name + '.json'), JSON.stringify(__site, null, 2));
+    fs.writeFileSync(path.join(__dirname, '../../storage/data/site', __site.name + '.json'), JSON.stringify(__site, null, 2));
     global.runningSite[s].cookie = __site.cookie;
     logger.info('站点', __site.name, '同步 Cookie');
   }
@@ -599,14 +599,14 @@ exports.syncCookieCloud = async (cc) => {
       }
       _douban.cookie = cookie;
       global.runningDouban[_douban.id].cookie = cookie;
-      fs.writeFileSync(path.join(__dirname, '../data/douban/', d.id + '.json'), JSON.stringify(_douban, null, 2));
+      fs.writeFileSync(path.join(__dirname, '../../storage/data/douban/', d.id + '.json'), JSON.stringify(_douban, null, 2));
       logger.info('豆瓣同步 Cookie');
     }
   }
 };
 
 exports.initCookieCloud = function () {
-  const setting = JSON.parse(fs.readFileSync(path.join(__dirname, '../data/setting.json')));
+  const setting = JSON.parse(fs.readFileSync(path.join(__dirname, '../../storage/data/setting.json')));
   if (global.cookiecloud) {
     global.cookiecloud.stop();
     delete global.cookiecloud;

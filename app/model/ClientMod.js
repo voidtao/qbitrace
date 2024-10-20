@@ -11,14 +11,14 @@ class ClientMod {
     clientSet.deleteRules = clientSet.deleteRules || [];
     clientSet.sameServerClients = clientSet.sameServerClients || [];
     clientSet.sameServerClients.push(id);
-    fs.writeFileSync(path.join(__dirname, '../data/client/', id + '.json'), JSON.stringify(clientSet, null, 2));
+    fs.writeFileSync(path.join(__dirname, '../../storage/data/client/', id + '.json'), JSON.stringify(clientSet, null, 2));
     if (global.runningClient[id]) global.runningClient[id].destroy();
     if (clientSet.enable) global.runningClient[id] = new Client(clientSet);
     return '添加下载器成功';
   };
 
   delete (options) {
-    fs.unlinkSync(path.join(__dirname, '../data/client/', options.id + '.json'));
+    fs.unlinkSync(path.join(__dirname, '../../storage/data/client/', options.id + '.json'));
     if (global.runningClient[options.id]) global.runningClient[options.id].destroy();
     return '删除下载器成功';
   };
@@ -29,7 +29,7 @@ class ClientMod {
     clientSet.sameServerClients = clientSet.sameServerClients || [];
     if (global.runningClient[clientSet.id]) global.runningClient[options.id].destroy();
     if (clientSet.enable) global.runningClient[options.id] = new Client(clientSet);
-    fs.writeFileSync(path.join(__dirname, '../data/client/', options.id + '.json'), JSON.stringify(clientSet, null, 2));
+    fs.writeFileSync(path.join(__dirname, '../../storage/data/client/', options.id + '.json'), JSON.stringify(clientSet, null, 2));
     return '修改下载器成功';
   };
 

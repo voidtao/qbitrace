@@ -80,8 +80,8 @@ class Rss {
   };
 
   async _downloadTorrent (url, _hash) {
-    if (_hash && fs.existsSync(path.join(__dirname, '../../torrents', _hash + '.torrent'))) {
-      return { hash: _hash, filepath: path.join(__dirname, '../../torrents', _hash + '.torrent') };
+    if (_hash && fs.existsSync(path.join(__dirname, '../../storage/torrents', _hash + '.torrent'))) {
+      return { hash: _hash, filepath: path.join(__dirname, '../../storage/torrents', _hash + '.torrent') };
     }
     const res = await util.requestPromise({
       url: url,
@@ -101,7 +101,7 @@ class Rss {
     for (const v of md5) {
       hash += v < 16 ? '0' + v.toString(16) : v.toString(16);
     };
-    const filepath = path.join(__dirname, '../../torrents', hash + '.torrent');
+    const filepath = path.join(__dirname, '../../storage/torrents', hash + '.torrent');
     fs.writeFileSync(filepath, buffer);
     return {
       filepath,

@@ -13,12 +13,12 @@ class ServerMod {
     if (serverSet.enable) {
       global.runningServer[id] = new Server(serverSet);
     }
-    fs.writeFileSync(path.join(__dirname, '../data/server/', id + '.json'), JSON.stringify(serverSet, null, 2));
+    fs.writeFileSync(path.join(__dirname, '../../storage/data/server/', id + '.json'), JSON.stringify(serverSet, null, 2));
     return '添加 Server 成功';
   };
 
   delete (options) {
-    fs.unlinkSync(path.join(__dirname, '../data/server/', options.id + '.json'));
+    fs.unlinkSync(path.join(__dirname, '../../storage/data/server/', options.id + '.json'));
     if (global.runningServer[options.id]) global.runningServer[options.id].destroy();
     return '删除 Server 成功';
   };
@@ -27,7 +27,7 @@ class ServerMod {
     const serverSet = { ...options };
     if (global.runningServer[options.id]) global.runningServer[options.id].destroy();
     global.runningServer[options.id] = new Server(serverSet);
-    fs.writeFileSync(path.join(__dirname, '../data/server/', options.id + '.json'), JSON.stringify(serverSet, null, 2));
+    fs.writeFileSync(path.join(__dirname, '../../storage/data/server/', options.id + '.json'), JSON.stringify(serverSet, null, 2));
     return '修改 Server 成功';
   };
 
