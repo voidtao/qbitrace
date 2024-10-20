@@ -39,7 +39,6 @@ import ToolClientLog from '@/pages/tool/ClientLog';
 
 import InfoInfo from '@/pages/info/Info';
 import InfoLog from '@/pages/info/Log';
-import InfoAbout from '@/pages/info/About';
 
 import SettingBase from '@/pages/setting/Base';
 import SettingStyle from '@/pages/setting/Style';
@@ -49,17 +48,11 @@ import SettingMenu from '@/pages/setting/Menu';
 import SettingBackup from '@/pages/setting/Backup';
 import SettingCookieCloud from '@/pages/setting/CookieCloud';
 
-import SubscribeList from '@/pages/subscribe/List';
-import SubscribeDetail from '@/pages/subscribe/Detail';
-import SubscribeAdd from '@/pages/subscribe/Add';
-import SubscribeSearch from '@/pages/subscribe/Search';
 
 import HistoryRss from '@/pages/history/Rss';
 import HistorySubsribe from '@/pages/history/Subscribe';
 import HistoryWatchCategory from '@/pages/history/WatchCategory';
 
-import MixSearch from '@/pages/mix/Search';
-import MixDownloader from '@/pages/mix/Downloader';
 
 import Login from '@/pages/user/Login';
 
@@ -188,25 +181,19 @@ const base = {
 const info = {
   path: 'info',
   component: Layout,
-  redirect: '/info/about',
+  redirect: '/info/log',
   children: [
     {
       path: 'info',
       component: InfoInfo,
       meta: {
-        title: '系统信息 - 系统信息'
+        title: '相关信息'
       }
     }, {
       path: 'log',
       component: InfoLog,
       meta: {
-        title: '系统日志 - 系统信息'
-      }
-    }, {
-      path: 'about',
-      component: InfoAbout,
-      meta: {
-        title: '关于 - 系统信息'
+        title: '系统日志'
       }
     }
   ]
@@ -275,30 +262,6 @@ const task = {
         title: 'Rss 任务 - 任务配置'
       }
     }, {
-      path: 'subscribe',
-      component: TaskSubscribe,
-      meta: {
-        title: '订阅任务 - 任务配置'
-      }
-    }, {
-      path: 'link',
-      component: TaskLink,
-      meta: {
-        title: '链接文件 - 任务配置'
-      }
-    }, {
-      path: 'bulkLink',
-      component: TaskBulkLink,
-      meta: {
-        title: '批量链接 - 任务配置'
-      }
-    }, {
-      path: 'watchCategory',
-      component: TaskWatchCategory,
-      meta: {
-        title: '监控分类 - 任务配置'
-      }
-    }, {
       path: 'script',
       component: TaskScript,
       meta: {
@@ -334,28 +297,6 @@ const history = {
     }
   ]
 };
-
-const mix = {
-  path: 'mix',
-  component: Layout,
-  redirect: '/mix/search',
-  children: [
-    {
-      path: 'search',
-      component: MixSearch,
-      meta: {
-        title: '种子搜索 - 聚合操作'
-      }
-    }, {
-      path: 'downloader',
-      component: MixDownloader,
-      meta: {
-        title: '种子聚合 - 聚合操作'
-      }
-    }
-  ]
-};
-
 
 const tool = {
   path: 'tool',
@@ -414,38 +355,6 @@ const tool = {
   ]
 };
 
-const subscribe = {
-  path: 'subscribe',
-  component: Layout,
-  redirect: '/subscribe/list',
-  children: [
-    {
-      path: 'list',
-      component: SubscribeList,
-      meta: {
-        title: '订阅列表 - 影视订阅'
-      }
-    }, {
-      path: 'detail/:douban/:id',
-      component: SubscribeDetail,
-      meta: {
-        title: '详情 - 影视订阅'
-      }
-    }, {
-      path: 'search',
-      component: SubscribeSearch,
-      meta: {
-        title: '影视搜索 - 影视订阅'
-      }
-    }, {
-      path: 'add',
-      component: SubscribeAdd,
-      meta: {
-        title: '手动添加 - 影视订阅'
-      }
-    }
-  ]
-};
 
 const routes = [{
   path: '/',
@@ -460,10 +369,8 @@ const routes = [{
     task,
     tool,
     info,
-    subscribe,
     setting,
-    history,
-    mix
+    history
   ]
 }];
 

@@ -31,6 +31,5 @@
 
 ## 不会提供的功能
 
-1. 自动观影相关功能，这部分请交给 moviepilot，或其他付费软件。
+1. moviepilot ptpp autobrr所含有的相关功能，这些软件已高度发达到难以替代。
 
-2. irc 相关功能，这部分请交给 autobrr。

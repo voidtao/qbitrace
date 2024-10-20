@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # 环境变量设置
+apt update&&apt upgrade -y
 apt install nodejs npm redis-server -y
 npm install pm2 -g
 

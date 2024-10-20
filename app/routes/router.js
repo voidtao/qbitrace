@@ -202,22 +202,6 @@ module.exports = function (app, express, router) {
   router.post('/rss/mikanSearch', ctrl.Rss.mikanSearch);
   router.post('/rss/mikanPush', ctrl.Rss.mikanPush);
 
-  router.get('/subscribe/list', ctrl.Douban.list);
-  router.post('/subscribe/add', ctrl.Douban.add);
-  router.post('/subscribe/modify', ctrl.Douban.modify);
-  router.post('/subscribe/delete', ctrl.Douban.delete);
-  router.get('/subscribe/listHistory', ctrl.Douban.listHistory);
-  router.get('/subscribe/listWishes', ctrl.Douban.listWishes);
-  router.get('/subscribe/getWish', ctrl.Douban.getWish);
-  router.get('/subscribe/deleteWish', ctrl.Douban.deleteWish);
-  router.get('/subscribe/refreshWish', ctrl.Douban.refreshWish);
-  router.post('/subscribe/editWish', ctrl.Douban.editWish);
-  router.get('/subscribe/deleteRecord', ctrl.Douban.deleteRecord);
-  router.post('/subscribe/refresh', ctrl.Douban.refreshWishes);
-  router.get('/subscribe/relink', ctrl.Douban.relink);
-  router.get('/subscribe/search', ctrl.Douban.search);
-  router.post('/subscribe/addWish', ctrl.Douban.addWish);
-
   router.get('/deleteRule/list', ctrl.DeleteRule.list);
   router.post('/deleteRule/add', ctrl.DeleteRule.add);
   router.post('/deleteRule/modify', ctrl.DeleteRule.modify);

@@ -88,55 +88,9 @@ class UserMod {
           path: '/task/rss',
           icon: ['fas', 'rss']
         }, {
-          title: '订阅任务',
-          path: '/task/subscribe',
-          icon: ['fas', 'calendar-check']
-        }, {
-          title: '监控分类',
-          path: '/task/watchCategory',
-          icon: ['fas', 'video']
-        }, {
           title: '定时脚本',
           path: '/task/script',
           icon: ['fas', 'clock']
-        }, {
-          title: '链接文件',
-          path: '/task/link',
-          icon: ['fas', 'link']
-        }, {
-          title: '批量链接',
-          path: '/task/bulkLink',
-          icon: ['fas', 'link']
-        }]
-      }, {
-        title: '影视订阅',
-        path: '/subscribe',
-        icon: ['fas', 'tv'],
-        sub: [{
-          title: '订阅列表',
-          path: '/subscribe/list',
-          icon: ['fas', 'square-check']
-        }, {
-          title: '影视搜索',
-          path: '/subscribe/search',
-          icon: ['fas', 'magnifying-glass']
-        }, {
-          title: '手动添加',
-          path: '/subscribe/add',
-          icon: ['fas', 'plus']
-        }]
-      }, {
-        title: '聚合操作',
-        path: '/mix',
-        icon: ['fas', 'share-nodes'],
-        sub: [{
-          title: '种子搜索',
-          path: '/mix/search',
-          icon: ['fab', 'searchengin']
-        }, {
-          title: '种子聚合',
-          path: '/mix/downloader',
-          icon: ['fas', 'cloud']
         }]
       }, {
         title: '任务历史',
@@ -218,21 +172,17 @@ class UserMod {
           icon: ['fas', 'floppy-disk']
         }]
       }, {
-        title: '系统信息',
+        title: '相关信息',
         path: '/info',
         icon: ['fas', 'circle-info'],
         sub: [{
-          title: '系统信息',
+          title: '相关信息',
           path: '/info/info',
           icon: ['fas', 'circle-info']
         }, {
           title: '系统日志',
           path: '/info/log',
           icon: ['fas', 'note-sticky']
-        }, {
-          title: '关于',
-          path: '/info/about',
-          icon: ['fas', 'circle-question']
         }]
       }
     ];
