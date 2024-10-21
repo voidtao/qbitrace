@@ -1,9 +1,6 @@
 node_modules
 app/static
 webui/public/assets/styles
-logs
-storage/data
-/storage/db/sql.db
-torrents
+storage
 develop
 app/redis.conf
