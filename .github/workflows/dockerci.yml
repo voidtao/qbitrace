@@ -13,5 +13,4 @@ jobs:
     - name: Login to Docker Hub
       run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
     - name: Build the Docker image
-      run: docker buildx build --platform linux/amd64,linux/arm64 --tag taovoid/qbitrace:latest --push \
-           --build-arg PAT=${{ secrets.PERSONAL_ACCESS_TOKEN }} .
+      run: docker buildx build --platform linux/amd64,linux/arm64 --tag taovoid/qbitrace:latest --push --build-arg PAT=${{ secrets.PERSONAL_ACCESS_TOKEN }} .
