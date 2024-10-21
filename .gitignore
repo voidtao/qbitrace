@@ -4,3 +4,4 @@ webui/public/assets/styles
 storage
 develop
 app/redis.conf
+dump.rdb
