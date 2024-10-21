@@ -7,6 +7,7 @@ ENV TZ=Asia/Shanghai
 # 使用构建参数 PAT 克隆私有仓库
 ARG PAT
 RUN \
+    apt update&&apt install git bash -y && \
     git clone https://${PAT}@github.com/voidtao/qbitrace.git /pt/qbitrace && \
     cd /pt/qbitrace && \
     bash install.sh && \

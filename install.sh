@@ -2,7 +2,7 @@
 
 # 环境变量设置
 apt update&&apt upgrade -y
-apt install git nodejs npm redis-server -y
+apt install bash git nodejs npm redis-server -y
 npm install pm2 -g
 
 PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
