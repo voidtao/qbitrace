@@ -26,5 +26,6 @@ RUN \
         /var/lib/apt/lists/* \
         /var/tmp/* \
         /tmp/*
-
 EXPOSE 3000
+CMD \
+  pm2 resurrect

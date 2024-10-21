@@ -159,26 +159,32 @@ const init = function () {
   } catch (e) {
     logger.error('初始化任务报错\n', e);
   }
+  const PORT = process.env.PORT || 3000;
+  const HOST = process.env.HOST || '127.0.0.1';
   try {
-    const server = http.createServer(app).listen(process.env.PORT, '127.0.0.1');
+    const server = http.createServer(app).listen(PORT, HOST, () => {
+      logger.info(`HTTP 服务器启动, 监听地址: ${HOST}:${PORT}`);
+    });
     ws(app, server);
-    logger.info('HTTP 服务器启动, 监听端口: ', process.env.PORT);
   } catch (e) {
     logger.error(e);
-    logger.error('HTTP 服务器启动失败, 监听端口: ', process.env.PORT);
+    logger.error(`HTTP 服务器启动失败, 监听地址: ${HOST}:${PORT}`);
   }
   if (process.env.HTTPS_ENABLE === 'true') {
+    const HTTPS_PORT = process.env.HTTPS_PORT || 443;  
+    const HTTPS_HOST = process.env.HTTPS_HOST || '127.0.0.1';
     try {
       const options = {
         key: fs.readFileSync(path.join(__dirname, '../storage/data/ssl/https.key')),
         cert: fs.readFileSync(path.join(__dirname, '../storage/data/ssl/https.crt'))
       };
-      const server = https.createServer(options, app).listen(process.env.HTTPS_PORT, '127.0.0.1');
+      const server = https.createServer(options, app).listen(HTTPS_PORT, HTTPS_HOST, () => {
+        logger.info(`HTTPS 服务器启动, 监听地址: ${HTTPS_HOST}:${HTTPS_PORT}`);
+      });
       ws(app, server);
-      logger.info('HTTPS 服务器启动, 监听端口: ', process.env.HTTPS_PORT);
     } catch (e) {
       logger.error(e);
-      logger.error('HTTPS 服务器启动失败, 监听端口: ', process.env.HTTPS_PORT);
+      logger.error(`HTTPS 服务器启动失败, 监听地址: ${HTTPS_HOST}:${HTTPS_PORT}`);
     }
   }
   require('./routes/router.js')(app, express, router);

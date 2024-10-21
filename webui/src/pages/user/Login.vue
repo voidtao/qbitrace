@@ -19,10 +19,10 @@
         autocomplete="off"
         class="login-form login-layout">
         <div style="margin: 12px auto 6px; font-size: 32px; width: fit-content; font-weight: bold;">
-          <span>Vertex</span>
+          <span>qbitrace</span>
         </div>
         <div style="margin: 6px auto 12px; font-size: 16px; width: fit-content; color: grey">
-          <span>追剧刷流一体化工具</span>
+          <span>for qbittorrent racing</span>
         </div>
         <a-form-item
           label="用户名"
@@ -44,21 +44,6 @@
         <a-form-item
           :wrapperCol="isMobile() ? { span: 22 } : { offset: 2, span: 20 }">
           <a-button type="primary" html-type="submit" block style="width: 100%; margin-top: 24px;">登录</a-button>
-        </a-form-item>
-        <a-form-item
-          name="checked"
-          :rules="[{ validator: async (rule, value) => { if (value) return; throw '需勾选我已阅读使用须知!' } }]"
-          :wrapperCol="isMobile() ? { span: 22 } : { offset: 2, span: 20 }">
-          <a-checkbox v-model:checked="user.checked">
-            我已阅读
-            <a color="warning" @click="openRegulation">《使用须知》</a>
-            <br>
-            并且知道遇到问题先去看
-            <a color="warning" @click="openWiki">Wiki</a>
-            <br>
-            否则在交流群提问可能被
-            <span style="color: red">禁言</span>
-          </a-checkbox>
         </a-form-item>
       </a-form>
     </div>
@@ -92,12 +77,6 @@ export default {
       } catch (e) {
         this.$message().error(e.message);
       }
-    },
-    openRegulation () {
-      window.open('https://wiki.vertex-app.top/zh/misc/regulations');
-    },
-    openWiki () {
-      window.open('https://wiki.vertex-app.top/zh/misc/faq');
     }
   }
 };

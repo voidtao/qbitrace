@@ -75,7 +75,7 @@ npm run build --scripts-prepend-node-path
 
 cd ..
 
-systemctl start redis-server
-
 # 启动应用
-PORT=3000 pm2 start app/app.js
+pm2 start redis-server
+pm2 start app/app.js --name qbitrace
+pm2 save
