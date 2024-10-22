@@ -243,7 +243,7 @@ export default {
             type: 'image',
             id: 'logo',
             right: 20,
-            top: 20,
+            top: 10,
             z: -1,
             bounding: 'raw',
             origin: [125, 125],
