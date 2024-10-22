@@ -52,7 +52,8 @@ node dark.js
 node cyber.js
 
 # 生成 cyber.less 文件
-cat << EOF > ../app/static/assets/styles/cyber.less
+cat << EOF >> ./public/assets/styles/cyber.less
+
 @import url(/api/setting/getBackground.less);
 
 .body-bg {
@@ -75,6 +76,8 @@ npm run build --scripts-prepend-node-path
 
 cd ..
 
+service redis-server start
+service redis-server stop
 # 启动应用
 pm2 start redis-server
 pm2 start app/app.js --name qbitrace
