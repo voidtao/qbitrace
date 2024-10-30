@@ -80,8 +80,11 @@ class Rss {
   };
 
   async _downloadTorrent (url, _hash) {
-    if (_hash && fs.existsSync(path.join(__dirname, '../../storage/torrents', _hash + '.torrent'))) {
-      return { hash: _hash, filepath: path.join(__dirname, '../../storage/torrents', _hash + '.torrent') };
+    const torrentPath = path.join(__dirname, '../../storage/torrents', _hash + '.torrent');
+    logger.info(`Checking for ${_hash} at ${torrentPath}`);
+    if (_hash && fs.existsSync(torrentPath)) {
+      logger.info(`使用已下载的种子文件: ${_hash}`);
+      return { hash: _hash, filepath: torrentPath };
     }
     const res = await util.requestPromise({
       url: url,
@@ -407,7 +410,6 @@ class Rss {
             await new Promise(resolve => setTimeout(resolve, 200)); // 等待 0.2 秒后重试
           }
         }
-  
         // 1. 从缓存中获取结果
         const cachedTorrents = await redis.get(cacheKey);
         if (cachedTorrents) {
@@ -421,7 +423,6 @@ class Rss {
             return []; // 返回空数组以继续处理
           }
         }
-  
         // 2. 如果缓存中没有结果，则请求 RSS 地址
         const torrents = await rss.getTorrents(url);
         // 3. 将结果缓存一段时间
