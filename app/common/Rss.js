@@ -386,7 +386,20 @@ class Rss {
     if (_torrents) {
       torrents = _torrents;
     } else {
-      torrents = (await Promise.all(this.urls.map(url => rss.getTorrents(url)))).flat();
+      torrents = await Promise.all(this.urls.map(async url => {
+        //  1. 从缓存中获取结果
+        const cachedTorrents = await redis.get(`vertex:rss:${url}`);
+        if (cachedTorrents) {
+          logger.info(`Rss 任务 ${this.alias} 使用缓存 ${url}`);
+          return JSON.parse(cachedTorrents);
+        }
+        //  2. 如果缓存中没有结果，则请求 RSS 地址
+        const torrents = await rss.getTorrents(url);
+        //  3. 将结果缓存一段时间
+        await redis.setWithExpire(`vertex:rss:${url}`, JSON.stringify(torrents), 50); // 50 秒
+        logger.info(`Rss 任务 ${this.alias} 缓存 ${url}`);
+        return torrents;
+      })).flat();
     }
     const availableClients = this.clientArr
       .map(item => global.runningClient[item])
