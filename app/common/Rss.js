@@ -387,19 +387,55 @@ class Rss {
       torrents = _torrents;
     } else {
       torrents = await Promise.all(this.urls.map(async url => {
-        //  1. 从缓存中获取结果
-        const cachedTorrents = await redis.get(`vertex:rss:${url}`);
-        if (cachedTorrents) {
-          logger.info(`Rss 任务 ${this.alias} 使用缓存 ${url}`);
-          return JSON.parse(cachedTorrents);
+        const cacheKey = `vertex:rss:${url}`;
+        const lockKey = `${cacheKey}:lock`;
+        const lock = await redis.set(lockKey, 'locked', 'NX', 'EX', 50); // 60 秒锁定时间
+        if (!lock) {
+          logger.info(`Rss 任务 ${this.alias} 正在等待缓存`);
+          // 等待缓存数据
+          while (true) {
+            const cachedTorrents = await redis.get(cacheKey);
+            if (cachedTorrents) {
+              logger.info(`Rss 任务 ${this.alias} 使用缓存`);
+              try {
+                return JSON.parse(cachedTorrents); // 解析缓存的数据
+              } catch (e) {
+                logger.error(`解析缓存数据失败: ${e.message}`);
+                return []; // 返回空数组以继续处理
+              }
+            }
+            await new Promise(resolve => setTimeout(resolve, 200)); // 等待 0.2 秒后重试
+          }
         }
-        //  2. 如果缓存中没有结果，则请求 RSS 地址
+  
+        // 1. 从缓存中获取结果
+        const cachedTorrents = await redis.get(cacheKey);
+        if (cachedTorrents) {
+          logger.info(`Rss 任务 ${this.alias} 使用缓存`);
+          try {
+            await redis.del(lockKey); // 释放锁
+            return JSON.parse(cachedTorrents); // 解析缓存的数据
+          } catch (e) {
+            logger.error(`解析缓存数据失败: ${e.message}`);
+            await redis.del(lockKey); // 释放锁
+            return []; // 返回空数组以继续处理
+          }
+        }
+  
+        // 2. 如果缓存中没有结果，则请求 RSS 地址
         const torrents = await rss.getTorrents(url);
-        //  3. 将结果缓存一段时间
-        await redis.setWithExpire(`vertex:rss:${url}`, JSON.stringify(torrents), 50); // 50 秒
-        logger.info(`Rss 任务 ${this.alias} 缓存 ${url}`);
+        // 3. 将结果缓存一段时间
+        try {
+          await redis.setWithExpire(cacheKey, JSON.stringify(torrents), 50); // 120 秒
+          logger.info(`Rss 任务 ${this.alias} 缓存`);
+        } catch (e) {
+          logger.error(`缓存数据失败: ${e.message}`);
+        } finally {
+          await redis.del(lockKey); // 释放锁
+        }
         return torrents;
-      })).flat();
+      }));
+      torrents = torrents.flat(); // 使用 flat 展平数组
     }
     const availableClients = this.clientArr
       .map(item => global.runningClient[item])
