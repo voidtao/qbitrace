@@ -1,8 +1,17 @@
 #!/bin/bash
 
-# 环境变量设置
+# 安装node和redis
 apt update&&apt upgrade -y
-apt install bash git nodejs npm redis-server -y
+apt install lsb-release curl gpg
+curl -fsSL https://deb.nodesource.com/setup_22.x -o nodesource_setup.sh
+bash nodesource_setup.sh
+curl -fsSL https://packages.redis.io/gpg | sudo gpg --dearmor -o /usr/share/keyrings/redis-archive-keyring.gpg
+chmod 644 /usr/share/keyrings/redis-archive-keyring.gpg
+echo "deb [signed-by=/usr/share/keyrings/redis-archive-keyring.gpg] https://packages.redis.io/deb $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/redis.list
+apt update
+apt install bash git nodejs npm redis -y
+systemctl enable redis-server
+systemctl start redis-server
 npm install pm2 -g
 
 PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true

@@ -5,3 +5,4 @@ storage
 develop
 app/redis.conf
 dump.rdb
+nodesource_setup.sh
