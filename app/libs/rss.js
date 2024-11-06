@@ -22,7 +22,8 @@ const _getRssContent = async function (rssUrl, suffix = true) {
   } else {
     let url = rssUrl;
     const isPig = rssUrl.includes('https://piggo.me/');
-    if (suffix && !isPig) {
+    const isKamept = rssUrl.includes('https://kamept.com/');
+    if (suffix && !isPig && !isKamept) {
       url += (rssUrl.indexOf('?') === -1 ? '?' : '&') + '____=' + Math.random();
     }
     let res;
