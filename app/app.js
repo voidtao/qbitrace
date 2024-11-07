@@ -14,9 +14,7 @@ const Script = require('./common/Script');
 const Client = require('./common/Client');
 const Rss = require('./common/Rss');
 const Server = require('./common/Server');
-const Douban = require('./common/Douban');
 const Site = require('./common/Site');
-const Watch = require('./common/Watch');
 const IRC = require('./common/IRC');
 
 const sites = require('./libs/site');
@@ -129,11 +127,6 @@ const init = function () {
   for (const script of util.listCrontabJavaScript()) {
     if (script.enable) {
       global.runningScript[script.id] = new Script(script);
-    }
-  }
-  for (const watch of util.listWatch()) {
-    if (watch.enable) {
-      global.runningWatch[watch.id] = new Watch(watch);
     }
   }
   for (const irc of util.listIRC()) {

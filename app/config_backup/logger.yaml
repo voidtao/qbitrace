@@ -1,10 +1,4 @@
 levels:
-  watch: 
-    value: 20008
-    colour: white
-  watchdebug: 
-    value: 20007
-    colour: white
   binge: 
     value: 20006
     colour: white
@@ -71,24 +65,6 @@ appenders:
     layout:
       type: pattern
       pattern: '[%d{ISO8601}][%p %c] %z (%f{3} %l:%o) %m'
-  watch:
-    type: dateFile
-    filename: storage/logs/app-watch.log
-    pattern: yyyy-MM-dd
-    compress: true
-    numBackups: 30
-    layout:
-      type: pattern
-      pattern: '[%d{ISO8601}][%p %c] %z (%f{3} %l:%o) %m'
-  watchdebug:
-    type: dateFile
-    filename: storage/logs/app-watch-debug.log
-    pattern: yyyy-MM-dd
-    compress: true
-    numBackups: 30
-    layout:
-      type: pattern
-      pattern: '[%d{ISO8601}][%p %c] %z (%f{3} %l:%o) %m'
   binge:
     type: dateFile
     filename: storage/logs/app-binge.log
@@ -149,16 +125,6 @@ appenders:
     appender: advanceddebug
     level: advanceddebug
     maxLevel: advanceddebug
-  watchFilter:
-    type: logLevelFilter
-    appender: watch
-    level: watch
-    maxLevel: watch
-  watchdebugFilter:
-    type: logLevelFilter
-    appender: watchdebug
-    level: watchdebug
-    maxLevel: watchdebug
   bingeFilter:
     type: logLevelFilter
     appender: binge
@@ -210,8 +176,6 @@ categories:
       - bingedebugFilter
       - advancedFilter
       - advanceddebugFilter
-      - watchFilter
-      - watchdebugFilter
       - scFilter
       - scdebugFilter
     level: info

@@ -38,7 +38,6 @@ mkdir -p \
   storage/data/rule/{delete,rss} \
   storage/data/push \
   storage/data/script \
-  storage/data/watch/set \
   storage/data/site \
   storage/data/irc \
   storage/data/race \

@@ -8,7 +8,6 @@ import deleteRule from './deleteRule';
 import rssRule from './rssRule';
 import rss from './rss';
 import script from './script';
-import watch from './watch';
 import torrent from './torrent';
 import log from './log';
 
@@ -24,8 +23,7 @@ const api = {
   rss,
   script,
   torrent,
-  log,
-  watch
+  log
 };
 
 export default () => { return api; };

@@ -36,11 +36,9 @@ class ClientMod {
   list () {
     const rssList = util.listRss();
     const clientList = util.listClient();
-    const watchList = util.listWatch();
     for (const client of clientList) {
       client.used = !global.ignoreDependCheck && (rssList.some(item => (item.clientArr || [item.client]).indexOf(client.id) !== -1) ||
-        rssList.some(item => item.reseedClients.indexOf(client.id) !== -1) ||
-        watchList.some(item => item.downloader === client.id));
+        rssList.some(item => item.reseedClients.indexOf(client.id) !== -1));
       client.status = !!(client.enable && global.runningClient[client.id] && global.runningClient[client.id].status && global.runningClient[client.id].maindata);
       if (client.status) {
         client.allTimeUpload = global.runningClient[client.id].maindata.allTimeUpload;

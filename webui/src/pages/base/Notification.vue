@@ -322,9 +322,6 @@ export default {
         }, {
           key: 'finish',
           value: '追剧种子完成'
-        }, {
-          key: 'watch',
-          value: '监控分类'
         }
       ],
       defaultNotification: {
