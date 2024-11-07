@@ -57,7 +57,6 @@ class SettingMod {
     global.ignoreError = options.ignoreError;
     global.ignoreDependCheck = options.ignoreDependCheck;
     global.apiKey = options.apiKey;
-    global.trustVertexPanel = options.trustVertexPanel;
     global.theme = options.theme;
     global.siteInfo = options.siteInfo;
     global.trustAllCerts = options.trustAllCerts;
@@ -70,7 +69,6 @@ class SettingMod {
     global.wechatToken = options.wechatToken;
     global.wechatAesKey = options.wechatAesKey;
     global.doubanPush = options.doubanPush;
-    global.panelKey = options.panelKey;
     global.telegramProxy = options.telegramProxy || 'https://api.telegram.org';
     global.wechatProxy = options.wechatProxy;
     const webhookPush = util.listPush().filter(item => item.id === global.webhookPushTo)[0];

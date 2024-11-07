@@ -20,7 +20,6 @@ class PushMod {
     const set = { ...options };
     const clientList = util.listClient();
     const rssList = util.listRss();
-    const doubanList = util.listDouban();
     fs.writeFileSync(path.join(__dirname, '../../storage/data/push', options.id + '.json'), JSON.stringify(set, null, 2));
     clientList.filter(item => item.notify === set.id || item.monitor === set.id)
       .filter(item => !!global.runningClient[item.id])
@@ -37,7 +36,6 @@ class PushMod {
   list () {
     const pushList = util.listPush();
     const clientList = util.listClient();
-    const doubanList = util.listDouban();
     const watchList = util.listWatch();
     const rssList = util.listRss();
     for (const push of pushList) {

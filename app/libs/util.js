@@ -171,59 +171,7 @@ exports.uuid = uuid;
 exports.md5 = md5;
 exports.tar = tar;
 
-exports.formatQSString = function (qs) {
-  return Object.keys(qs).filter(item => qs[item]).map(item => `${item}=${encodeURIComponent(qs[item])}`).join('&');
-};
 
-exports.scrapeNameByFile = async function (_filename, type, _year = false, useFullname = false) {
-  const filename = _filename.replace(/[[\]]/g, '');
-  let searchKey = filename.split(/19\d\d|20\d\d|S\d\d/)[0]
-    .replace(/[a-zA-z]+TV(\dK)?\.?/, '')
-    .replace(/(Jade)\.?/, '')
-    .replace(/[\u4e00-\u9fa5\uff01\uff1a]+\d+[\u4e00-\u9fa5\uff01\uff1a]+/g, '')
-    .replace(/[\u4e00-\u9fa5\uff01\uff1a。:?？，,·・]/g, '')
-    .replace(/\./g, ' ').trim();
-  if (filename.match(/^[\u4e00-\u9fa5·]+[A-RT-Za-rt-z]*[\u4e00-\u9fa5·]+/)) {
-    searchKey = filename.match(/^[\u4e00-\u9fa5·]+[A-RT-Za-rt-z]*[\u4e00-\u9fa5·]+/)[0].replace(/[^\u4e00-\u9fa5A-Za-z]/g, ' ').replace(/第.*季/g, '');
-  }
-  let year = filename.match(/[^d](19\d{2}|20\d{2})[^d]/);
-  const season = filename.match(/S0[^1]/);
-  if (useFullname) {
-    searchKey = _filename.replace(/\.\d{4}$/, '');
-    year = _filename.match(/\.(\d{4})$/, '');
-  }
-  if (year) {
-    year = year[1];
-  }
-  if (season) {
-    year = undefined;
-  }
-  const qs = {
-    year,
-    name: searchKey,
-    type,
-    apiKey: global.panelKey
-  };
-  const url = 'https://dash.vertex-app.top/api/tmdb/search?' + exports.formatQSString(qs);
-  const res = await exports.requestPromise(url);
-  let body = JSON.parse(res.body);
-  if (!body.success) {
-    logger.error(filename, searchKey, body);
-    throw new Error('请求 TMDB 信息返回有误, 请重试');
-  }
-  body = body.data;
-  body.results = body.results.sort((a, b) => b.popularity - a.popularity);
-  logger.debug('根据文件名抓取影视剧名', filename, searchKey, body.results[0]?.name || body.results[0]?.title || '');
-  logger.debug(`请求信息 名: ${searchKey}, 年份: ${year}, 类型: ${type}`);
-  if (_year) {
-    return {
-      name: body.results[0]?.name || body.results[0]?.title || '',
-      year: (body.results[0]?.release_date || body.results[0]?.first_air_date || '').split('-')[0],
-      type: type || body.results[0]?.media_type
-    };
-  }
-  return body.results[0]?.name || body.results[0]?.title || '';
-};
 
 exports.scrapeEpisodeByFilename = function (_filename, ignoreKeys = '') {
   let filename = _filename
@@ -372,31 +320,6 @@ exports.listRaceRuleSet = function () {
   return raceRuleSetList;
 };
 
-exports.listDouban = function () {
-  const files = fs.readdirSync(path.join(__dirname, '../../storage/data/douban'));
-  const DoubanList = [];
-  for (const file of files) {
-    if (path.extname(file) === '.json') {
-      const douban = _importJson(path.join(__dirname, '../../storage/data/douban', file));
-      if (douban.enable === undefined) {
-        douban.enable = true;
-      }
-      DoubanList.push(douban);
-    }
-  }
-  return DoubanList;
-};
-
-exports.listDoubanSet = function () {
-  const files = fs.readdirSync(path.join(__dirname, '../../storage/data/douban/set'));
-  const doubanSetList = [];
-  for (const file of files) {
-    if (path.extname(file) === '.json') {
-      doubanSetList.push(_importJson(path.join(__dirname, '../../storage/data/douban/set', file)));
-    }
-  }
-  return doubanSetList;
-};
 
 exports.listCrontabJavaScript = function () {
   const files = fs.readdirSync(path.join(__dirname, '../../storage/data/script'));
@@ -566,7 +489,6 @@ exports.syncCookieCloud = async (cc) => {
   }));
 
   const _sites = exports.listSite();
-  const _doubans = exports.listDouban();
   for (const s of sites) {
     // 判断站点是否启用
     const __site = _sites.filter(item => item.name === s)[0];
@@ -588,21 +510,6 @@ exports.syncCookieCloud = async (cc) => {
     logger.info('站点', __site.name, '同步 Cookie');
   }
 
-  // douban
-  if (douban) {
-    for (const d of Object.values(global.runningDouban)) {
-      const _douban = _doubans.filter(item => item.id === d.id)[0];
-      const cookie = cookies.filter(item => item.domain.endsWith('douban.com')).map(item => item.cookie).join(';');
-      if (_douban.cookie === cookie) {
-        logger.info('豆瓣 Cookie 未改变');
-        continue;
-      }
-      _douban.cookie = cookie;
-      global.runningDouban[_douban.id].cookie = cookie;
-      fs.writeFileSync(path.join(__dirname, '../../storage/data/douban/', d.id + '.json'), JSON.stringify(_douban, null, 2));
-      logger.info('豆瓣同步 Cookie');
-    }
-  }
 };
 
 exports.initCookieCloud = function () {

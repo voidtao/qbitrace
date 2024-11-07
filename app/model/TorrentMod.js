@@ -58,9 +58,6 @@ class TorrentMod {
       for (const torrent of clients[clientId].maindata.torrents) {
         if (torrent.hash !== torrentHash) continue;
         const _torrent = { ...torrent };
-        try {
-          _torrent.scrapeName = await util.scrapeNameByFile(torrent.name);
-        } catch (e) {}
         _torrent.clientAlias = clients[clientId].alias;
         _torrent.client = clientId;
         return _torrent;
@@ -101,10 +98,6 @@ class TorrentMod {
     return torrents;
   }
 
-  async scrapeName (options) {
-    const { name, type } = options;
-    return await util.scrapeNameByFile(name, type === 'series' ? 'tv' : type ? 'movie' : '');
-  }
 
   async _linkTorrentFilesNotDryrun ({ hash, client, mediaName, type, linkRule, savePath, libraryPath }) {
     if (!global.linkMapping[hash]) {

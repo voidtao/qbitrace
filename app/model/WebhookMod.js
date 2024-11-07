@@ -5,9 +5,6 @@ const redis = require('../libs/redis');
 const logger = require('../libs/logger');
 const parser = require('xml2js').parseString;
 
-const OpenApiMod = require('./OpenApiMod');
-
-const openApiMod = new OpenApiMod();
 
 const parseXml = util.promisify(parser);
 
@@ -236,11 +233,6 @@ const getSiteInfoRawObject = async function () {
           },
           {
             type: 'divider'
-          },
-          {
-            type: 'image',
-            image_url: await openApiMod.siteInfo({ retUrl: true }),
-            alt_text: '站点数据'
           }
         ]
       }

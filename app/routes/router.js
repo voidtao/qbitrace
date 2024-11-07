@@ -231,7 +231,6 @@ module.exports = function (app, express, router) {
   router.get('/torrent/listHistory', ctrl.Torrent.listHistory);
   router.get('/torrent/info', ctrl.Torrent.info);
   router.get('/torrent/getBulkLinkList', ctrl.Torrent.getBulkLinkList);
-  router.get('/torrent/scrapeName', ctrl.Torrent.scrapeName);
   router.get('/torrent/getDelInfo', ctrl.Torrent.getDelInfo);
   router.post('/torrent/link', ctrl.Torrent.link);
   router.post('/torrent/deleteTorrent', ctrl.Torrent.deleteTorrent);
@@ -270,8 +269,6 @@ module.exports = function (app, express, router) {
   router.all('/openapi/:apiKey/wechat', ctrl.Webhook.wechat);
   router.all('/openapi/:apiKey/slack', ctrl.Webhook.slack);
 
-  router.all('/openapi/:apiKey/widget', ctrl.OpenApi.widget);
-  router.all('/openapi/:apiKey/siteInfo', ctrl.OpenApi.siteInfo);
 
   app.use('/api', router);
   app.use('/proxy/client/:client', clientProxy);

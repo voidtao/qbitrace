@@ -18,10 +18,6 @@ export default {
     const url = `/api/torrent/getBulkLinkList?keyword=${keyword || ''}&client=${client || ''}`;
     return await get(url);
   },
-  scrapeName: async (name, type) => {
-    const url = `/api/torrent/scrapeName?name=${name || ''}&type=${type || ''}`;
-    return await get(url);
-  },
   listHistory: async (qs) => {
     const qsString = Object.keys(qs).map(item => `${item}=${encodeURIComponent(qs[item])}`).join('&');
     const url = `/api/torrent/listHistory?${qsString}`;

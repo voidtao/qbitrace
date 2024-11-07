@@ -78,7 +78,6 @@ const init = function () {
   global.doubanPush = setting.doubanPush;
   global.apiKey = setting.apiKey;
   global.tmdbApiKey = setting.tmdbApiKey;
-  global.trustVertexPanel = setting.trustVertexPanel;
   global.transparent = setting.transparent;
   global.background = setting.background;
   global.wechatCover = setting.wechatCover;
@@ -95,7 +94,6 @@ const init = function () {
   global.dashboardContent = setting.dashboardContent || [];
   global.wechatToken = setting.wechatToken;
   global.wechatAesKey = setting.wechatAesKey;
-  global.panelKey = setting.panelKey;
   global.jellyfinCover = setting.jellyfinCover;
   global.dataPath = setting.dataPath || '/';
   global.runningClient = {};
@@ -127,11 +125,6 @@ const init = function () {
   for (const site of util.listSite()) {
     if (site.enable) {
       global.runningSite[site.name] = new Site(site);
-    }
-  }
-  for (const douban of util.listDouban()) {
-    if (douban.enable) {
-      global.runningDouban[douban.id] = new Douban(douban);
     }
   }
   for (const script of util.listCrontabJavaScript()) {

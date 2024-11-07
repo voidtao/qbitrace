@@ -44,7 +44,6 @@ mkdir -p \
   storage/data/irc \
   storage/data/race \
   storage/data/setting \
-  storage/data/douban/set \
   webui/public/assets/styles \
   storage/logs \
   storage/data \

@@ -55,22 +55,6 @@ class Torrent {
     }
   };
 
-  async scrapeName (req, res) {
-    const options = req.query;
-    try {
-      const r = await torrentMod.scrapeName(options);
-      res.send({
-        success: true,
-        data: r
-      });
-    } catch (e) {
-      logger.error(e);
-      res.send({
-        success: false,
-        message: e.message
-      });
-    }
-  };
 
   async listHistory (req, res) {
     const options = req.query;
