@@ -276,17 +276,6 @@ exports.listDeleteRule = function () {
   return deleteRuleList;
 };
 
-exports.listLinkRule = function () {
-  const files = fs.readdirSync(path.join(__dirname, '../../storage/data/rule/link'));
-  const linkRuleList = [];
-  for (const file of files) {
-    if (path.extname(file) === '.json') {
-      linkRuleList.push(_importJson(path.join(__dirname, '../../storage/data/rule/link', file)));
-    }
-  }
-  return linkRuleList;
-};
-
 exports.listRssRule = function () {
   const files = fs.readdirSync(path.join(__dirname, '../../storage/data/rule/rss'));
   const rssRuleList = [];
@@ -298,27 +287,6 @@ exports.listRssRule = function () {
   return rssRuleList;
 };
 
-exports.listRaceRule = function () {
-  const files = fs.readdirSync(path.join(__dirname, '../../storage/data/rule/race'));
-  const raceRuleList = [];
-  for (const file of files) {
-    if (path.extname(file) === '.json') {
-      raceRuleList.push(_importJson(path.join(__dirname, '../../storage/data/rule/race', file)));
-    }
-  }
-  return raceRuleList;
-};
-
-exports.listRaceRuleSet = function () {
-  const files = fs.readdirSync(path.join(__dirname, '../../storage/data/rule/raceSet'));
-  const raceRuleSetList = [];
-  for (const file of files) {
-    if (path.extname(file) === '.json') {
-      raceRuleSetList.push(_importJson(path.join(__dirname, '../../storage/data/rule/raceSet', file)));
-    }
-  }
-  return raceRuleSetList;
-};
 
 
 exports.listCrontabJavaScript = function () {

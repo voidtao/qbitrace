@@ -49,12 +49,6 @@
           <a-input disabled size="small" v-model:value="setting.apiKey"/>
         </a-form-item>
         <a-form-item
-          label="TMDB Api"
-          name="tmdbApiKey"
-          extra="The Movie Database Api Key, 用于从文件名提取影视剧名称, 请确保 Vertex 可以正常请求 api.themoviedb.org">
-          <a-input size="small" v-model:value="setting.tmdbApiKey"/>
-        </a-form-item>
-        <a-form-item
           :wrapperCol="isMobile() ? { span:24 } : { span: 21, offset: 3 }">
           <a-button type="primary" html-type="submit" style="margin-top: 24px; margin-bottom: 48px;">保存</a-button>
         </a-form-item>
@@ -84,7 +78,6 @@ export default {
           apiKey: s.apiKey,
           username: s.username,
           password: '',
-          tmdbApiKey: s.tmdbApiKey,
           otp: s.otp ? '******' : (new Array(16)).fill(1).map(() => '234567ABCDEFGHIJKLMNOPQRSTUVWXYZ'[parseInt(Math.random() * 31)]).join(''),
           otpPw: '',
           time: s.time,

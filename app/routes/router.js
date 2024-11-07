@@ -143,18 +143,6 @@ module.exports = function (app, express, router) {
   router.get('/user/logout', ctrl.User.logout);
   router.get('/user/get', ctrl.User.get);
 
-  router.get('/server/netSpeed', ctrl.Server.netSpeed);
-  router.get('/server/cpuUse', ctrl.Server.cpuUse);
-  router.get('/server/diskUse', ctrl.Server.diskUse);
-  router.get('/server/memoryUse', ctrl.Server.memoryUse);
-  router.get('/server/vnstat', ctrl.Server.vnstat);
-  router.get('/server/list', ctrl.Server.list);
-  router.post('/server/add', ctrl.Server.add);
-  router.post('/server/modify', ctrl.Server.modify);
-  router.post('/server/delete', ctrl.Server.delete);
-  router.get('/server/reload', ctrl.Server.reload);
-  router.ws('/server/shell/:serverId', ctrl.Server.shell);
-
   router.post('/notification/add', ctrl.Push.add);
   router.get('/notification/list', ctrl.Push.list);
   router.post('/notification/modify', ctrl.Push.modify);
@@ -207,32 +195,18 @@ module.exports = function (app, express, router) {
   router.post('/deleteRule/modify', ctrl.DeleteRule.modify);
   router.post('/deleteRule/delete', ctrl.DeleteRule.delete);
 
-  router.get('/selectRule/list', ctrl.RaceRule.list);
-  router.post('/selectRule/add', ctrl.RaceRule.add);
-  router.post('/selectRule/modify', ctrl.RaceRule.modify);
-  router.post('/selectRule/delete', ctrl.RaceRule.delete);
-
-  router.get('/raceRuleSet/list', ctrl.RaceRuleSet.list);
-  router.post('/raceRuleSet/add', ctrl.RaceRuleSet.add);
-  router.post('/raceRuleSet/modify', ctrl.RaceRuleSet.modify);
-  router.post('/raceRuleSet/delete', ctrl.RaceRuleSet.delete);
 
   router.get('/rssRule/list', ctrl.RssRule.list);
   router.post('/rssRule/add', ctrl.RssRule.add);
   router.post('/rssRule/modify', ctrl.RssRule.modify);
   router.post('/rssRule/delete', ctrl.RssRule.delete);
 
-  router.get('/linkRule/list', ctrl.LinkRule.list);
-  router.post('/linkRule/add', ctrl.LinkRule.add);
-  router.post('/linkRule/modify', ctrl.LinkRule.modify);
-  router.post('/linkRule/delete', ctrl.LinkRule.delete);
 
   router.get('/torrent/list', ctrl.Torrent.list);
   router.get('/torrent/listHistory', ctrl.Torrent.listHistory);
   router.get('/torrent/info', ctrl.Torrent.info);
   router.get('/torrent/getBulkLinkList', ctrl.Torrent.getBulkLinkList);
   router.get('/torrent/getDelInfo', ctrl.Torrent.getDelInfo);
-  router.post('/torrent/link', ctrl.Torrent.link);
   router.post('/torrent/deleteTorrent', ctrl.Torrent.deleteTorrent);
 
   router.get('/log/get', ctrl.Log.get);
@@ -262,12 +236,6 @@ module.exports = function (app, express, router) {
   router.get('/setting/import', ctrl.Setting.import);
   router.get('/setting/getProxy', ctrl.Setting.getProxy);
   router.post('/setting/saveProxy', ctrl.Setting.saveProxy);
-
-  router.all('/openapi/:apiKey/plex', ctrl.Webhook.plex);
-  router.all('/openapi/:apiKey/emby', ctrl.Webhook.emby);
-  router.all('/openapi/:apiKey/jellyfin', ctrl.Webhook.jellyfin);
-  router.all('/openapi/:apiKey/wechat', ctrl.Webhook.wechat);
-  router.all('/openapi/:apiKey/slack', ctrl.Webhook.slack);
 
 
   app.use('/api', router);

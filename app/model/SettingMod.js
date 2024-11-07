@@ -61,7 +61,6 @@ class SettingMod {
     global.siteInfo = options.siteInfo;
     global.trustAllCerts = options.trustAllCerts;
     global.background = options.background;
-    global.tmdbApiKey = options.tmdbApiKey;
     global.dataPath = options.dataPath || '/';
     global.wechatCover = options.wechatCover;
     global.embyCover = options.embyCover;

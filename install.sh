@@ -35,8 +35,7 @@ npm i --save
 mkdir -p \
   storage/data/rss \
   storage/data/client \
-  storage/data/server \
-  storage/data/rule/{delete,rss,race,raceSet,link} \
+  storage/data/rule/{delete,rss} \
   storage/data/push \
   storage/data/script \
   storage/data/watch/set \

@@ -77,7 +77,6 @@ const init = function () {
   global.webhookPushTo = setting.webhookPushTo;
   global.doubanPush = setting.doubanPush;
   global.apiKey = setting.apiKey;
-  global.tmdbApiKey = setting.tmdbApiKey;
   global.transparent = setting.transparent;
   global.background = setting.background;
   global.wechatCover = setting.wechatCover;
