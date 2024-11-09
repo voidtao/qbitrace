@@ -54,8 +54,8 @@ module.exports = {
 
     // manifest 设置
     manifestOptions: {
-      name: 'VERTEX',
-      short_name: 'VERTEX',
+      name: 'qbitrace',
+      short_name: 'qbitrace',
       start_url: '/',
       display: 'standalone',
       icons: require('./public/assets/pwaicons/icons.json').icons

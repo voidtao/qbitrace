@@ -282,10 +282,10 @@ class Rss {
       if (this.scrapeFree) {
         try {
           if (!await util.scrapeFree(torrent.link, this.cookie)) {
-            const isScraped = await redis.get(`vertex:scrape:free:${torrent.hash}`);
+            const isScraped = await redis.get(`qbitrace:scrape:free:${torrent.hash}`);
             if (this.sleepTime && (moment().unix() - +this.sleepTime) < torrent.pubTime && !isScraped) {
               logger.info(this.alias, '已设置等待时间', this.sleepTime, ', ', torrent.name, '发布时间为', moment(torrent.pubTime * 1000).format('YYYY-MM-DD HH:mm:ss'), ', 跳过');
-              await redis.setWithExpire(`vertex:scrape:free:${torrent.hash}`, '7777', 3600 * 4);
+              await redis.setWithExpire(`qbitrace:scrape:free:${torrent.hash}`, '7777', 3600 * 4);
             } else {
               await util.runRecord('INSERT INTO torrents (hash, name, size, rss_id, link, record_time, record_type, record_note) values (?, ?, ?, ?, ?, ?, ?, ?)',
                 [torrent.hash, torrent.name, torrent.size, this.id, torrent.link, moment().unix(), 2, '拒绝原因: 非免费种']);
@@ -390,7 +390,7 @@ class Rss {
       torrents = _torrents;
     } else {
       torrents = await Promise.all(this.urls.map(async url => {
-        const cacheKey = `vertex:rss:${url}`;
+        const cacheKey = `qbitrace:rss:${url}`;
         const lockKey = `${cacheKey}:lock`;
         const lock = await redis.set(lockKey, 'locked', 'NX', 'EX', 50); // 60 秒锁定时间
         if (!lock) {

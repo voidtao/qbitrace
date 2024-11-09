@@ -27,9 +27,6 @@ class PushMod {
     rssList.filter(item => item.notify === set.id)
       .filter(item => !!global.runningRss[item.id])
       .forEach(item => global.runningRss[item.id].reloadPush());
-    doubanList.filter(item => item.notify === set.id)
-      .filter(item => !!global.runningDouban[item.id])
-      .forEach(item => global.runningDouban[item.id].reloadPush());
     return '编辑推送工具成功';
   };
 
@@ -39,8 +36,7 @@ class PushMod {
     const rssList = util.listRss();
     for (const push of pushList) {
       push.used = clientList.some(item => item.notify === push.id || item.monitor === push.id) ||
-        rssList.some(item => item.notify === push.id) ||
-        doubanList.some(item => item.notify === push.id);
+        rssList.some(item => item.notify === push.id);
     }
     return pushList;
   };

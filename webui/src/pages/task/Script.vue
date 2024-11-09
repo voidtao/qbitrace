@@ -115,7 +115,7 @@ export default {
       defaultScript: {
         enable: true,
         cron: '* * * * *',
-        script: 'logger.info(\'VERTEX IS THE BEST!\')'
+        script: 'logger.info(\'qbitrace IS THE BEST!\')'
       },
       loading: true
     };

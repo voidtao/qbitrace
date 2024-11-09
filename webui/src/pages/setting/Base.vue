@@ -16,7 +16,7 @@
         <a-form-item
           label="User-Agent"
           name="userAgent"
-          extra="所有网络请求所用的 User-Agent, 默认为 Vertex">
+          extra="所有网络请求所用的 User-Agent, 默认为 qbitrace">
           <a-input size="small" v-model:value="setting.userAgent"/>
         </a-form-item>
         <a-form-item

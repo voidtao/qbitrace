@@ -182,7 +182,7 @@
           v-if="notification.type === 'webhook'"
           label="Token"
           name="token"
-          extra="在请求时会将 token 放入请求头的 x-vertex-token 中"
+          extra="在请求时会将 token 放入请求头的 x-qbitrace-token 中"
           :rules="[{ required: true, message: '${label}不可为空! ' }]">
           <a-input size="small" v-model:value="notification.token"/>
         </a-form-item>

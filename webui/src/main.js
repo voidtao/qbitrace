@@ -79,7 +79,7 @@ app.component('fa-icon', FontAwesomeIcon);
 
 router.beforeEach((to) => {
   if (to.meta.title) {
-    document.title = to.meta.title + ' :: Vertex';
+    document.title = to.meta.title + ' :: qbitrace';
   }
 });
 

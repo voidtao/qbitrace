@@ -85,7 +85,7 @@ exports.requestPromise = async function (_options, usePuppeteer = true) {
   if (!options.headers) {
     options.headers = {};
   };
-  options.headers['User-Agent'] = global.userAgent || 'Vertex';
+  options.headers['User-Agent'] = global.userAgent || 'qbitrace';
   if (!options.timeout) {
     options.timeout = 120000;
   }
@@ -107,7 +107,7 @@ exports.requestPromise = async function (_options, usePuppeteer = true) {
 };
 
 exports.requestUsePuppeteer = async function (options) {
-  const lock = await exports.redlock.lock('vertex:puppeteer', ttl);
+  const lock = await exports.redlock.lock('qbitrace:puppeteer', ttl);
   logger.debug('locked');
   try {
     if (!browser || browser.process().exitCode === 0) {

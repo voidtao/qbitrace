@@ -45,7 +45,7 @@
         <a-form-item
           label="ApiKey"
           name="apiKey"
-          extra="ApiKey 用于 Vertex 对外的接口请求鉴权, 第一次保存设置后生成">
+          extra="ApiKey 用于 qbitrace 对外的接口请求鉴权, 第一次保存设置后生成">
           <a-input disabled size="small" v-model:value="setting.apiKey"/>
         </a-form-item>
         <a-form-item

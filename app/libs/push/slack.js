@@ -12,7 +12,7 @@ class Slack {
 
   async pushSlack (title, desp, poster) {
     let _poster = poster || global.wechatCover || 'https://pic.lswl.in/images/2022/07/11/bf4eabf1afa841f4527db4d207d265c3.png';
-    _poster = `https://image.vertex-app.top/api/image/cut/0.425/${path.basename(_poster)}/${encodeURIComponent(_poster)}`;
+    _poster = `https://image.qbitrace-app.top/api/image/cut/0.425/${path.basename(_poster)}/${encodeURIComponent(_poster)}`;
     const option = {
       url: this.slackWebhook,
       method: 'POST',
@@ -48,7 +48,7 @@ class Slack {
                 type: 'context',
                 elements: [
                   {
-                    text: '发送自: Vertex',
+                    text: '发送自: qbitrace',
                     type: 'mrkdwn'
                   }
                 ]
@@ -71,7 +71,7 @@ class Slack {
     const title = 'RSS 失败';
     const desp = `*RSS 任务*: ${rss.alias}\n` +
       `*当前时间*: ${moment().format('YYYY-MM-DD HH:mm:ss')}\n` +
-      '详细原因请前往 Vertex 日志页面查看';
+      '详细原因请前往 qbitrace 日志页面查看';
     await this.pushSlack(title, desp);
   };
 
@@ -81,7 +81,7 @@ class Slack {
       `*当前时间*: ${moment().format('YYYY-MM-DD HH:mm:ss')}\n` +
       `*种子名称*: ${torrent.name}\n` +
       `*种子 hash*: ${torrent.hash}\n` +
-      '请确认 Rss 站点是否支持抓取免费或抓取 HR, 若确认无问题, 请前往 Vertex 日志页面查看详细原因';
+      '请确认 Rss 站点是否支持抓取免费或抓取 HR, 若确认无问题, 请前往 qbitrace 日志页面查看详细原因';
     await this.pushSlack(title, desp);
   };
 
@@ -190,7 +190,7 @@ class Slack {
       `*种子名称*: ${torrent.name}\n` +
       `*种子大小*: ${util.formatSize(torrent.size)}\n` +
       `*种子 hash*: ${torrent.hash}\n` +
-      '详细原因请前往 Vertex 日志页面查看';
+      '详细原因请前往 qbitrace 日志页面查看';
     await this.pushSlack(title, desp);
   };
 
@@ -299,7 +299,7 @@ class Slack {
     const title = `获取下载器信息失败 - ${client.alias}`;
     const desp = `*当前时间*: ${moment().format('YYYY-MM-DD HH:mm:ss')}\n` +
       `*下载器名*: ${client.alias}\n` +
-      '详细原因请前往 Vertex 日志页面查看';
+      '详细原因请前往 qbitrace 日志页面查看';
     await this.pushSlack(title, desp);
   };
 
@@ -347,7 +347,7 @@ class Slack {
       text += `*简介:* ${payload.Metadata.summary}`;
     }
     let _poster = global.wechatCover || 'https://pic.lswl.in/images/2022/07/11/bf4eabf1afa841f4527db4d207d265c3.png';
-    _poster = `https://image.vertex-app.top/api/image/cut/0.425/${path.basename(_poster)}/${encodeURIComponent(_poster)}`;
+    _poster = `https://image.qbitrace-app.top/api/image/cut/0.425/${path.basename(_poster)}/${encodeURIComponent(_poster)}`;
     const option = {
       url: this.slackWebhook,
       method: 'POST',
@@ -430,7 +430,7 @@ class Slack {
       text += '*简介:* 暂无';
     }
     let _poster = global.wechatCover || 'https://pic.lswl.in/images/2022/07/11/bf4eabf1afa841f4527db4d207d265c3.png';
-    _poster = `https://image.vertex-app.top/api/image/cut/0.425/${path.basename(_poster)}/${encodeURIComponent(_poster)}`;
+    _poster = `https://image.qbitrace-app.top/api/image/cut/0.425/${path.basename(_poster)}/${encodeURIComponent(_poster)}`;
     const option = {
       url: this.slackWebhook,
       method: 'POST',

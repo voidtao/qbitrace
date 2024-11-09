@@ -477,11 +477,11 @@ class Client {
     });
     const trackerSet = {};
     for (const torrent of this.maindata.torrents) {
-      const cache = await redis.get('vertex:torrent:' + torrent.hash);
+      const cache = await redis.get('qbitrace:torrent:' + torrent.hash);
       // 0 无记录  1 种子存在  2 种子不存在
       if (!cache) {
         const sqlRes = await util.getRecord('SELECT * FROM torrents WHERE hash = ? and record_type = 1', [torrent.hash]);
-        await redis.set('vertex:torrent:' + torrent.hash, sqlRes ? 1 : 2);
+        await redis.set('qbitrace:torrent:' + torrent.hash, sqlRes ? 1 : 2);
         if (!sqlRes) continue;
       }
       if (+cache === 2) continue;
@@ -526,10 +526,10 @@ class Client {
     const torrents = this.maindata.torrents;
     for (const torrent of torrents) {
       try {
-        if (await redis.get(`vertex:torrent_tracker:${torrent.hash}`)) continue;
+        if (await redis.get(`qbitrace:torrent_tracker:${torrent.hash}`)) continue;
         const sqlRes = await util.getRecord('SELECT * FROM torrents WHERE hash = ?', [torrent.hash]);
         if (sqlRes && !!sqlRes.delete_time) {
-          await redis.set(`vertex:torrent_tracker:${torrent.hash}`, 1);
+          await redis.set(`qbitrace:torrent_tracker:${torrent.hash}`, 1);
           continue;
         };
         const { statusCode, body } = await this.client.getTrackerList(this.clientUrl, this.cookie, torrent.hash);

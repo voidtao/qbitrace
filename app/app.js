@@ -40,7 +40,7 @@ const init = function () {
     try {
       await util.runRecord('delete from torrent_flow where time < ?', [moment().unix() - 1]);
       await util.runRecord('delete from tracker_flow where time < ?', [moment().unix() - 7 * 24 * 3600]);
-      execSync('rm -f /tmp/Vertex-backups-*');
+      execSync('rm -f /tmp/qbitrace-backups-*');
     } catch (e) {
       logger.error(e);
     }
@@ -84,7 +84,7 @@ const init = function () {
   global.siteInfo = setting.siteInfo || {
     hide: [],
     hideName: [],
-    watermark: 'vertex'
+    watermark: 'qbitrace'
   };
   global.trustAllCerts = setting.trustAllCerts;
   global.menu = setting.menu || [];

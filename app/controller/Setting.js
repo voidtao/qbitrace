@@ -199,9 +199,9 @@ class Setting {
     }
   };
 
-  async backupVertex (req, res) {
+  async backupqbitrace (req, res) {
     try {
-      const file = await settingMod.backupVertex(req.query);
+      const file = await settingMod.backupqbitrace(req.query);
       res.download(file);
     } catch (e) {
       logger.error(e);
@@ -212,9 +212,9 @@ class Setting {
     }
   }
 
-  async restoreVertex (req, res) {
+  async restoreqbitrace (req, res) {
     try {
-      const r = await settingMod.restoreVertex(req.files);
+      const r = await settingMod.restoreqbitrace(req.files);
       res.send({
         success: true,
         message: r

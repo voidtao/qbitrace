@@ -24,7 +24,7 @@ class Ntfy {
         'Content-Type': 'text/plain',
         'X-Title': '=?UTF-8?B?' + Buffer.from(title, 'utf-8').toString('base64') + '?=',
         'X-Priority': this.ntfyPriority,
-        'User-Agent': 'vertex'
+        'User-Agent': 'qbitrace'
       },
       body: desp
     };
@@ -46,7 +46,7 @@ class Ntfy {
     const title = 'RSS 失败';
     const desp = `RSS 任务: ${rss.alias}\n` +
       `当前时间: ${moment().format('YYYY-MM-DD HH:mm:ss')}\n` +
-      '详细原因请前往 Vertex 日志页面查看';
+      '详细原因请前往 qbitrace 日志页面查看';
     await this.pushNtfy(title, desp);
   };
 
@@ -56,7 +56,7 @@ class Ntfy {
       `当前时间: ${moment().format('YYYY-MM-DD HH:mm:ss')}\n` +
       `种子 hash: ${torrent.hash}\n` +
       `种子名称: ${torrent.name}\n` +
-      '请确认 Rss 站点是否支持抓取免费或抓取 HR, 若确认无问题, 请前往 Vertex 日志页面查看详细原因';
+      '请确认 Rss 站点是否支持抓取免费或抓取 HR, 若确认无问题, 请前往 qbitrace 日志页面查看详细原因';
     await this.pushNtfy(title, desp);
   };
 
@@ -172,7 +172,7 @@ class Ntfy {
       `种子名称: ${torrent.name}\n` +
       `种子大小: ${util.formatSize(torrent.size)}\n` +
       `种子 hash: ${torrent.hash}\n` +
-      '详细原因请前往 Vertex 日志页面查看';
+      '详细原因请前往 qbitrace 日志页面查看';
     await this.pushNtfy(title, desp);
   };
 
@@ -281,7 +281,7 @@ class Ntfy {
     const title = `获取下载器信息失败 - ${client.alias}`;
     const desp = `当前时间: ${moment().format('YYYY-MM-DD HH:mm:ss')}\n` +
       `下载器名: ${client.alias}\n` +
-      '详细原因请前往 Vertex 日志页面查看';
+      '详细原因请前往 qbitrace 日志页面查看';
     await this.pushNtfy(title, desp);
   };
 

@@ -5,7 +5,7 @@ const { JSDOM } = require('jsdom');
 
 const getDocument = async function (url, cookie) {
   let body;
-  const cache = await redis.get(`vertex:scrape:${url}`);
+  const cache = await redis.get(`qbitrace:scrape:${url}`);
   if (cache) {
     body = cache;
   } else {
@@ -15,7 +15,7 @@ const getDocument = async function (url, cookie) {
         cookie
       }
     }, true)).body;
-    await redis.setWithExpire(`vertex:scrape:${url}`, body, 40);
+    await redis.setWithExpire(`qbitrace:scrape:${url}`, body, 40);
   }
   const dom = new JSDOM(body);
   return dom.window.document;

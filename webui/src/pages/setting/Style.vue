@@ -34,25 +34,25 @@
         <a-form-item
           label="通知默认封面"
           name="wechatCover"
-          extra="通知时使用的默认封面, 留空显示 Vertex Logo">
+          extra="通知时使用的默认封面, 留空显示 qbitrace Logo">
           <a-input size="small" v-model:value="setting.wechatCover"/>
         </a-form-item>
         <a-form-item
           label="Emby 通知封面"
           name="embyCover"
-          extra="Emby 通知时使用的封面, 留空显示 Vertex Logo">
+          extra="Emby 通知时使用的封面, 留空显示 qbitrace Logo">
           <a-input size="small" v-model:value="setting.embyCover"/>
         </a-form-item>
         <a-form-item
           label="Plex 通知封面"
           name="plexCover"
-          extra="Plex 通知时使用的封面, 留空显示 Vertex Logo">
+          extra="Plex 通知时使用的封面, 留空显示 qbitrace Logo">
           <a-input size="small" v-model:value="setting.plexCover"/>
         </a-form-item>
         <a-form-item
           label="Jellyfin 通知封面"
           name="jellyfinCover"
-          extra="Jellyfin 通知时使用的封面, 留空显示 Vertex Logo">
+          extra="Jellyfin 通知时使用的封面, 留空显示 qbitrace Logo">
           <a-input size="small" v-model:value="setting.jellyfinCover"/>
         </a-form-item>
         <a-form-item

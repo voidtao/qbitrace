@@ -143,8 +143,8 @@ class SettingMod {
     for (const tracker of Object.keys(perTrackerTodaySet)) {
       perTrackerToday.push({ tracker, ...perTrackerTodaySet[tracker] });
     }
-    const errors = global.ignoreError ? [] : JSON.parse(await redis.get('vertex:error:list') || '[]');
-    await redis.set('vertex:error:list', '[]');
+    const errors = global.ignoreError ? [] : JSON.parse(await redis.get('qbitrace:error:list') || '[]');
+    await redis.set('qbitrace:error:list', '[]');
     return {
       dashboardContent: global.dashboardContent,
       uploaded: uploaded || 0,
@@ -164,8 +164,8 @@ class SettingMod {
     };
   };
 
-  async backupVertex (options) {
-    const backupsFile = `/tmp/Vertex-backups-${moment().format('YYYY-MM-DD_HH:mm:ss')}.tar.gz`;
+  async backupqbitrace (options) {
+    const backupsFile = `/tmp/qbitrace-backups-${moment().format('YYYY-MM-DD_HH:mm:ss')}.tar.gz`;
     const backupsFileds = ['db', 'data'];
 
     if (options.bt + '' === 'true') {
@@ -179,7 +179,7 @@ class SettingMod {
     return backupsFile;
   }
 
-  async restoreVertex (options) {
+  async restoreqbitrace (options) {
     const backupsFile = options.file.path || options.file.originalFilename;
     await util.tar.x({
       gzip: true,

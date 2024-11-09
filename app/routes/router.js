@@ -21,7 +21,7 @@ client.on('error', (err) => {
 
 const redisConfig = config.getRedisConfig();
 redisConfig.client = client;
-redisConfig.prefix = 'vertex:sess:';
+redisConfig.prefix = 'qbitrace:sess:';
 
 const checkAuth = async function (req, res, next) {
   const pathname = req._parsedOriginalUrl.pathname;
@@ -101,7 +101,7 @@ const siteProxy = function (req, res, next) {
   proxy(siteUrl, {
     proxyReqOptDecorator (proxyReqOpts, srcReq) {
       proxyReqOpts.headers.cookie = global.runningSite[siteId] ? global.runningSite[siteId].cookie : '';
-      proxyReqOpts.headers['user-agent'] = global.userAgent || 'Vertex';
+      proxyReqOpts.headers['user-agent'] = global.userAgent || 'qbitrace';
       delete proxyReqOpts.headers['x-forwarded-for'];
       proxyReqOpts.headers.Referer = siteUrl;
       if (proxyReqOpts.headers['content-type'] && proxyReqOpts.headers['content-type'].indexOf('application/x-www-form-urlencoded') !== -1) {
@@ -218,8 +218,8 @@ module.exports = function (app, express, router) {
   router.post('/setting/modifyTorrentMixSetting', ctrl.Setting.modifyTorrentMixSetting);
   router.post('/setting/modifyTorrentPushSetting', ctrl.Setting.modifyTorrentPushSetting);
   router.post('/setting/modifySitePushSetting', ctrl.Setting.modifySitePushSetting);
-  router.get('/setting/backupVertex', ctrl.Setting.backupVertex);
-  router.post('/setting/restoreVertex', ctrl.Setting.restoreVertex);
+  router.get('/setting/backupqbitrace', ctrl.Setting.backupqbitrace);
+  router.post('/setting/restoreqbitrace', ctrl.Setting.restoreqbitrace);
   router.get('/setting/getCss.css', ctrl.Setting.getCss);
   router.post('/setting/loginMTeam', ctrl.Setting.loginMTeam);
   router.post('/setting/networkTest', ctrl.Setting.networkTest);
@@ -271,7 +271,7 @@ module.exports = function (app, express, router) {
       if (global.theme === 'dark') {
         indexHTML = indexHTML.replace('<meta name="theme-color" content="#0099E3">', '<meta name="theme-color" content="#000">');
       }
-      indexHTML = indexHTML.replace('VERTEX-THEME', global.theme);
+      indexHTML = indexHTML.replace('qbitrace-THEME', global.theme);
       res.send(indexHTML);
     } catch (err) {
       logger.error(err);

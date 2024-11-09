@@ -16,7 +16,7 @@ class Wechat {
     if (global.wechatProxy) {
       this.WechatUrl = global.wechatProxy;
     } else {
-      this.WechatUrl = this.proxyKey ? 'https://dash.vertex-app.top/proxy/' + this.proxyKey + '/' : 'https://qyapi.weixin.qq.com/';
+      this.WechatUrl = this.proxyKey ? 'https://dash.qbitrace-app.top/proxy/' + this.proxyKey + '/' : 'https://qyapi.weixin.qq.com/';
     }
   };
 
@@ -63,8 +63,8 @@ class Wechat {
           {
             title: text,
             description: desp,
-            url: 'https://vertex.icu',
-            picurl: `https://image.vertex-app.top/api/image/cut/0.425/${path.basename(_poster)}/${encodeURIComponent(_poster)}`
+            url: 'https://qbitrace.icu',
+            picurl: `https://image.qbitrace-app.top/api/image/cut/0.425/${path.basename(_poster)}/${encodeURIComponent(_poster)}`
           }
         ]
       };
@@ -101,7 +101,7 @@ class Wechat {
       card_type: 'multiple_interaction',
       source: {
         icon_url: 'https://pic.lswl.in/images/2022/07/10/5ae104f82f39eb4059861393ef24d440.th.png',
-        desc: 'Vertex'
+        desc: 'qbitrace'
       },
       main_title: {
         title,
@@ -164,7 +164,7 @@ class Wechat {
   async rssError (rss) {
     const text = 'Rss 失败 ' + moment().format('YYYY-MM-DD HH:mm:ss');
     const desp = `Rss 任务: ${rss.alias}` +
-      '详细原因请前往 Vertex 日志页面查看';
+      '详细原因请前往 qbitrace 日志页面查看';
     await this.pushWeChat(text, desp);
   }
 
@@ -174,7 +174,7 @@ class Wechat {
     const desp = `Rss 任务: ${rss.alias}\n` +
       `种子名称: ${torrent.name}\n` +
       `种子 hash: ${torrent.hash}\n` +
-      '请确认 Rss 站点是否支持抓取免费或抓取 HR, 若确认无问题, 请前往 Vertex 日志页面查看详细原因';
+      '请确认 Rss 站点是否支持抓取免费或抓取 HR, 若确认无问题, 请前往 qbitrace 日志页面查看详细原因';
     await this.pushWeChat(text, desp);
   }
 
@@ -308,7 +308,7 @@ class Wechat {
       `种子名称: ${torrent.name}\n` +
       `种子大小: ${util.formatSize(torrent.size)}\n` +
       `种子 hash: ${torrent.hash}\n` +
-      '详细原因请前往 Vertex 日志页面查看';
+      '详细原因请前往 qbitrace 日志页面查看';
     await this.pushWeChat(text, desp);
   };
 
@@ -409,7 +409,7 @@ class Wechat {
   async getMaindataError (client) {
     const text = '获取下载器信息失败 ' + moment().format('YYYY-MM-DD HH:mm:ss');
     const desp = `下载器名: ${client.alias}\n` +
-      '详细原因请前往 Vertex 日志页面查看';
+      '详细原因请前往 qbitrace 日志页面查看';
     await this.pushWeChat(text, desp);
   }
 

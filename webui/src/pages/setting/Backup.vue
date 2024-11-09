@@ -18,14 +18,14 @@
         </a-form-item>
         <a-form-item
           label="备份">
-          <a-button size="small" type="primary" @click="backupVertex">下载备份</a-button>
+          <a-button size="small" type="primary" @click="backupqbitrace">下载备份</a-button>
         </a-form-item>
         <a-form-item
           label="恢复">
           <a-upload
             :capture="null"
             :accept="null"
-            action="/api/setting/restoreVertex"
+            action="/api/setting/restoreqbitrace"
             :showUploadList="true"
             @change="handleChange">
             <a-button
@@ -57,11 +57,11 @@ export default {
         return false;
       }
     },
-    async backupVertex () {
+    async backupqbitrace () {
       if (this.setting.backupTorrent) {
-        window.open('/api/setting/backupVertex?bt=true');
+        window.open('/api/setting/backupqbitrace?bt=true');
       } else {
-        window.open('/api/setting/backupVertex');
+        window.open('/api/setting/backupqbitrace');
       }
     },
     async handleChange ({ file }) {

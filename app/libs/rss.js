@@ -16,7 +16,7 @@ const _getSum = function (a, b) {
 
 const _getRssContent = async function (rssUrl, suffix = true) {
   let body;
-  const cache = await redis.get(`vertex:rss:${rssUrl}`);
+  const cache = await redis.get(`qbitrace:rss:${rssUrl}`);
   if (cache) {
     body = cache;
   } else {
@@ -47,7 +47,7 @@ const _getRssContent = async function (rssUrl, suffix = true) {
     if (host.indexOf('sharkpt') !== -1) {
       cacheTime = 310;
     }
-    await redis.setWithExpire(`vertex:rss:${rssUrl}`, body, isHTML ? 310 : cacheTime);
+    await redis.setWithExpire(`qbitrace:rss:${rssUrl}`, body, isHTML ? 310 : cacheTime);
   }
   return body;
 };
@@ -347,7 +347,7 @@ const _getTorrentsGazelle = async function (rssUrl) {
     torrent.link = link;
     torrent.url = items[i].link[0];
     torrent.id = +torrent.url.match(/id=(\d+)/)[1];
-    const cache = await redis.get(`vertex:hash:${torrent.url}`);
+    const cache = await redis.get(`qbitrace:hash:${torrent.url}`);
     if (cache) {
       const _torrent = JSON.parse(cache);
       torrent.hash = _torrent.hash;
@@ -360,9 +360,9 @@ const _getTorrentsGazelle = async function (rssUrl) {
         }
         torrent.hash = hash;
         torrent.size = size;
-        await redis.set(`vertex:hash:${torrent.url}`, JSON.stringify(torrent));
+        await redis.set(`qbitrace:hash:${torrent.url}`, JSON.stringify(torrent));
       } catch (e) {
-        await redis.set(`vertex:hash:${torrent.url}`, JSON.stringify({ hash: 'gzl' + moment().unix() + 'gzl', size: 0 }));
+        await redis.set(`qbitrace:hash:${torrent.url}`, JSON.stringify({ hash: 'gzl' + moment().unix() + 'gzl', size: 0 }));
         throw e;
       }
     }
@@ -396,16 +396,16 @@ const _getTorrentsSkyeySnow = async function (rssUrl) {
     torrent.id = link.substring(link.indexOf('?id=') + 4);
     torrent.url = items[i].enclosure[0].$.url;
     if (torrent.url.indexOf('skyey') !== -1) {
-      const cache = await redis.get(`vertex:hash:${torrent.url}`);
+      const cache = await redis.get(`qbitrace:hash:${torrent.url}`);
       if (cache) {
         torrent.hash = cache;
       } else {
         try {
           const { hash } = await exports.getTorrentNameByBencode(torrent.url);
           torrent.hash = hash;
-          await redis.set(`vertex:hash:${torrent.url}`, hash);
+          await redis.set(`qbitrace:hash:${torrent.url}`, hash);
         } catch (e) {
-          await redis.set(`vertex:hash:${torrent.url}`, 'skyey' + moment().unix() + 'skyey');
+          await redis.set(`qbitrace:hash:${torrent.url}`, 'skyey' + moment().unix() + 'skyey');
           throw e;
         }
       }
@@ -435,7 +435,7 @@ const _getTorrentsHDBits = async function (rssUrl) {
     torrent.url = url;
     torrent.link = `https://hdbits.org/details.php?id=${torrent.id}&source=browse`;
     if (torrent.url.indexOf('hdbits') !== -1) {
-      const cache = await redis.get(`vertex:hash:${torrent.url}`);
+      const cache = await redis.get(`qbitrace:hash:${torrent.url}`);
       if (cache) {
         torrent.hash = cache;
       } else {
@@ -443,9 +443,9 @@ const _getTorrentsHDBits = async function (rssUrl) {
           const { hash, size } = await exports.getTorrentNameByBencode(torrent.url);
           torrent.hash = hash;
           torrent.size = size;
-          await redis.set(`vertex:hash:${torrent.url}`, JSON.stringify(torrent));
+          await redis.set(`qbitrace:hash:${torrent.url}`, JSON.stringify(torrent));
         } catch (e) {
-          await redis.set(`vertex:hash:${torrent.url}`, JSON.stringify({ hash: 'hdbits' + moment().unix() + 'hdbits', size: 0 }));
+          await redis.set(`qbitrace:hash:${torrent.url}`, JSON.stringify({ hash: 'hdbits' + moment().unix() + 'hdbits', size: 0 }));
           throw e;
         }
       }
@@ -644,7 +644,7 @@ const _getTorrentsTorrentLeech = async function (rssUrl) {
     torrent.link = guid;
     torrent.id = guid.substring(torrent.hash.indexOf('torrent/') + 8);
     torrent.pubTime = moment(items[i].pubDate[0]).unix();
-    const cache = await redis.get(`vertex:hash:${torrent.url}`);
+    const cache = await redis.get(`qbitrace:hash:${torrent.url}`);
     if (cache) {
       const _torrent = JSON.parse(cache);
       torrent.hash = _torrent.hash;
@@ -657,9 +657,9 @@ const _getTorrentsTorrentLeech = async function (rssUrl) {
         }
         torrent.hash = hash;
         torrent.size = size;
-        await redis.set(`vertex:hash:${torrent.url}`, JSON.stringify(torrent));
+        await redis.set(`qbitrace:hash:${torrent.url}`, JSON.stringify(torrent));
       } catch (e) {
-        await redis.set(`vertex:hash:${torrent.url}`, JSON.stringify({ hash: 'tl' + moment().unix() + 'tl', size: 0 }));
+        await redis.set(`qbitrace:hash:${torrent.url}`, JSON.stringify({ hash: 'tl' + moment().unix() + 'tl', size: 0 }));
         throw e;
       }
     }
