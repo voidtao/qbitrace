@@ -11,7 +11,7 @@ bash nodesource_setup.sh
 
 apt update
 
-apt install bash git nodejs npm redis-server -y
+apt install bash git nodejs redis-server -y
 
 systemctl enable redis-server
 
@@ -33,7 +33,6 @@ mkdir -p \
   storage/data/rule/{delete,rss} \
   storage/data/push \
   storage/data/script \
-  storage/data/race \
   storage/data/setting \
   webui/public/assets/styles \
   storage/logs \
