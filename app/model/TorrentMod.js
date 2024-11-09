@@ -142,20 +142,6 @@ class TorrentMod {
       isError = true;
       logger.error('删除种子失败: ', e);
     }
-    for (const file of options.files) {
-      const { server, filepath } = file;
-      try {
-        logger.info(global.runningServer[server].server.alias, '执行删除文件命令:', `rm -f $'${filepath}'`);
-        if (server === '$local') {
-          await util.exec(`rm -f $'${filepath}'`);
-        } else {
-          await global.runningServer[server].run(`rm -f $'${filepath}'`);
-        }
-      } catch (e) {
-        isError = true;
-        logger.error(global.runningServer[server].server.alias, '执行删除文件命令报错:\n');
-      }
-    }
     if (!isError) {
       delete global.linkMapping[options.hash];
       util.saveLinkMapping();

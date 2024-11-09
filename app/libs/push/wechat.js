@@ -134,11 +134,6 @@ class Wechat {
       button: [
         {
           type: 'click',
-          name: '刷新豆瓣',
-          key: 'refreshDouban'
-        },
-        {
-          type: 'click',
           name: '添加想看',
           key: 'select'
         },
@@ -242,37 +237,6 @@ class Wechat {
     await this.pushWeChat(text, desp, poster);
   };
 
-  async addDoubanTorrent (client, torrent, rule, wish) {
-    const text = '添加豆瓣种子 ' + moment().format('YYYY-MM-DD HH:mm:ss');
-    const site = global.runningSite[torrent.site];
-    let desp = `${wish.name} / ${client.alias} / ${rule.alias}\n`;
-    desp += `站点名称: ${torrent.site} / ↑${util.formatSize(site.info.upload)} / ↓${util.formatSize(site.info.download)}\n`;
-    desp += `种子标题: ${torrent.title}\n`;
-    desp += `副标题: ${torrent.subtitle}\n`;
-    desp += `体积: ${util.formatSize(torrent.size)}\n`;
-    desp += `状态: ${torrent.seeders} / ${torrent.leechers} / ${torrent.snatches}`;
-    desp += wish.episodes ? ` / 已完成至 ${wish.episodeNow} 集 / 全 ${wish.episodes} 集` : '';
-    await this.pushWeChat(text, desp, wish.poster);
-  };
-
-  async addDoubanTorrentError (client, torrent, rule, wish) {
-    const text = '添加豆瓣种子失败 ' + moment().format('YYYY-MM-DD HH:mm:ss');
-    let desp = `${wish.name} / ${client.alias} / ${rule.alias}\n`;
-    desp += `站点名称: ${torrent.site}\n`;
-    desp += `种子标题: ${torrent.title}\n`;
-    desp += `副标题: ${torrent.subtitle}\n`;
-    desp += `状态: ${torrent.seeders} / ${torrent.leechers} / ${torrent.snatches}`;
-    desp += wish.episodes ? ` / 已完成至 ${wish.episodeNow} 集 / 全 ${wish.episodes} 集` : '';
-    await this.pushWeChat(text, desp, wish.poster);
-  };
-
-  async addDouban (alias, wishes) {
-    const text = '添加豆瓣账户 ' + moment().format('YYYY-MM-DD HH:mm:ss');
-    const desp = `豆瓣账户: ${alias}\n` +
-      `原有想看内容: \n${wishes.map(item => item.name).join('\n')}`;
-    await this.pushWeChat(text, desp);
-  };
-
   async startRefreshWish (key) {
     const text = '刷新想看任务 ' + moment().format('YYYY-MM-DD HH:mm:ss');
     const desp = `信息: ${key}\n`;
@@ -283,13 +247,6 @@ class Wechat {
     const text = '刷新想看任务失败 ' + moment().format('YYYY-MM-DD HH:mm:ss');
     const desp = `信息: ${key}\n`;
     await this.pushWeChat(text, desp);
-  };
-
-  async addDoubanWish (alias, wish) {
-    const text = '添加想看 ' + moment().format('YYYY-MM-DD HH:mm:ss');
-    const desp = `豆瓣账户: ${alias}\n` +
-      `${wish.name} / ${wish.year} / ${wish.area} / ${wish.mainCreator} / ${wish.language} / ${wish.length} / ${wish.category}\n${wish.desc.split('\n')[0]}`;
-    await this.pushWeChat(text, desp, wish.poster);
   };
 
   async torrentFinish (note) {

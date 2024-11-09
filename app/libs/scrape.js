@@ -30,7 +30,6 @@ const _free = async function (url, cookie) {
   return state && ['free', 'twoupfree'].indexOf(state.className) !== -1;
 };
 
-// cookie = apikey
 const _freeMTeam = async function (url, cookie) {
   const tid = url.match(/\/(\d+)/)[1];
   // const host = new URL(url).host;

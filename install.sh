@@ -38,8 +38,6 @@ mkdir -p \
   storage/data/rule/{delete,rss} \
   storage/data/push \
   storage/data/script \
-  storage/data/site \
-  storage/data/irc \
   storage/data/race \
   storage/data/setting \
   webui/public/assets/styles \

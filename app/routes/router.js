@@ -87,40 +87,6 @@ const clientProxy = function (req, res, next) {
   })(req, res, next);
 };
 
-const siteProxy = function (req, res, next) {
-  const siteList = util.listSite();
-  const siteId = req.params.site;
-  const site = siteList.filter(item => item.name === siteId)[0];
-  if (!site || !global.runningSite[siteId] || !global.runningSite[siteId].siteUrl) {
-    res.status(404);
-    res.setHeader('Content-Type', 'text/html; charset=utf-8;');
-    res.end('暂不支持 ' + siteId + ' 代理登录, 请直接使用站点网址打开。');
-    return;
-  }
-  const siteUrl = global.runningSite[siteId].siteUrl;
-  proxy(siteUrl, {
-    proxyReqOptDecorator (proxyReqOpts, srcReq) {
-      proxyReqOpts.headers.cookie = global.runningSite[siteId] ? global.runningSite[siteId].cookie : '';
-      proxyReqOpts.headers['user-agent'] = global.userAgent || 'qbitrace';
-      delete proxyReqOpts.headers['x-forwarded-for'];
-      proxyReqOpts.headers.Referer = siteUrl;
-      if (proxyReqOpts.headers['content-type'] && proxyReqOpts.headers['content-type'].indexOf('application/x-www-form-urlencoded') !== -1) {
-        proxyReqOpts.headers['content-type'] = 'application/x-www-form-urlencoded';
-      }
-      proxyReqOpts.headers['accept-encoding'] = 'gzip, deflate';
-      proxyReqOpts.rejectUnauthorized = false;
-      return proxyReqOpts;
-    },
-    userResDecorator: function (proxyRes, proxyResData, userReq, userRes) {
-      if (proxyRes.headers['content-type']?.indexOf('text/html') !== -1) {
-        proxyResData = proxyResData.toString('utf8').replace(/src=(['"])\//g, 'src=$1').replace(/href=(["'])\//g, 'href=$1');
-      }
-      return proxyResData;
-    },
-    reqBodyEncoding: null
-  })(req, res, next);
-};
-
 module.exports = function (app, express, router) {
   app.use(session({
     genid: () => util.uuid.v4().replace(/-/g, ''),
@@ -148,17 +114,6 @@ module.exports = function (app, express, router) {
   router.post('/notification/modify', ctrl.Push.modify);
   router.post('/notification/delete', ctrl.Push.delete);
 
-  router.post('/site/add', ctrl.Site.add);
-  router.get('/site/list', ctrl.Site.list);
-  router.get('/site/listRecord', ctrl.Site.listRecord);
-  router.post('/site/modify', ctrl.Site.modify);
-  router.post('/site/delete', ctrl.Site.delete);
-  router.get('/site/refresh', ctrl.Site.refresh);
-  router.get('/site/search', ctrl.Site.search);
-  router.post('/site/pushTorrent', ctrl.Site.pushTorrent);
-  router.get('/site/listSite', ctrl.Site.listSite);
-  router.get('/site/overview', ctrl.Site.overview);
-
   router.get('/downloader/list', ctrl.Client.list);
   router.get('/downloader/listTop10', ctrl.Client.listTop10);
   router.get('/downloader/listMainInfo', ctrl.Client.listMainInfo);
@@ -180,8 +135,6 @@ module.exports = function (app, express, router) {
   router.post('/rss/modify', ctrl.Rss.modify);
   router.post('/rss/delete', ctrl.Rss.delete);
   router.post('/rss/deleteRecord', ctrl.Rss.deleteRecord);
-  router.post('/rss/mikanSearch', ctrl.Rss.mikanSearch);
-  router.post('/rss/mikanPush', ctrl.Rss.mikanPush);
 
   router.get('/deleteRule/list', ctrl.DeleteRule.list);
   router.post('/deleteRule/add', ctrl.DeleteRule.add);
@@ -233,7 +186,6 @@ module.exports = function (app, express, router) {
 
   app.use('/api', router);
   app.use('/proxy/client/:client', clientProxy);
-  app.use('/proxy/site/:site', siteProxy);
   app.use('/assets/styles/theme.less', (req, res) => {
     const _path = path.join(__dirname, '../static/assets/styles/' + (global.theme || 'follow') + '.less');
     if (!_path.startsWith(path.join(__dirname, '../static/'))) {

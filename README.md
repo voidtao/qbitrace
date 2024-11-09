@@ -1,3 +1,6 @@
+## 原始项目
+https://github.com/vertex-app/vertex
+原始项目的开源许可证为mit，具体参见LICENSE.origin.txt
 ## 相较于原版的改动
 
 0. 此版本不会有任何超出源版本的功能。
@@ -28,7 +31,7 @@
 ## 已知的问题
 
 1. `log4js` 的 `defaultParseCallStack error` 报错 [log4js-node/log4js-node#1413](https://github.com/log4js-node/log4js-node/issues/1413)
-
+2. pt.soulvoice.club 在原始代码中，获取rss时需要带上cookie，我删除了site模块，没号进行测试，因而处理办法为硬编码cookie进代码，填写位置为app/libs/rss.js（主要现在对代码全局还不熟悉，不然直接使用抓免中填写的cookie应该问题不大）
 
 ## 不会提供的功能
 

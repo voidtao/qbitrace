@@ -111,38 +111,6 @@
           style="margin: 24px auto; text-align: center; max-width: 1440px;"
           v-if="runInfo.dashboardContent.filter(item => item === 'server')[0]"
           >
-          <template v-for="(server, index ) in servers" :key="server.id">
-            <div
-              v-if="index === 0"
-              class="data-rect-2 highlight-4"
-              :style="servers.length === 1 ? `width: ${isMobile() ? '336px' : '688px'}` : ''">
-              <!--
-              <div style="position: absolute; left: 0; top: 0; width: 100%; height: 100%;">
-                <v-chart :option="server.speedChart"/>
-              </div>
-              -->
-              <div style="font-size: 14px; font-weight: bold; color: #fff; padding: 16px 16px;">
-                <div>{{ server.alias }}</div>
-                <div style="margin: initial; font-size: 12px;"></div>
-                <div style="margin: initial; font-size: 16px;">{{ $formatSize(server.netSpeed.upload) }}/s ↑ / {{$formatSize(server.netSpeed.download)}}/s ↓</div>
-              </div>
-            </div>
-            <div
-              v-if="index !== 0"
-              class="data-rect-2"
-              :style="servers.length === index + 1 && servers.length % 2 === 1 ? `background: #eff; width: ${isMobile() ? '336px' : '688px'}` : 'background: #eff;'">
-              <!--
-              <div style="position: absolute; left: 0; top: 0; width: 100%; height: 100%;">
-                <v-chart :option="server.speedChart" :init-options="{renderer: 'svg'}"/>
-              </div>
-              -->
-              <div style="font-size: 14px; font-weight: bold; padding: 16px 16px;">
-                <div>{{ server.alias }}</div>
-                <div style="margin: initial; font-size: 12px;"></div>
-                <div style="margin: initial; font-size: 16px;">{{ $formatSize(server.netSpeed.upload) }}/s ↑ / {{$formatSize(server.netSpeed.download)}}/s ↓</div>
-              </div>
-            </div>
-          </template>
         </div>
         <div
           style="margin: 24px auto; text-align: center; max-width: 1440px;"
@@ -380,42 +348,6 @@ export default {
         await this.$message().error(e.message);
       }
     },
-    async listServer () {
-      try {
-        const res = await this.$api().server.list();
-        this.servers = res.data
-          .sort((a, b) => a.alias.localeCompare(b.alias))
-          .map(item => (
-            {
-              ...item,
-              netSpeed: {
-                upload: 0,
-                download: 0
-              },
-              speedChart: JSON.parse(JSON.stringify(this.speedChart))
-            }));
-      } catch (e) {
-        await this.$message().error(e.message);
-      }
-    },
-    async getNetSpeed () {
-      try {
-        this.netSpeed = (await this.$api().server.netSpeed()).data;
-        for (const server of this.servers) {
-          const upload = this.netSpeed[server.id]?.sort((a, b) => b.txBytes - a.txBytes)[0].txBytes || 0;
-          const download = this.netSpeed[server.id]?.sort((a, b) => b.txBytes - a.txBytes)[0].rxBytes || 0;
-          server.netSpeed = {
-            upload,
-            download
-          };
-          server.speedChart.xAxis.data.push('');
-          server.speedChart.series[0].data.push(upload);
-          // server.speedChart.series[1].data.push(download);
-        }
-      } catch (e) {
-        await this.$message().error(e.message);
-      }
-    },
     loadTracker () {
       const recordList = this.trackerInfo.data.trackers;
       const template = {
@@ -472,19 +404,12 @@ export default {
       this.listDownloader();
       this.listDownloaderInfo();
     }
-    if (server) {
-      this.listServer();
-      this.getNetSpeed();
-    }
     if (tracker) {
       this.listTrackerHistory();
     }
     this.interval = setInterval(() => {
       if (downloader) {
         this.listDownloaderInfo();
-      }
-      if (server) {
-        this.getNetSpeed();
       }
     }, 3000);
   },

@@ -144,25 +144,12 @@ class Push {
     await this.doRequest('selectWish', args);
   };
 
-  async addDoubanTorrent (...args) {
-    await this.doRequest('addDoubanTorrent', args);
-  };
-
-  async addDoubanTorrentError (...args) {
-    this.errorCount += 1;
-    await this.doRequest('addDoubanTorrentError', args);
-  };
-
   async torrentFinish (...args) {
     await this.doRequest('torrentFinish', args);
   };
 
   async selectTorrentError (...args) {
     await this.doRequest('selectTorrentError', args);
-  };
-
-  async addDouban (...args) {
-    await this.doRequest('addDouban', args);
   };
 
   async startRefreshWish (...args) {
@@ -172,10 +159,6 @@ class Push {
   async startRefreshWishError (...args) {
     this.errorCount += 1;
     await this.doRequest('startRefreshWishError', args);
-  };
-
-  async addDoubanWish (...args) {
-    await this.doRequest('addDoubanWish', args);
   };
 
   async scrapeTorrent (...args) {

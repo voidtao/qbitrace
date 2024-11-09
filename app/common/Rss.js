@@ -525,33 +525,5 @@ class Rss {
     return torrents;
   }
 
-  async mikanSearch (name) {
-    const torrents = await util.mikanSearch(name);
-    for (const torrent of torrents) {
-      let reject = false;
-      for (const rejectRule of this.rejectRules) {
-        if (this._fitRule(rejectRule, torrent)) {
-          torrent.status = '匹配到拒绝规则: ' + rejectRule.alias;
-          reject = true;
-          break;
-        }
-      }
-      if (reject) {
-        continue;
-      }
-      const fitRules = this.acceptRules.filter(item => this._fitRule(item, torrent));
-      if (this.acceptRules.length === 0) {
-        torrent.status = '无选择规则, 默认选中该种子';
-        continue;
-      } else if (fitRules.length === 0) {
-        torrent.status = '未匹配到规则';
-        continue;
-      } else {
-        torrent.status = '匹配到选择规则: ' + fitRules[0].alias;
-        continue;
-      }
-    }
-    return torrents;
-  }
 }
 module.exports = Rss;

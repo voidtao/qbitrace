@@ -43,12 +43,6 @@
           <a-checkbox v-model:checked="setting.trustAllCerts">启用</a-checkbox>
         </a-form-item>
         <a-form-item
-          label="ApiKey"
-          name="apiKey"
-          extra="ApiKey 用于 qbitrace 对外的接口请求鉴权, 第一次保存设置后生成">
-          <a-input disabled size="small" v-model:value="setting.apiKey"/>
-        </a-form-item>
-        <a-form-item
           :wrapperCol="isMobile() ? { span:24 } : { span: 21, offset: 3 }">
           <a-button type="primary" html-type="submit" style="margin-top: 24px; margin-bottom: 48px;">保存</a-button>
         </a-form-item>
@@ -75,7 +69,6 @@ export default {
       try {
         const s = (await this.$api().setting.get()).data;
         this.setting = {
-          apiKey: s.apiKey,
           username: s.username,
           password: '',
           otp: s.otp ? '******' : (new Array(16)).fill(1).map(() => '234567ABCDEFGHIJKLMNOPQRSTUVWXYZ'[parseInt(Math.random() * 31)]).join(''),

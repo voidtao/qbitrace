@@ -109,41 +109,6 @@ class Slack {
     await this.pushSlack(title, desp);
   };
 
-  async addDoubanTorrent (client, torrent, rule, wish) {
-    const title = `添加豆瓣种子 - ${wish.name}`;
-    const site = global.runningSite[torrent.site];
-    let desp = `*${wish.name} / ${client.alias} / ${rule.alias}*\n` +
-      `*当前时间*: ${moment().format('YYYY-MM-DD HH:mm:ss')}\n`;
-    desp += `*站点信息*: ${torrent.site} / ↑${util.formatSize(site.info.upload)} / ↓${util.formatSize(site.info.download)}\n`;
-    desp += `*种子标题*: ${torrent.title}\n`;
-    desp += `*副标题*: ${torrent.subtitle}\n`;
-    desp += `*体积*: ${util.formatSize(torrent.size)}\n`;
-    desp += `*状态*: ${torrent.seeders} / ${torrent.leechers} / ${torrent.snatches}`;
-    desp += wish.episodes ? `\n*进度信息*: 已完成至 ${wish.episodeNow} 集 / 全 ${wish.episodes} 集` : '';
-    await this.pushSlack(title, desp, wish.poster);
-  };
-
-  async addDoubanTorrentError (client, torrent, rule, wish) {
-    const title = `添加豆瓣种子失败 - ${wish.name}`;
-    const site = global.runningSite[torrent.site];
-    let desp = `*${wish.name} / ${client.alias} / ${rule.alias}*\n` +
-      `*当前时间*: ${moment().format('YYYY-MM-DD HH:mm:ss')}\n`;
-    desp += `*站点信息*: ${torrent.site} / ↑${util.formatSize(site.info.upload)} / ↓${util.formatSize(site.info.download)}\n`;
-    desp += `*种子标题*: ${torrent.title}\n`;
-    desp += `*副标题*: ${torrent.subtitle}\n`;
-    desp += `*状态*: ${torrent.seeders} / ${torrent.leechers} / ${torrent.snatches}`;
-    desp += wish.episodes ? `\n*进度信息*: 已完成至 ${wish.episodeNow} 集 / 全 ${wish.episodes} 集` : '';
-    await this.pushSlack(title, desp, wish.poster);
-  };
-
-  async addDouban (alias, wishes) {
-    const title = `添加豆瓣账户 - ${alias}`;
-    const desp = `*豆瓣账户*: ${alias}\n` +
-      `*当前时间*: ${moment().format('YYYY-MM-DD HH:mm:ss')}\n` +
-      `*原有想看内容*: \n${wishes.map(item => item.name).join('\n')}`;
-    await this.pushSlack(title, desp);
-  };
-
   async startRefreshWish (key) {
     const title = `刷新豆瓣任务 - ${key.split('/')[0].trim()}`;
     const desp = `*信息*: ${key}\n` +
@@ -156,20 +121,6 @@ class Slack {
     const desp = `信息: ${key}\n` +
       `*当前时间*: ${moment().format('YYYY-MM-DD HH:mm:ss')}\n`;
     await this.pushSlack(title, desp);
-  };
-
-  async addDoubanWish (alias, wish) {
-    const title = `添加想看 - ${wish.name}`;
-    const desp = `*豆瓣账户*: ${alias}\n` +
-      `*当前时间*: ${moment().format('YYYY-MM-DD HH:mm:ss')}\n` +
-      `*影视名称*: ${wish.name}\n` +
-      `*年份地区*: ${wish.year} / ${wish.area}\n` +
-      `*主创团队*: ${wish.mainCreator}\n` +
-      `*单集片长*: ${wish.length}\n` +
-      `*语言*: ${wish.language}\n` +
-      `*分类*: ${wish.category}\n` +
-      `*简介*: ${wish.desc.split('\n')}`;
-    await this.pushSlack(title, desp, wish.poster);
   };
 
   async torrentFinish (note) {

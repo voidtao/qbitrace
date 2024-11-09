@@ -43,7 +43,6 @@ class SettingMod {
     delete _options.otpPw;
     delete _options.time;
     const options = Object.assign(JSON.parse(fs.readFileSync(settingPath, { encoding: 'utf-8' })), _options);
-    options.apiKey = options.apiKey || util.uuid.v4().replace(/-/g, '').toUpperCase();
     fs.writeFileSync(settingPath, JSON.stringify(options, null, 2));
     global.auth = {
       username: options.username,
@@ -56,7 +55,6 @@ class SettingMod {
     global.userAgent = options.userAgent;
     global.ignoreError = options.ignoreError;
     global.ignoreDependCheck = options.ignoreDependCheck;
-    global.apiKey = options.apiKey;
     global.theme = options.theme;
     global.siteInfo = options.siteInfo;
     global.trustAllCerts = options.trustAllCerts;
@@ -67,20 +65,12 @@ class SettingMod {
     global.plexCover = options.plexCover;
     global.wechatToken = options.wechatToken;
     global.wechatAesKey = options.wechatAesKey;
-    global.doubanPush = options.doubanPush;
     global.telegramProxy = options.telegramProxy || 'https://api.telegram.org';
     global.wechatProxy = options.wechatProxy;
     const webhookPush = util.listPush().filter(item => item.id === global.webhookPushTo)[0];
     if (webhookPush) {
       global.webhookPush = new Push({ ...webhookPush, push: true });
     }
-    const doubanPush = util.listPush().filter(item => item.id === global.doubanPush)[0];
-    if (doubanPush) {
-      global.doubanPush = new Push({ ...doubanPush, push: true });
-      global.doubanPush.modifyWechatMenu();
-    }
-    // cookiecloud
-    util.initCookieCloud();
     return '修改全局设置成功, 部分设定需要刷新页面生效';
   };
 

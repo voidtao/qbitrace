@@ -206,17 +206,6 @@ exports.scrapeEpisodeByFilename = function (_filename, ignoreKeys = '') {
   return episode;
 };
 
-exports.listSite = function () {
-  const files = fs.readdirSync(path.join(__dirname, '../../storage/data/site'));
-  const list = [];
-  for (const file of files) {
-    if (path.extname(file) === '.json') {
-      list.push(_importJson(path.join(__dirname, '../../storage/data/site', file)));
-    }
-  }
-  return list;
-};
-
 exports.listPush = function () {
   const files = fs.readdirSync(path.join(__dirname, '../../storage/data/push'));
   const list = [];
@@ -237,17 +226,6 @@ exports.listClient = function () {
     }
   }
   return clientList;
-};
-
-exports.listServer = function () {
-  const files = fs.readdirSync(path.join(__dirname, '../../storage/data/server'));
-  const serverList = [];
-  for (const file of files) {
-    if (path.extname(file) === '.json') {
-      serverList.push(_importJson(path.join(__dirname, '../../storage/data/server', file)));
-    }
-  }
-  return serverList;
 };
 
 exports.listRss = function () {
@@ -287,8 +265,6 @@ exports.listRssRule = function () {
   return rssRuleList;
 };
 
-
-
 exports.listCrontabJavaScript = function () {
   const files = fs.readdirSync(path.join(__dirname, '../../storage/data/script'));
   const scriptList = [];
@@ -298,17 +274,6 @@ exports.listCrontabJavaScript = function () {
     }
   }
   return scriptList;
-};
-
-exports.listIRC = function () {
-  const files = fs.readdirSync(path.join(__dirname, '../../storage/data/irc'));
-  const ircList = [];
-  for (const file of files) {
-    if (path.extname(file) === '.json') {
-      ircList.push(_importJson(path.join(__dirname, '../../storage/data/irc', file)));
-    }
-  }
-  return ircList;
 };
 
 exports.getLinkMapping = function () {
@@ -385,95 +350,4 @@ exports.sleep = function (time) {
 
 exports.randomColor = function () {
   return '#' + (new Array(6)).fill(1).map(() => '0123456789abcdef'[parseInt(Math.random() * 15)]).join('');
-};
-
-exports.mikanSearch = async function (name) {
-  const url = `https://mikanani.me/Home/Search?searchstr=${encodeURIComponent(name)}`;
-  const html = (await exports.requestPromise({
-    url: url
-  })).body;
-  const document = new JSDOM(html).window.document;
-  const torrentDoms = document.querySelectorAll('.js-search-results-row');
-  const torrents = [];
-  for (const _torrent of torrentDoms) {
-    const torrent = {
-      size: 0,
-      name: '',
-      hash: '',
-      id: 0,
-      url: '',
-      link: ''
-    };
-    torrent.name = _torrent.querySelector('.magnet-link-wrap').innerHTML.trim();
-    torrent.size = _torrent.children[1].innerHTML.trim();
-    if (torrent.size) {
-      torrent.size = exports.calSize(...torrent.size.replace(/ ?([MGKT])B/, ' $1iB').replace(/,/g, '').split(' '));
-    } else {
-      torrent.size = 0;
-    }
-    const link = _torrent.querySelector('.magnet-link-wrap').href.trim();
-    torrent.link = 'https://mikanani.me' + link;
-    torrent.hash = link.match(/Episode\/(.*)/)[1];
-    torrent.id = torrent.hash;
-    torrent.url = 'https://mikanani.me' + _torrent.querySelector('a[href*=Download]').href.trim();
-    torrent.pubTime = moment(_torrent.children[2].innerHTML.trim().replace(/\//g, '-')).unix();
-    torrents.push(torrent);
-  }
-  return torrents;
-};
-
-exports.syncCookieCloud = async (cc) => {
-  const { uuid, passwd, host, sites, douban } = cc;
-  const { body } = await exports.requestPromise(`${host}/get/${uuid}`);
-  const { encrypted } = JSON.parse(body);
-  const key = CryptoJS.MD5(uuid + '-' + passwd).toString().substring(0, 16);
-  const decrypted = CryptoJS.AES.decrypt(encrypted, key).toString(CryptoJS.enc.Utf8);
-  const parsed = JSON.parse(decrypted);
-  const cookies = Object.values(parsed.cookie_data).flat().map(item => ({
-    domain: item.domain,
-    cookie: `${item.name}=${item.value}`
-  }));
-
-  const _sites = exports.listSite();
-  for (const s of sites) {
-    // 判断站点是否启用
-    const __site = _sites.filter(item => item.name === s)[0];
-    if (!__site || !global.runningSite[s]) {
-      continue;
-    }
-    // 拿到 host
-    const sitehost = new URL(global.runningSite[s].index).host;
-    // 过滤出 cookie
-    const cookie = cookies.filter(item => item.domain.replace(/^\./, '') === sitehost).map(item => item.cookie).join(';');
-    if (__site.cookie === cookie) {
-      logger.info('站点', __site.name, 'Cookie 未改变');
-      continue;
-    }
-    __site.cookie = cookie;
-    // 写入文件
-    fs.writeFileSync(path.join(__dirname, '../../storage/data/site', __site.name + '.json'), JSON.stringify(__site, null, 2));
-    global.runningSite[s].cookie = __site.cookie;
-    logger.info('站点', __site.name, '同步 Cookie');
-  }
-
-};
-
-exports.initCookieCloud = function () {
-  const setting = JSON.parse(fs.readFileSync(path.join(__dirname, '../../storage/data/setting.json')));
-  if (global.cookiecloud) {
-    global.cookiecloud.stop();
-    delete global.cookiecloud;
-  }
-  if (!setting.cookiecloud?.enable) {
-    return;
-  }
-  const cc = setting.cookiecloud;
-  global.cookiecloud = cron.schedule(cc.cron, async () => {
-    try {
-      await exports.syncCookieCloud(cc);
-    } catch (e) {
-      logger.error('cookiecloud 同步失败: \n', e);
-    };
-  });
-  // init
 };

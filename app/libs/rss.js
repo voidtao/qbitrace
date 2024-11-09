@@ -8,6 +8,7 @@ const util = require('./util');
 const redis = require('./redis');
 const logger = require('./logger');
 
+
 const parseXml = util.promisify(parser);
 
 const _getSum = function (a, b) {
@@ -27,11 +28,11 @@ const _getRssContent = async function (rssUrl, suffix = true) {
       url += (rssUrl.indexOf('?') === -1 ? '?' : '&') + '____=' + Math.random();
     }
     let res;
-    if (rssUrl.includes('https://pt.soulvoice.club/') && global.runningSite.SoulVoice) {
+    if (rssUrl.includes('https://pt.soulvoice.club/')) {
       res = await util.requestPromise({
         url,
         headers: {
-          cookie: global.runningSite.SoulVoice.cookie
+          cookie: 'Hard coded need'
         }
       }, true);
     } else {
@@ -533,32 +534,6 @@ const _getTorrentsIPTorrents = async function (rssUrl) {
   return torrents;
 };
 
-const _getTorrentsMikanProject = async function (rssUrl) {
-  const rss = await parseXml(await _getRssContent(rssUrl));
-  const torrents = [];
-  const items = rss.rss.channel[0].item;
-  if (!items) return [];
-  for (let i = 0; i < items.length; ++i) {
-    const torrent = {
-      size: 0,
-      name: '',
-      hash: '',
-      id: 0,
-      url: '',
-      link: ''
-    };
-    torrent.size = items[i].enclosure[0].$.length;
-    torrent.name = items[i].title[0];
-    const link = items[i].link[0];
-    torrent.link = link;
-    torrent.id = link.substring(link.indexOf('Episode/') + 8);
-    torrent.url = items[i].enclosure[0].$.url;
-    torrent.hash = torrent.id;
-    torrent.pubTime = moment(items[i].torrent[0].pubDate[0]).unix();
-    torrents.push(torrent);
-  }
-  return torrents;
-};
 
 const _getTorrentsLearnFlakes = async function (rssUrl) {
   const rss = await parseXml(await _getRssContent(rssUrl, false));
@@ -829,7 +804,6 @@ const _getTorrentsWrapper = {
   'hd-torrents.org': _getTorrentsHDTorrents,
   'hdcity.leniter.org': _getTorrentsHDCity,
   'iptorrents.com': _getTorrentsIPTorrents,
-  'mikanani.me': _getTorrentsMikanProject,
   'learnflakes.net': _getTorrentsLearnFlakes,
   'exoticaz.to': _getTorrentsAvistaZ,
   'avistaz.to': _getTorrentsAvistaZ,

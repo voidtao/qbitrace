@@ -15,7 +15,6 @@ const Client = require('./common/Client');
 const Rss = require('./common/Rss');
 const Server = require('./common/Server');
 const Site = require('./common/Site');
-const IRC = require('./common/IRC');
 
 const sites = require('./libs/site');
 const logger = require('./libs/logger');
@@ -28,10 +27,6 @@ const initPush = function () {
   const webhookPush = util.listPush().filter(item => item.id === global.webhookPushTo)[0];
   if (webhookPush) {
     global.webhookPush = new Push({ ...webhookPush, push: true });
-  }
-  const doubanPush = util.listPush().filter(item => item.id === global.doubanPush)[0];
-  if (doubanPush) {
-    global.doubanPush = new Push({ ...doubanPush, push: true });
   }
 };
 
@@ -73,8 +68,6 @@ const init = function () {
   global.ignoreError = setting.ignoreError;
   global.ignoreDependCheck = setting.ignoreDependCheck;
   global.webhookPushTo = setting.webhookPushTo;
-  global.doubanPush = setting.doubanPush;
-  global.apiKey = setting.apiKey;
   global.transparent = setting.transparent;
   global.background = setting.background;
   global.wechatCover = setting.wechatCover;
@@ -96,12 +89,9 @@ const init = function () {
   global.runningClient = {};
   global.runningRss = {};
   global.runningServer = {};
-  global.runningSite = {};
   global.runningRace = {};
-  global.runningDouban = {};
   global.runningScript = {};
   global.runningWatch = {};
-  global.runningIRC = {};
   global.startTime = moment().unix();
   initPush();
   for (const client of util.listClient()) {
@@ -114,28 +104,11 @@ const init = function () {
       global.runningRss[rss.id] = new Rss(rss);
     }
   }
-  for (const server of util.listServer()) {
-    if (server.enable) {
-      global.runningServer[server.id] = new Server(server);
-    }
-  }
-  for (const site of util.listSite()) {
-    if (site.enable) {
-      global.runningSite[site.name] = new Site(site);
-    }
-  }
   for (const script of util.listCrontabJavaScript()) {
     if (script.enable) {
       global.runningScript[script.id] = new Script(script);
     }
   }
-  for (const irc of util.listIRC()) {
-    if (irc.enable) {
-      global.runningIRC[irc.id] = new IRC(irc);
-    }
-  }
-  // cookiecloud
-  util.initCookieCloud();
 };
 
 (async () => {
