@@ -24,7 +24,7 @@ class Push {
     this.pushType = push.pushType || [];
     const additionPushType = [
       'pushWeChat', 'pushWeChatSelector', 'modifyWechatMenu', 'edit',
-      'pushPlexStartOrStopToSlack', 'pushEmbyStartOrStopToSlack', 'pushSlackRaw',
+      'pushSlackRaw',
       'openSlackView', 'pushSlack',
       'pushTelegram', 'pushNtfy', 'pushWebhook'
     ];
@@ -128,18 +128,6 @@ class Push {
     await this.doRequest('spaceAlarm', args);
   }
 
-  async plexWebhook (...args) {
-    await this.doRequest('plexWebhook', args);
-  };
-
-  async embyWebhook (...args) {
-    await this.doRequest('embyWebhook', args);
-  };
-
-  async jellyfinWebhook (...args) {
-    await this.doRequest('jellyfinWebhook', args);
-  };
-
   async selectWish (...args) {
     await this.doRequest('selectWish', args);
   };
@@ -192,14 +180,6 @@ class Push {
 
   async edit (...args) {
     await this.doRequest('edit', args);
-  }
-
-  async pushPlexStartOrStopToSlack (...args) {
-    await this.doRequest('pushPlexStartOrStopToSlack', args);
-  }
-
-  async pushEmbyStartOrStopToSlack (...args) {
-    await this.doRequest('pushEmbyStartOrStopToSlack', args);
   }
 
   async pushSlack (...args) {

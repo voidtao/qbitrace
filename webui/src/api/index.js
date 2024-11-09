@@ -1,6 +1,4 @@
 import user from './user';
-import server from './server';
-import site from './site';
 import setting from './setting';
 import notification from './notification';
 import downloader from './downloader';
@@ -15,8 +13,6 @@ const api = {
   user,
   setting,
   downloader,
-  server,
-  site,
   notification,
   deleteRule,
   rssRule,

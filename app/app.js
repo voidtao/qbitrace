@@ -13,10 +13,7 @@ const Push = require('./common/Push');
 const Script = require('./common/Script');
 const Client = require('./common/Client');
 const Rss = require('./common/Rss');
-const Server = require('./common/Server');
-const Site = require('./common/Site');
 
-const sites = require('./libs/site');
 const logger = require('./libs/logger');
 const util = require('./libs/util');
 const config = require('./libs/config');
@@ -43,7 +40,6 @@ const init = function () {
 
   global.CONFIG = config;
   global.LOGGER = logger;
-  global.SITE = sites;
   global.linkMapping = JSON.parse(fs.readFileSync(path.join(__dirname, '../storage/data/link-mapping.json')));
   const setting = JSON.parse(fs.readFileSync(path.join(__dirname, '../storage/data/setting.json')));
   if (!setting.password) {
@@ -71,8 +67,6 @@ const init = function () {
   global.transparent = setting.transparent;
   global.background = setting.background;
   global.wechatCover = setting.wechatCover;
-  global.embyCover = setting.embyCover;
-  global.plexCover = setting.plexCover;
   global.theme = setting.theme || 'light';
   global.siteInfo = setting.siteInfo || {
     hide: [],
@@ -84,7 +78,6 @@ const init = function () {
   global.dashboardContent = setting.dashboardContent || [];
   global.wechatToken = setting.wechatToken;
   global.wechatAesKey = setting.wechatAesKey;
-  global.jellyfinCover = setting.jellyfinCover;
   global.dataPath = setting.dataPath || '/';
   global.runningClient = {};
   global.runningRss = {};

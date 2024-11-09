@@ -9,15 +9,9 @@ curl -fsSL https://deb.nodesource.com/setup_22.x -o nodesource_setup.sh
 
 bash nodesource_setup.sh
 
-curl -fsSL https://packages.redis.io/gpg | sudo gpg --dearmor -o /usr/share/keyrings/redis-archive-keyring.gpg
-
-chmod 644 /usr/share/keyrings/redis-archive-keyring.gpg
-
-echo "deb [signed-by=/usr/share/keyrings/redis-archive-keyring.gpg] https://packages.redis.io/deb $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/redis.list
-
 apt update
 
-apt install bash git nodejs npm redis -y
+apt install bash git nodejs npm redis-server -y
 
 systemctl enable redis-server
 
@@ -33,6 +27,7 @@ npm i --save
 
 # 创建目录
 mkdir -p \
+  storage/data \
   storage/data/rss \
   storage/data/client \
   storage/data/rule/{delete,rss} \
@@ -42,7 +37,6 @@ mkdir -p \
   storage/data/setting \
   webui/public/assets/styles \
   storage/logs \
-  storage/data \
   storage/db \
   storage/torrents
 

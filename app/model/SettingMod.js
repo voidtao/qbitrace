@@ -61,8 +61,6 @@ class SettingMod {
     global.background = options.background;
     global.dataPath = options.dataPath || '/';
     global.wechatCover = options.wechatCover;
-    global.embyCover = options.embyCover;
-    global.plexCover = options.plexCover;
     global.wechatToken = options.wechatToken;
     global.wechatAesKey = options.wechatAesKey;
     global.telegramProxy = options.telegramProxy || 'https://api.telegram.org';

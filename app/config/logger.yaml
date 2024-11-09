@@ -1,10 +1,4 @@
 levels:
-  binge: 
-    value: 20006
-    colour: white
-  bingedebug: 
-    value: 20005
-    colour: cyan
   advanceddebug: 
     value: 20004
     colour: cyan
@@ -65,24 +59,6 @@ appenders:
     layout:
       type: pattern
       pattern: '[%d{ISO8601}][%p %c] %z (%f{3} %l:%o) %m'
-  binge:
-    type: dateFile
-    filename: storage/logs/app-binge.log
-    pattern: yyyy-MM-dd
-    compress: true
-    numBackups: 30
-    layout:
-      type: pattern
-      pattern: '[%d{ISO8601}][%p %c] %z (%f{3} %l:%o) %m'
-  bingedebug:
-    type: dateFile
-    filename: storage/logs/app-binge-debug.log
-    pattern: yyyy-MM-dd
-    compress: true
-    numBackups: 30
-    layout:
-      type: pattern
-      pattern: '[%d{ISO8601}][%p %c] %z (%f{3} %l:%o) %m'
   sc:
     type: dateFile
     filename: storage/logs/app-sc.log
@@ -125,16 +101,6 @@ appenders:
     appender: advanceddebug
     level: advanceddebug
     maxLevel: advanceddebug
-  bingeFilter:
-    type: logLevelFilter
-    appender: binge
-    level: binge
-    maxLevel: binge
-  bingedebugFilter:
-    type: logLevelFilter
-    appender: bingedebug
-    level: bingedebug
-    maxLevel: bingedebug
   scFilter:
     type: logLevelFilter
     appender: sc
@@ -172,8 +138,6 @@ categories:
       - infoFilter
       - debugFilter
       - minError
-      - bingeFilter
-      - bingedebugFilter
       - advancedFilter
       - advanceddebugFilter
       - scFilter

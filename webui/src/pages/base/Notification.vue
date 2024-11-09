@@ -278,15 +278,6 @@ export default {
           key: 'spaceAlarm',
           value: '空间警告'
         }, {
-          key: 'plexWebhook',
-          value: 'Plex 通知'
-        }, {
-          key: 'embyWebhook',
-          value: 'Emby 通知'
-        }, {
-          key: 'jellyfinWebhook',
-          value: 'Jellyfin 通知'
-        }, {
           key: 'selectWish',
           value: '选择想看 (微信交互)'
         }, {

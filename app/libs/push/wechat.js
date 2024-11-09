@@ -39,15 +39,6 @@ class Wechat {
       await this._refreshWeChatAccessToken();
     }
     let _poster;
-    if (text.indexOf('Plex') !== -1) {
-      _poster = poster || global.plexCover;
-    }
-    if (text.indexOf('Emby') !== -1) {
-      _poster = poster || global.embyCover;
-    }
-    if (text.indexOf('Jellyfin') !== -1) {
-      _poster = poster || global.jellyfinCover;
-    }
     _poster = _poster || poster || global.wechatCover || 'https://pic.lswl.in/images/2022/07/11/bf4eabf1afa841f4527db4d207d265c3.png';
     const body = {
       touser: '@all',
@@ -194,28 +185,6 @@ class Wechat {
     await this.pushWeChat(text, desp);
   };
 
-  async plexWebhook (event, note, poster) {
-    const text = 'Plex 消息通知 ' + moment().format('YYYY-MM-DD HH:mm:ss');
-    let desp = `Plex: ${event}\n` +
-      `相关信息:\n${note}\n`;
-    if (this.type === 'telegram') {
-      desp = '```\n' + desp + '\n```';
-      desp = '\\#Plex消息通知\n' + desp;
-    }
-    await this.pushWeChat(text, desp, poster);
-  };
-
-  async embyWebhook (event, note, poster) {
-    const text = 'Emby 消息通知 ' + moment().format('YYYY-MM-DD HH:mm:ss');
-    let desp = `Emby: ${event}\n` +
-      `相关信息:\n${note}\n`;
-    if (this.type === 'telegram') {
-      desp = '```\n' + desp + '\n```';
-      desp = '\\#Emby消息通知\n' + desp;
-    }
-    await this.pushWeChat(text, desp, poster);
-  };
-
   async selectWish (note) {
     const text = '选择想看 ' + moment().format('YYYY-MM-DD HH:mm:ss');
     let desp = note;
@@ -224,17 +193,6 @@ class Wechat {
       desp = '\\#选择想看\n' + desp;
     }
     await this.pushWeChat(text, desp);
-  };
-
-  async jellyfinWebhook (event, note, poster) {
-    const text = 'Jellyfin 消息通知 ' + moment().format('YYYY-MM-DD HH:mm:ss');
-    let desp = `Jellyfin: ${event}\n` +
-      `相关信息:\n${note}\n`;
-    if (this.type === 'telegram') {
-      desp = '```\n' + desp + '\n```';
-      desp = '\\#Jellyfin消息通知\n' + desp;
-    }
-    await this.pushWeChat(text, desp, poster);
   };
 
   async startRefreshWish (key) {

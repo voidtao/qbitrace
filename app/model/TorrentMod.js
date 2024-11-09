@@ -103,8 +103,6 @@ class TorrentMod {
     let where = 'where 1 = 1';
     if (options.type === 'rss') {
       where += ' and record_type IN (1,2,3)';
-    } else if (options.type === 'bingewatching') {
-      where += ' and record_type IN (4,6,98,99)';
     }
     if (options.rss) {
       if (options.rss === 'deleted') {
