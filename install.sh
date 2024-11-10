@@ -11,7 +11,7 @@ bash nodesource_setup.sh
 
 apt update
 
-apt install bash git nodejs redis-server npm -y
+apt install bash git nodejs redis-server -y
 
 systemctl enable redis-server
 
