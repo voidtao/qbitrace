@@ -96,43 +96,6 @@ class Slack {
     await this.pushSlack(title, desp);
   };
 
-  async selectTorrentError (alias, wish, note) {
-    const title = `豆瓣搜索种子失败 - ${wish.name}`;
-    let desp = `*豆瓣账号*: ${alias}\n` +
-      `*搜索项目*: ${wish.name}\n` +
-      `*当前时间*: ${moment().format('YYYY-MM-DD HH:mm:ss')}\n`;
-    if (note) {
-      desp += note;
-    } else {
-      desp += wish.episodes ? `*进度信息*: 已完成至 ${wish.episodeNow} 集 / 全 ${wish.episodes} 集` : '';
-    }
-    await this.pushSlack(title, desp);
-  };
-
-  async startRefreshWish (key) {
-    const title = `刷新豆瓣任务 - ${key.split('/')[0].trim()}`;
-    const desp = `*信息*: ${key}\n` +
-      `*当前时间*: ${moment().format('YYYY-MM-DD HH:mm:ss')}\n`;
-    await this.pushSlack(title, desp);
-  };
-
-  async startRefreshWishError (key) {
-    const title = '刷新想看列表失败';
-    const desp = `信息: ${key}\n` +
-      `*当前时间*: ${moment().format('YYYY-MM-DD HH:mm:ss')}\n`;
-    await this.pushSlack(title, desp);
-  };
-
-  async torrentFinish (note) {
-    const wish = note.wish;
-    const title = `种子已完成 - ${wish.name}`;
-    let desp = `*${wish.name}*\n` +
-      `*当前时间*: ${moment().format('YYYY-MM-DD HH:mm:ss')}\n`;
-    desp += `*种子信息*: ${note.torrent.site} / ${note.torrent.title}`;
-    desp += wish.episodes ? `\n*进度信息*: 已完成至 ${wish.episodeNow} 集 / 全 ${wish.episodes} 集` : '';
-    await this.pushSlack(title, desp, wish.poster);
-  };
-
   async addTorrentError (rss, client, torrent) {
     const title = `添加种子失败 - ${rss.alias}`;
     const desp = `*RSS 任务*: ${rss.alias}\n` +
@@ -229,23 +192,6 @@ class Slack {
     await this.pushSlack(title, desp);
   };
 
-  async scrapeTorrent (alias, torrentName, scrapedName) {
-    const title = `种子识别成功 - ${scrapedName}`;
-    const desp = `*当前时间*: ${moment().format('YYYY-MM-DD HH:mm:ss')}\n*监控分类*: ${alias}\n*种子名称*: ${torrentName}\n*识别名称*: ${scrapedName}`;
-    await this.pushSlack(title, desp);
-  };
-
-  async scrapeTorrentFailed (alias, torrentName, note) {
-    const title = '种子识别失败';
-    let desp = `*当前时间*: ${moment().format('YYYY-MM-DD HH:mm:ss')}\n` +
-      `*监控分类*: ${alias}\n` +
-      `*种子名称*: ${torrentName}`;
-    if (note) {
-      desp += `\n错误信息: ${note}`;
-    }
-    await this.pushSlack(title, desp);
-  };
-
   async getMaindataError (client) {
     const title = `获取下载器信息失败 - ${client.alias}`;
     const desp = `*当前时间*: ${moment().format('YYYY-MM-DD HH:mm:ss')}\n` +
@@ -259,12 +205,6 @@ class Slack {
     const desp = `*当前时间*: ${moment().format('YYYY-MM-DD HH:mm:ss')}\n` +
       `*下载器名*: ${client.alias}\n` +
       `*剩余空间*: ${util.formatSize(client.maindata.freeSpaceOnDisk)}`;
-    await this.pushSlack(title, desp);
-  };
-
-  async selectWish (note) {
-    const title = '选择想看';
-    const desp = note;
     await this.pushSlack(title, desp);
   };
 

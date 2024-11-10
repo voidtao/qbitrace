@@ -93,50 +93,6 @@ class Telegram {
     await this.pushTelegram(title, desp);
   };
 
-  async selectTorrentError (alias, wish, note) {
-    const title = `豆瓣搜索种子失败 - ${wish.name}`;
-    let desp = `豆瓣账号: ${alias}\n` +
-      `搜索项目: ${wish.name}\n` +
-      `当前时间: ${moment().format('YYYY-MM-DD HH:mm:ss')}\n`;
-    if (note) {
-      desp += note;
-    } else {
-      desp += wish.episodes ? `无匹配结果或暂未更新 / 已完成至 ${wish.episodeNow} 集 / 全 ${wish.episodes} 集` : '无匹配结果或暂未更新';
-    }
-    await this.pushTelegram(title, desp);
-  };
-
-  async startRefreshWish (key) {
-    const title = `刷新想看任务 - ${key.split('/')[0].trim()}`;
-    const desp = `信息: ${key}\n` +
-      `当前时间: ${moment().format('YYYY-MM-DD HH:mm:ss')}\n`;
-    await this.pushTelegram(title, desp);
-  };
-
-  async startRefreshWishError (key) {
-    const title = '刷新想看列表失败';
-    const desp = `信息: ${key}\n` +
-      `当前时间: ${moment().format('YYYY-MM-DD HH:mm:ss')}\n`;
-    await this.pushTelegram(title, desp);
-  };
-
-  async torrentFinish (note) {
-    const wish = note.wish;
-    const title = `种子已完成 - ${wish.name}`;
-    let desp = `${wish.name}\n` +
-      `当前时间: ${moment().format('YYYY-MM-DD HH:mm:ss')}\n`;
-    desp += `种子信息: ${note.torrent.site} / ${note.torrent.title}`;
-    desp += wish.episodes ? ` / 已完成至 ${wish.episodeNow} 集 / 全 ${wish.episodes} 集\n` : '\n';
-    desp += `影视名称: ${wish.name}\n` +
-      `年份地区: ${wish.year} / ${wish.area}\n` +
-      `主创团队: ${wish.mainCreator}\n` +
-      `单集片长: ${wish.length}\n` +
-      `语言: ${wish.language}\n` +
-      `分类: ${wish.category}\n` +
-      `简介: ${wish.desc.split('\n')}`;
-    await this.pushTelegram(title, desp);
-  };
-
   async addTorrentError (rss, client, torrent) {
     const title = `添加种子失败 - ${rss.alias}`;
     const desp = `RSS 任务: ${rss.alias}\n` +
@@ -230,23 +186,6 @@ class Telegram {
     const desp = `当前时间: ${moment().format('YYYY-MM-DD HH:mm:ss')}\n` +
       `下载器名: ${client.alias}\n` +
       `附加信息: ${message}`;
-    await this.pushTelegram(title, desp);
-  };
-
-  async scrapeTorrent (alias, torrentName, scrapedName) {
-    const title = `种子识别成功 - ${scrapedName}`;
-    const desp = `当前时间: ${moment().format('YYYY-MM-DD HH:mm:ss')}\n监控分类: ${alias}\n种子名称: ${torrentName}\n识别名称: ${scrapedName}`;
-    await this.pushTelegram(title, desp);
-  };
-
-  async scrapeTorrentFailed (alias, torrentName, note) {
-    const title = '种子识别失败';
-    let desp = `当前时间: ${moment().format('YYYY-MM-DD HH:mm:ss')}\n` +
-      `监控分类: ${alias}\n` +
-      `种子名称: ${torrentName}`;
-    if (note) {
-      desp += `\n错误信息: ${note}`;
-    }
     await this.pushTelegram(title, desp);
   };
 

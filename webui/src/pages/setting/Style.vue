@@ -69,9 +69,6 @@ export default {
           key: 'downloader',
           text: '客户端'
         }, {
-          key: 'server',
-          text: '服务器'
-        }, {
           key: 'tracker',
           text: 'Tracker 统计'
         }

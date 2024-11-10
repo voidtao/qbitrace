@@ -277,30 +277,6 @@ export default {
         }, {
           key: 'spaceAlarm',
           value: '空间警告'
-        }, {
-          key: 'selectWish',
-          value: '选择想看 (微信交互)'
-        }, {
-          key: 'torrentFinish',
-          value: '追剧种子已完成'
-        }, {
-          key: 'selectTorrentError',
-          value: '追剧搜索种子失败'
-        }, {
-          key: 'startRefreshWish',
-          value: '刷新追剧任务'
-        }, {
-          key: 'startRefreshWishError',
-          value: '刷新追剧任务失败'
-        }, {
-          key: 'scrapeTorrent',
-          value: '识别种子'
-        }, {
-          key: 'scrapeTorrentFailed',
-          value: '识别种子失败'
-        }, {
-          key: 'finish',
-          value: '追剧种子完成'
         }
       ],
       defaultNotification: {

@@ -128,36 +128,6 @@ class Push {
     await this.doRequest('spaceAlarm', args);
   }
 
-  async selectWish (...args) {
-    await this.doRequest('selectWish', args);
-  };
-
-  async torrentFinish (...args) {
-    await this.doRequest('torrentFinish', args);
-  };
-
-  async selectTorrentError (...args) {
-    await this.doRequest('selectTorrentError', args);
-  };
-
-  async startRefreshWish (...args) {
-    await this.doRequest('startRefreshWish', args);
-  };
-
-  async startRefreshWishError (...args) {
-    this.errorCount += 1;
-    await this.doRequest('startRefreshWishError', args);
-  };
-
-  async scrapeTorrent (...args) {
-    await this.doRequest('scrapeTorrent', args);
-  }
-
-  async scrapeTorrentFailed (...args) {
-    this.errorCount += 1;
-    await this.doRequest('scrapeTorrentFailed', args);
-  }
-
   async pushTelegram (...args) {
     await this.doRequest('pushTelegram', args);
   }

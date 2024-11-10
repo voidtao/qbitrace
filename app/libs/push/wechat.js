@@ -174,48 +174,6 @@ class Wechat {
     await this.pushWeChat(text, desp);
   };
 
-  async selectTorrentError (alias, wish, note) {
-    const text = '豆瓣选种失败 ' + moment().format('YYYY-MM-DD HH:mm:ss');
-    let desp = `豆瓣账号: ${alias}\n${wish.name}\n`;
-    if (note) {
-      desp += note;
-    } else {
-      desp += wish.episodes ? `无匹配结果或暂未更新 / 已完成至 ${wish.episodeNow} 集 / 全 ${wish.episodes} 集` : '无匹配结果或暂未更新';
-    }
-    await this.pushWeChat(text, desp);
-  };
-
-  async selectWish (note) {
-    const text = '选择想看 ' + moment().format('YYYY-MM-DD HH:mm:ss');
-    let desp = note;
-    if (this.type === 'telegram') {
-      desp = '```\n' + desp + '\n```';
-      desp = '\\#选择想看\n' + desp;
-    }
-    await this.pushWeChat(text, desp);
-  };
-
-  async startRefreshWish (key) {
-    const text = '刷新想看任务 ' + moment().format('YYYY-MM-DD HH:mm:ss');
-    const desp = `信息: ${key}\n`;
-    await this.pushWeChat(text, desp);
-  };
-
-  async startRefreshWishError (key) {
-    const text = '刷新想看任务失败 ' + moment().format('YYYY-MM-DD HH:mm:ss');
-    const desp = `信息: ${key}\n`;
-    await this.pushWeChat(text, desp);
-  };
-
-  async torrentFinish (note) {
-    const text = '种子已完成 ' + moment().format('YYYY-MM-DD HH:mm:ss');
-    let desp = `${note.wish.name}\n`;
-    desp += `${note.torrent.site} / ${note.torrent.title}`;
-    desp += note.wish.episodes ? ` / 已完成至 ${note.wish.episodeNow} 集 / 全 ${note.wish.episodes} 集\n` : '\n';
-    desp += `${note.wish.name} / ${note.wish.year} / ${note.wish.area} / ${note.wish.mainCreator} / ${note.wish.language} / ${note.wish.length} / ${note.wish.category}\n${note.wish.desc.split('\n')[0]}`;
-    await this.pushWeChat(text, desp, note.wish.poster);
-  };
-
   async addTorrentError (rss, client, torrent) {
     const text = '添加种子失败 ' + moment().format('YYYY-MM-DD HH:mm:ss');
     const desp = `Rss 任务: ${rss.alias}\n` +
@@ -303,21 +261,6 @@ class Wechat {
     const text = '下载器登录失败 ' + moment().format('YYYY-MM-DD HH:mm:ss');
     const desp = `下载器名: ${client.alias}\n` +
       `附加信息: ${message}`;
-    await this.pushWeChat(text, desp);
-  }
-
-  async scrapeTorrent (alias, torrentName, scrapedName) {
-    const text = '种子识别 ' + moment().format('YYYY-MM-DD HH:mm:ss');
-    const desp = `监控分类: ${alias}\n种子名称: ${torrentName}\n识别名称: ${scrapedName}`;
-    await this.pushWeChat(text, desp);
-  }
-
-  async scrapeTorrentFailed (alias, torrentName, note) {
-    const text = '种子识别失败 ' + moment().format('YYYY-MM-DD HH:mm:ss');
-    let desp = `监控分类: ${alias}\n种子名称: ${torrentName}`;
-    if (note) {
-      desp += `\n错误信息: ${note}`;
-    }
     await this.pushWeChat(text, desp);
   }
 

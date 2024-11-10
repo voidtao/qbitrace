@@ -40,10 +40,6 @@ class Webhook {
     await this.pushWebhook('rss.torrent.add', { rss, client, torrent });
   };
 
-  async selectTorrentError (alias, wish, note) {
-    await this.pushWebhook('douban.select.error', { alias, wish, note });
-  };
-
   async addDoubanTorrent (client, torrent, rule, wish) {
     await this.pushWebhook('douban.select.add', { client, torrent, rule, wish });
   };
@@ -56,20 +52,8 @@ class Webhook {
     await this.pushWebhook('douban.task.add', { alias, wishes });
   };
 
-  async startRefreshWish (key) {
-    await this.pushWebhook('douban.wish.refresh.start', { key });
-  };
-
-  async startRefreshWishError (key) {
-    await this.pushWebhook('douban.wish.refresh.error', { key });
-  };
-
   async addDoubanWish (alias, wish) {
     await this.pushWebhook('douban.wish.add', { alias, wish });
-  };
-
-  async torrentFinish (note) {
-    await this.pushWebhook('client.torrent.finish', { note });
   };
 
   async addTorrentError (rss, client, torrent) {
@@ -102,14 +86,6 @@ class Webhook {
 
   async clientLoginError (client, message) {
     await this.pushWebhook('client.connect.error', { client, message });
-  };
-
-  async scrapeTorrent (alias, torrentName, scrapedName) {
-    await this.pushWebhook('watch.scrape.torrent', { alias, torrentName, scrapedName });
-  };
-
-  async scrapeTorrentFailed (alias, torrentName, note) {
-    await this.pushWebhook('watch.scrape.torrent.error', { alias, torrentName, note });
   };
 
   async getMaindataError (client) {
