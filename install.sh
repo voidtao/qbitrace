@@ -3,7 +3,7 @@
 # 安装node和redis
 apt update&&apt upgrade -y
 
-apt install lsb-release curl gpg
+apt install lsb-release curl gpg -y
 
 curl -fsSL https://deb.nodesource.com/setup_22.x -o nodesource_setup.sh
 
