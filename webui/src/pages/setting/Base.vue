@@ -22,7 +22,7 @@
         <a-form-item
           label="日志级别"
           name="loggerLevel"
-          extra="选择日志记录的最低级别, 默认情况下建议仅选择 INFO, 重启后生效">
+          extra="选择日志记录的最低级别, qbitrace默认记录所有日志, 重启后生效">
           <a-select size="small" v-model:value="setting.loggerLevel"  >
             <a-select-option value="info">INFO</a-select-option>
             <a-select-option value="debug">DEBUG</a-select-option>

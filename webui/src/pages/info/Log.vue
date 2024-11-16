@@ -17,7 +17,6 @@
           <a-select size="small" v-model:value="type" @change="getLog">
             <a-select-option value="info">信息</a-select-option>
             <a-select-option value="sc">定时脚本</a-select-option>
-            <a-select-option value="sc-debug">定时脚本调试</a-select-option>
             <a-select-option value="error">错误</a-select-option>
             <a-select-option value="debug">调试</a-select-option>
             <a-select-option value="access">跟踪</a-select-option>
