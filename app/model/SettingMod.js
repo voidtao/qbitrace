@@ -242,6 +242,13 @@ class SettingMod {
     global.domains = options.domains || '';
     return '保存成功';
   };
+
+  async clearHistory () {
+    await util.runRecord('delete from torrent_flow;');
+    await util.runRecord('delete from torrents;');
+    await util.runRecord('delete from tracker_flow;');
+    return '删除成功';
+  };
 }
 
 module.exports = SettingMod;
