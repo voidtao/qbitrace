@@ -23,6 +23,12 @@
         <template v-if="column.dataIndex === 'allTimeUpload'">
             {{ $formatSize(record.allTimeUpload) }} / {{ $formatSize(record.allTimeDownload) }}
         </template>
+        <template v-if="column.dataIndex === 'usedSpace'">
+            {{ $formatSize(record.usedSpace) }}
+        </template>
+        <template v-if="column.dataIndex === 'freeSpaceOnDisk'">
+            {{ $formatSize(record.freeSpaceOnDisk) }}
+        </template>
       </template>
     </a-table>
     <a-divider></a-divider>
@@ -33,6 +39,7 @@
       :loading="loading"
       :data-source="runInfo.perTrackerToday.filter(item => item.tracker)"
       :scroll="{ x: 320 }"
+      :pagination="{ pageSize: 20 }"
     >
       <template #title>
         <span style="font-size: 16px; font-weight: bold;">今日数据</span>
@@ -77,7 +84,7 @@ export default {
       }, {
         title: '实时速度',
         dataIndex: 'speed',
-        width: 48,
+        width: 32,
         sorter: (a, b) => a.uploadSpeed - b.uploadSpeed
       }, {
         title: '当前任务',
@@ -87,8 +94,18 @@ export default {
       }, {
         title: '累计数据',
         dataIndex: 'allTimeUpload',
-        width: 64,
+        width: 48,
         sorter: (a, b) => a.allTimeUpload - b.allTimeUpload
+      }, {
+        title: '做种大小',
+        dataIndex: 'usedSpace',
+        width: 32,
+        sorter: (a, b) => a.usedSpace - b.usedSpace
+      }, {
+        title: '剩余空间',
+        dataIndex: 'freeSpaceOnDisk',
+        width: 32,
+        sorter: (a, b) => a.freeSpaceOnDisk - b.freeSpaceOnDisk
       }
     ];
     const trackerColumns = [
