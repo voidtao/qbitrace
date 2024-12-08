@@ -43,6 +43,7 @@ mkdir -p \
 cp app/config_backup/sql.db storage/db/sql.db
 cp app/config_backup/*.yaml app/config/
 cp app/config_backup/setting.json storage/data/
+cp app/config_backup/setting.json storage/data/link-mapping.json
 cp app/config_backup/torrent-history-setting.json storage/data/setting/
 cp app/config_backup/torrent-mix-setting.json storage/data/setting/
 cp app/config_backup/site-push-setting.json storage/data/setting/
