@@ -9,6 +9,7 @@
       :loading="loading"
       :data-source="downloaders"
       :scroll="{ x: 640 }"
+      :pagination="{ pageSize: 20 }"
     >
       <template #title>
         <span style="font-size: 16px; font-weight: bold;">下载器数据</span>
@@ -39,7 +40,7 @@
       :loading="loading"
       :data-source="runInfo.perTrackerToday.filter(item => item.tracker)"
       :scroll="{ x: 320 }"
-      :pagination="{ pageSize: 20 }"
+      :pagination="{ pageSize: 10 }"
     >
       <template #title>
         <span style="font-size: 16px; font-weight: bold;">今日数据</span>
@@ -84,12 +85,12 @@ export default {
       }, {
         title: '实时速度',
         dataIndex: 'speed',
-        width: 32,
+        width: 48,
         sorter: (a, b) => a.uploadSpeed - b.uploadSpeed
       }, {
         title: '当前任务',
         dataIndex: 'seedingCount',
-        width: 48,
+        width: 32,
         sorter: (a, b) => a.seedingCount - b.seedingCount
       }, {
         title: '累计数据',
