@@ -1,3 +1,4 @@
+require('newrelic');
 const express = require('express');
 const moment = require('moment');
 const fs = require('fs');

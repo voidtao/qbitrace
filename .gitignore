@@ -6,3 +6,4 @@ develop
 app/redis.conf
 dump.rdb
 nodesource_setup.sh
+newrelic_agent.log

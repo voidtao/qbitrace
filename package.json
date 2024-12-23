@@ -7,7 +7,7 @@
     "app": "export HTTPS_PORT=4443 && export HTTPS_ENABLE=true && export DISPLAY=:99 && export PORT=4000 && nodemon app/app.js",
     "eslint": "eslint app"
   },
-  "author": "",
+  "author": "tong",
   "license": "MIT",
   "dependencies": {
     "bencode": "^2.0.3",
@@ -26,6 +26,7 @@
     "log4js": "^6.9.1",
     "md5-node": "^1.0.1",
     "moment": "^2.30.1",
+    "newrelic": "^12.9.0",
     "node-cron": "~3.0.3",
     "puppeteer": "^22.14.0",
     "puppeteer-extra": "^3.3.6",
