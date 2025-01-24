@@ -126,18 +126,22 @@ const _getTorrentsPuTao = async function (rssUrl) {
       url: '',
       link: ''
     };
-    const size = items[i].title[0].match(/\[\d+\.\d+ [KMGT]B\]/)[0]?.match(/\d+\.\d+ [KMGT]B/)[0];
+    const size = items[i].title[0].match(/\[\d+\.\d+ [KMGT]B\]/)?.[0].match(/\d+\.\d+ [KMGT]B/)?.[0];
     const map = {
       KB: 1000,
       MB: 1000 * 1000,
       GB: 1000 * 1000 * 1000,
       TB: 1000 * 1000 * 1000 * 1000
     };
-    torrent.size = size.match(/(\d*\.\d*|\d*) (GB|MB|TB|KB)/);
-    torrent.size = parseFloat(torrent.size[1]) * map[torrent.size[2]];
+    const matchResult = size?.match(/(\d*\.\d*|\d*) (GB|MB|TB|KB)/);
+    if (matchResult) {
+      torrent.size = parseFloat(matchResult[1]) * map[matchResult[2]];
+    } else {
+      torrent.size = 0;
+    }
     torrent.name = items[i].title[0];
     const link = items[i].link[0];
-    torrent.link = link.substring(0, link.indexOf('&passkey='));
+    torrent.link = link.substring(0, link.indexOf('&passkey=')).replace('download', 'details');
     torrent.id = torrent.link.substring(link.indexOf('?id=') + 4);
     torrent.url = link;
     torrent.hash = items[i].guid[0]._ || items[i].guid[0];
@@ -170,7 +174,7 @@ const _getTorrentsFileList = async function (rssUrl) {
     const regRes = size.match(/Size: (\d*\.\d*|\d*) (GB|MB|TB|KB)/);
     torrent.size = parseFloat(regRes[1]) * map[regRes[2]];
     torrent.name = items[i].title[0].replace(/\n/, ' ');
-    const link = items[i].link[0].match(/https:\/\/filelist.io\/download\.php\?id=\d*/)[0].replace('download', 'detailes');
+    const link = items[i].link[0].match(/https:\/\/filelist.io\/download\.php\?id=\d*/)[0].replace('download', 'details');
     torrent.link = link;
     torrent.id = link.substring(link.indexOf('?id=') + 4);
     torrent.hash = 'fakehash' + torrent.id + 'fakehash';
