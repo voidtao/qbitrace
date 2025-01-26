@@ -133,28 +133,3 @@ exports.getMaindata = async function (clientUrl, cookie) {
   maindata.downloadSpeed = sessionStat.downloadSpeed;
   return maindata;
 };
-
-exports.getFiles = async (clientUrl, cookie, id) => {
-  const message = {
-    method: 'POST',
-    url: clientUrl + '/transmission/rpc',
-    headers: {
-      Authorization: cookie.basic,
-      'X-Transmission-Session-Id': cookie.sessionId
-    },
-    form: JSON.stringify({
-      method: 'torrent-get',
-      arguments: {
-        fields:
-        [
-          'files'
-        ],
-        ids: +id
-      },
-      tag: ''
-    })
-  };
-  const res = await util.requestPromise(message);
-  const files = JSON.parse(res.body).arguments.torrents[0].files.map(item => { return { name: item.name, size: item.length }; });
-  return files;
-};

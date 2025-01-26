@@ -163,28 +163,6 @@ exports.pauseTorrent = async (clientUrl, cookie, hash) => {
   return res;
 };
 
-exports.getTrackerList = async (clientUrl, cookie, hash) => {
-  const message = {
-    url: clientUrl + `/api/v2/torrents/trackers?hash=${hash}`,
-    headers: {
-      cookie
-    }
-  };
-  const res = await util.requestPromise(message);
-  return res;
-};
-
-exports.getFiles = async (clientUrl, cookie, hash) => {
-  const message = {
-    url: clientUrl + `/api/v2/torrents/files?hash=${hash}`,
-    headers: {
-      cookie
-    }
-  };
-  const res = await util.requestPromise(message);
-  return JSON.parse(res.body);
-};
-
 exports.getLogs = async (clientUrl, cookie) => {
   const message = {
     url: clientUrl + '/api/v2/log/main',

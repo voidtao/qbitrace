@@ -61,12 +61,8 @@ class Client {
       }
     }
     this.recordJob = cron.schedule('20 */5 * * * *', () => this.record());
-    if (client.type === 'qBittorrent') {
-      this.trackerSyncJob = cron.schedule('*/10 * * * *', () => this.trackerSync());
-    }
     this.messageId = 0;
     this.errorCount = 0;
-    this.trackerStatus = {};
     this.pausedTorrentHashes = [];
     this.getMaindata();
     this.avgUploadSpeed = 0;
@@ -174,10 +170,6 @@ class Client {
     logger.info('销毁下载器实例', this.alias);
     this.maindataJob.stop();
     delete this.maindataJob;
-    if (this.trackerSyncJob) {
-      this.trackerSyncJob.stop();
-      delete this.trackerSyncJob;
-    }
     if (this.reannounceJob) {
       this.reannounceJob.stop();
       delete this.reannounceJob;
@@ -278,7 +270,6 @@ class Client {
       this.maindata.seedingCount = 0;
       this.maindata.usedSpace = 0;
       this.maindata.torrents.forEach((item) => {
-        item.trackerStatus = this.trackerStatus[item.hash] || '';
         this.maindata.usedSpace += item.completed;
         if (statusLeeching.indexOf(item.state) !== -1) {
           this.maindata.leechingCount += 1;
@@ -521,52 +512,12 @@ class Client {
     }
   }
 
-  async trackerSync () {
-    if (!this.maindata || !this.maindata.torrents || this.maindata.torrents.length === 0) return;
-    const torrents = this.maindata.torrents;
-    for (const torrent of torrents) {
-      try {
-        if (await redis.get(`qbitrace:torrent_tracker:${torrent.hash}`)) continue;
-        const sqlRes = await util.getRecord('SELECT * FROM torrents WHERE hash = ?', [torrent.hash]);
-        if (sqlRes && !!sqlRes.delete_time) {
-          await redis.set(`qbitrace:torrent_tracker:${torrent.hash}`, 1);
-          continue;
-        };
-        const { statusCode, body } = await this.client.getTrackerList(this.clientUrl, this.cookie, torrent.hash);
-        if (statusCode === 404) {
-          logger.debug('下载器', this.alias, '种子', torrent.name, 'tracker 状态同步 404');
-          continue;
-        }
-        if (statusCode !== 200) {
-          throw new Error('状态码: ' + statusCode);
-        }
-        const trackerList = JSON.parse(body);
-        this.trackerStatus[torrent.hash] = trackerList.filter(i => i.url.indexOf('**') === -1).map(i => i.msg).join('');
-      } catch (e) {
-        logger.error('下载器', this.alias, '种子', torrent.name, 'tracker 状态同步失败, 报错如下:\n', e);
-      }
-    }
-  };
-
   async pushSpaceAlarm () {
     if (!this.spaceAlarm || this.alarmSpace < this.maindata.freeSpaceOnDisk) return;
     try {
       await this.ntf.spaceAlarm(this);
     } catch (e) {
       logger.error('下载器', this.alias, '\n', e);
-    }
-  }
-
-  async getFiles (hash) {
-    if (this._client.type === 'qBittorrent') {
-      return await this.client.getFiles(this.clientUrl, this.cookie, hash);
-    }
-    if (this._client.type === 'Transmission') {
-      for (const t of this.maindata.torrents) {
-        if (t.hash === hash) {
-          return await this.client.getFiles(this.clientUrl, this.cookie, t.id);
-        }
-      }
     }
   }
 

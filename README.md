@@ -3,7 +3,9 @@ https://github.com/vertex-app/vertex
 原始项目的开源许可证为mit，具体参见LICENSE.origin.txt
 ## 相较于原版的改动
 
-1. 改动了 tracker 信息的获取机制（该改动会增大 qbittorrent 负担，并未合并到原版内）。
+~~1. 改动了 tracker 信息的获取机制（该改动会增大 qbittorrent 负担，并未合并到原版内）。~~
+1.把trackersync相关的功能直接删了，最开始的vertex功能是遍历所有vt添加的种子，后来我把它改成遍历所有qbittorrent存在的种子。
+现在想了想这个功能对qbittorrent的负担还是太大，作用目前只有删除死种，周期很难和一般删种任务同步，不如直接改为外部python脚本定期任务。
 
 2. 更新所有 package 最新版本，以下除外：
 

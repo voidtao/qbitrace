@@ -305,9 +305,6 @@ export default {
         name: '站点域名',
         key: 'tracker'
       }, {
-        name: '返回信息',
-        key: 'trackerStatus'
-      }, {
         name: '已完成量',
         key: 'completed'
       }, {
