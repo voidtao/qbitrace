@@ -65,10 +65,6 @@ class UserMod {
         path: '/tool/proxy',
         icon: ['fas', 'globe']
       }, {
-        title: '清除历史记录',
-        path: '/tool/clearHistory',
-        icon: ['fas', 'trash']
-      }, {
         title: '下载器日志',
         path: '/tool/clientLog',
         icon: ['fas', 'note-sticky']

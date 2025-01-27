@@ -1,39 +1,60 @@
 ## 原始项目
-https://github.com/vertex-app/vertex
-原始项目的开源许可证为mit，具体参见LICENSE.origin.txt
+
+[vertex 原始仓库](https://github.com/vertex-app/vertex)  
+开源许可证：MIT
+---
+
 ## 相较于原版的改动
 
-~~1. 改动了 tracker 信息的获取机制（该改动会增大 qbittorrent 负担，并未合并到原版内）。~~
-1.把trackersync相关的功能直接删了，最开始的vertex功能是遍历所有vt添加的种子，后来我把它改成遍历所有qbittorrent存在的种子。
-现在想了想这个功能对qbittorrent的负担还是太大，作用目前只有删除死种，周期很难和一般删种任务同步，不如直接改为外部python脚本定期任务。
+1. **删除 trackersync 相关功能**  
+   - 原先为遍历所有 vt 添加的种子  
+   - 后改为遍历所有qbittorrent种子，实际负担过大
+   - 现直接删了，建议改为外部 Python 脚本定期任务处理
 
-2. 更新所有 package 最新版本，以下除外：
+2. **更新所有软件包至最新版本，以下除外：**  
+   - `ant-design-vue` 4.x 废弃了 less，需要大量重写和测试  
+   - `bencode` 2.0.3 后转向 esm，兼容性测试工作量大  
+   - `redis`、`connect-redis` 新调用方式，需要重写和测试  
+   - `eslint` 9.x 改动配置文件，自动转换效果差  
+   - `less`、`less-loader` 升级后会出现内联 JS 问题，重新编译不值得
 
-   -  `ant-design-vue` 4.x 版本放弃了 less，重写与测试工作量较大。
-   -  `bencode` 该模块在 2.0.3 之后从 commonjs 转向 esm，模块混用测试工作量较大。
-   -  `redis` `connect-redis` 这两个包都把调用方式改了，重写与测试工作量较大。
-   -  `eslint` `eslint9` 更改了配置文件，自动转换效果不好，重写与测试工作量较大。
-   -  `less` `less-loader` 升级版本会出现内联 javascript 的问题，因为 `ant-design-vue` 已经不采用 less，重写与测试不值得。
+3. **部分结构调整，符合 ECMA 14 规范**
 
-3. 改动了部分结构，使其符合 ecma14 规范。
+4. **默认启用物理机部署**  
+   - 便于与 Python 脚本交互
 
-4. 默认改为物理机部署，以方便和python脚本交互。
+5. **默认监听 127.0.0.1**  
+   - 强制反向代理
 
-5. 默认监听 127.0.0.1，强制反向代理。
+6. **删除其余可替代功能**
 
-6. 删除其余可替代的功能。
+7. **调整数据存储方式**  
+   - 便于备份与还原
 
-7. 改动了相关的数据存储方式，便于备份还原。
+8. **删除清除历史记录功能**  
+   - 可通过定时脚本实现
+
+---
 
 ## 计划的修改
 
+1. **更改数据结构，改为redis存储删种数据，sqllite存储rss历史数据**  
+
+---
 
 ## 已知的问题
 
-1. `log4js` 的 `defaultParseCallStack error` 报错 [log4js-node/log4js-node#1413](https://github.com/log4js-node/log4js-node/issues/1413)
-2. pt.soulvoice.club 在原始代码中，获取rss时需要带上cookie，我删除了site模块，没号进行测试，因而处理办法为硬编码cookie进代码，填写位置为app/libs/rss.js（主要现在对代码全局还不熟悉，不然直接使用抓免中填写的cookie应该问题不大）
+1. `log4js` 的 `defaultParseCallStack error`  
+   参见 [log4js-node #1413](https://github.com/log4js-node/log4js-node/issues/1413)
+
+2. `pt.soulvoice.club` 获取 RSS 时需带上 Cookie  
+   - 删除 site 模块且无号可测试  
+   - 目前硬编码 Cookie 至 `app/libs/rss.js`
+   - 理论上可以改为填写抓免栏的 Cookie，然后取消勾选抓免功能。
+
+---
 
 ## 不会提供的功能
 
-1. moviepilot ptpp autobrr所含有的相关功能，这些软件已高度发达到难以替代。
-
+1. `moviepilot`、`ptpp`、`autobrr` 中的相关功能  
+   - 这些软件已高度成熟，难以替代

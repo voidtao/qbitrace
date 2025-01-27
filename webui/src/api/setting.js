@@ -48,9 +48,5 @@ export default {
   saveProxy: async (body) => {
     const url = '/api/setting/saveProxy';
     return await post(url, body);
-  },
-  clearHistory: async () => {
-    const url = '/api/setting/clearHistory';
-    return await post(url, {});
   }
 };

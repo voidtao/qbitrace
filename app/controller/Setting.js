@@ -385,21 +385,5 @@ class Setting {
       });
     }
   }
-  
-  async clearHistory (req, res) {
-    try {
-      const r = await settingMod.clearHistory(req.body);
-      res.send({
-        success: true,
-        message: r
-      });
-    } catch (e) {
-      logger.error(e);
-      res.send({
-        success: false,
-        message: e.message
-      });
-    }
-  }
 }
 module.exports = Setting;

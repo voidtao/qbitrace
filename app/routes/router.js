@@ -182,8 +182,6 @@ module.exports = function (app, express, router) {
   router.get('/setting/import', ctrl.Setting.import);
   router.get('/setting/getProxy', ctrl.Setting.getProxy);
   router.post('/setting/saveProxy', ctrl.Setting.saveProxy);
-  router.post('/setting/clearHistory', ctrl.Setting.clearHistory);
-
 
 
   app.use('/api', router);

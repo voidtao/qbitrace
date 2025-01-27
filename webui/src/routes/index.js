@@ -13,7 +13,6 @@ import ToolNetworkTest from '@/pages/tool/NetworkTest';
 import ToolHosts from '@/pages/tool/Hosts';
 import ToolProxy from '@/pages/tool/Proxy';
 import ToolClientLog from '@/pages/tool/ClientLog';
-import ToolClearHistory from '@/pages/tool/ClearHistory';
 import InfoInfo from '@/pages/info/Info';
 import InfoLog from '@/pages/info/Log';
 import SettingBase from '@/pages/setting/Base';
@@ -308,21 +307,6 @@ const toolProxyRoute = {
   ]
 };
 
-const toolClearHistory = {
-  path: 'tool/clearHistory',
-  component: Layout,
-  redirect: 'tool/clearHistory',
-  children: [
-    {
-      path: '',
-      component: ToolClearHistory,
-      meta: {
-        title: '清除历史记录 - 常用工具'
-      }
-    }
-  ]
-};
-
 const toolClientLogRoute = {
   path: 'tool/clientLog',
   component: Layout,
@@ -357,7 +341,6 @@ const routes = [
       toolNetworkTestRoute,
       toolHostsRoute,
       toolProxyRoute,
-      toolClearHistory,
       toolClientLogRoute,
       settingBaseRoute,
       settingStyleRoute,
