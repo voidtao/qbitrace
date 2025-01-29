@@ -69,20 +69,8 @@ export default {
         dataIndex: 'size',
         width: 24
       }, {
-        title: '上传流量',
-        dataIndex: 'upload',
-        width: 24
-      }, {
-        title: '下载流量',
-        dataIndex: 'download',
-        width: 24
-      }, {
         title: '记录时间',
         dataIndex: 'recordTime',
-        width: 32
-      }, {
-        title: '删除时间',
-        dataIndex: 'deleteTime',
         width: 32
       }, {
         title: '种子状态',
