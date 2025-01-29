@@ -32,43 +32,6 @@
         </template>
       </template>
     </a-table>
-    <a-divider></a-divider>
-    <a-table
-      :style="`font-size: ${isMobile() ? '12px': '14px'};`"
-      :columns="trackerColumns"
-      size="small"
-      :loading="loading"
-      :data-source="runInfo.perTrackerToday.filter(item => item.tracker)"
-      :scroll="{ x: 320 }"
-      :pagination="{ pageSize: 10 }"
-    >
-      <template #title>
-        <span style="font-size: 16px; font-weight: bold;">今日数据</span>
-      </template>
-      <template #bodyCell="{ column, record }">
-        <template v-if="['uploaded', 'downloaded'].indexOf(column.dataIndex) !== -1">
-          {{ $formatSize(record[column.dataIndex]) }}
-        </template>
-      </template>
-    </a-table>
-    <a-divider></a-divider>
-    <a-table
-      :style="`font-size: ${isMobile() ? '12px': '14px'};`"
-      :columns="trackerColumns"
-      size="small"
-      :loading="loading"
-      :data-source="runInfo.perTracker.filter(item => item.tracker)"
-      :scroll="{ x: 320 }"
-    >
-      <template #title>
-        <span style="font-size: 16px; font-weight: bold;">累计统计</span>
-      </template>
-      <template #bodyCell="{ column, record }">
-        <template v-if="['uploaded', 'downloaded'].indexOf(column.dataIndex) !== -1">
-          {{ $formatSize(record[column.dataIndex]) }}
-        </template>
-      </template>
-    </a-table>
   </div>
 </template>
 <script>
@@ -109,34 +72,10 @@ export default {
         sorter: (a, b) => a.freeSpaceOnDisk - b.freeSpaceOnDisk
       }
     ];
-    const trackerColumns = [
-      {
-        title: 'tracker',
-        dataIndex: 'tracker',
-        width: 140,
-        fixed: true,
-        sorter: (a, b) => a.tracker.localeCompare(b.tracker)
-      }, {
-        title: '上传',
-        dataIndex: 'uploaded',
-        width: 90,
-        sorter: (a, b) => a.uploaded - b.uploaded
-      }, {
-        title: '下载',
-        dataIndex: 'downloaded',
-        width: 90,
-        sorter: (a, b) => a.downloaded - b.downloaded
-      }
-    ];
     return {
       loading: false,
-      trackerColumns,
       columns,
-      downloaders: [],
-      runInfo: {
-        perTracker: [],
-        perTrackerToday: []
-      }
+      downloaders: []
     };
   },
   methods: {
@@ -145,14 +84,6 @@ export default {
         return true;
       } else {
         return false;
-      }
-    },
-    async getRunInfo () {
-      try {
-        const res = await this.$api().setting.getRunInfo();
-        this.runInfo = res.data;
-      } catch (e) {
-        await this.$message().error(e.message);
       }
     },
     async listDownloader () {
@@ -166,7 +97,6 @@ export default {
   },
   async mounted () {
     this.listDownloader();
-    this.getRunInfo();
     this.interval = setInterval(() => {
       this.listDownloader();
     }, 5000);
