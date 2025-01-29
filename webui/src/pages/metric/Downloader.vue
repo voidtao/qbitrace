@@ -1,5 +1,5 @@
 <template>
-  <div style="font-size: 24px; font-weight: bold;">下载器数据</div>
+  <div style="font-size: 24px; font-weight: bold;">qbit数据</div>
   <a-divider></a-divider>
   <div class="downloader-metric" >
     <a-table
@@ -11,9 +11,6 @@
       :scroll="{ x: 640 }"
       :pagination="{ pageSize: 20 }"
     >
-      <template #title>
-        <span style="font-size: 16px; font-weight: bold;">下载器数据</span>
-      </template>
       <template #bodyCell="{ column, record }">
         <template v-if="column.dataIndex === 'speed'">
           {{ $formatSize(record.uploadSpeed) }}/s / {{ $formatSize(record.downloadSpeed) }}/s

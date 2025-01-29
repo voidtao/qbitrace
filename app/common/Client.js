@@ -280,6 +280,8 @@ class Client {
       this.avgDownloadSpeed = maindata.downloadSpeed * 0.1 + this.avgDownloadSpeed * 0.9;
       this.avgUploadSpeed = maindata.uploadSpeed * 0.1 + this.avgUploadSpeed * 0.9;
       logger.debug('下载器', this.alias, '获取种子信息成功');
+      await util.runRecord('INSERT INTO client_q (time, clientid, upspeed, dlspeed, upcount, dlcount, usedspace, freespace) values (?, ?, ?, ?, ?, ?, ?, ?)',
+        [moment().unix(), this.id, maindata.uploadSpeed, maindata.downloadSpeed, this.maindata.seedingCount, this.maindata.leechingCount, this.maindata.usedSpace, this.maindata.freeSpaceOnDisk]);
       this.status = true;
       this.errorCount = 0;
     } catch (error) {
