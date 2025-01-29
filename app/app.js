@@ -28,16 +28,6 @@ const initPush = function () {
 };
 
 const init = function () {
-  global.clearDatabase = cron.schedule('1 0 * * *', async () => {
-    try {
-      await util.runRecord('delete from torrent_flow where time < ?', [moment().unix() - 1]);
-      await util.runRecord('delete from tracker_flow where time < ?', [moment().unix() - 7 * 24 * 3600]);
-      execSync('rm -f /tmp/qbitrace-backups-*');
-    } catch (e) {
-      logger.error(e);
-    }
-  });
-
   global.CONFIG = config;
   global.LOGGER = logger;
   global.linkMapping = JSON.parse(fs.readFileSync(path.join(__dirname, '../storage/data/link-mapping.json')));

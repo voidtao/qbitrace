@@ -274,22 +274,6 @@ class Setting {
     }
   };
 
-  async getTrackerFlowHistory (req, res) {
-    try {
-      const r = await settingMod.getTrackerFlowHistory();
-      res.send({
-        success: true,
-        data: r
-      });
-    } catch (e) {
-      logger.error(e);
-      res.send({
-        success: false,
-        message: e.message
-      });
-    }
-  }
-
   async getHosts (req, res) {
     try {
       const r = settingMod.getHosts();

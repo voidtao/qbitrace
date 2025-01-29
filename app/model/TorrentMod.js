@@ -36,7 +36,7 @@ class TorrentMod {
     }
     const total = torrentList.length;
     torrentList = torrentList.slice((options.page - 1) * options.length, options.page * options.length);
-    const res = await util.getRecords(`select link, hash from torrents where hash in ('${torrentList.map(item => item.hash).join('\',\'')}')`);
+    const res = await util.getRecords(`select link, hash from torrent_r where hash in ('${torrentList.map(item => item.hash).join('\',\'')}')`);
     const hashMap = {};
     for (const r of res) {
       hashMap[r.hash] = r.link;
@@ -115,9 +115,9 @@ class TorrentMod {
       where += ` and (name like '%${options.key}%' or record_note like '%${options.key}%')`;
     }
     const params = [options.length, index];
-    const torrents = await util.getRecords('select id, rss_id as rssId, name, size, link, record_type as recordType, record_note as recordNote, upload, download, tracker, record_time as recordTime, add_time as addTime, delete_time as deleteTime, hash from torrents ' + where + ' order by id desc limit ? offset ?',
+    const torrents = await util.getRecords('select id, rss_id as rssId, name, size, link, record_type as recordType, record_note as recordNote, record_time as recordTime, hash from torrent_r ' + where + ' order by id desc limit ? offset ?',
       params);
-    const total = (await util.getRecord('select count(*) as total from torrents ' + where)).total;
+    const total = (await util.getRecord('select count(*) as total from torrent_r ' + where)).total;
     return { torrents, total };
   }
 

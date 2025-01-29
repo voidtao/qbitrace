@@ -117,7 +117,6 @@ module.exports = function (app, express, router) {
   router.get('/downloader/list', ctrl.Client.list);
   router.get('/downloader/listTop10', ctrl.Client.listTop10);
   router.get('/downloader/listMainInfo', ctrl.Client.listMainInfo);
-  router.get('/downloader/getSpeedPerTracker', ctrl.Client.getSpeedPerTracker);
   router.get('/downloader/getLogs', ctrl.Client.getLogs);
   router.post('/downloader/add', ctrl.Client.add);
   router.post('/downloader/modify', ctrl.Client.modify);
@@ -160,7 +159,6 @@ module.exports = function (app, express, router) {
 
   router.get('/setting/get', ctrl.Setting.get);
   router.get('/setting/getRunInfo', ctrl.Setting.getRunInfo);
-  router.get('/setting/getTrackerFlowHistory', ctrl.Setting.getTrackerFlowHistory);
   router.get('/setting/getTorrentHistorySetting', ctrl.Setting.getTorrentHistorySetting);
   router.get('/setting/getTorrentMixSetting', ctrl.Setting.getTorrentMixSetting);
   router.get('/setting/getTorrentPushSetting', ctrl.Setting.getTorrentPushSetting);

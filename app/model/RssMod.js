@@ -21,7 +21,7 @@ class RssMod {
   };
 
   async deleteRecord (options) {
-    await util.runRecord('delete from torrents where id = ?', [options.id]);
+    await util.runRecord('delete from torrent_r where id = ?', [options.id]);
     return '删除 Rss 记录成功';
   };
 

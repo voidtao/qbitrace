@@ -279,20 +279,6 @@ class Client {
       });
       this.avgDownloadSpeed = maindata.downloadSpeed * 0.1 + this.avgDownloadSpeed * 0.9;
       this.avgUploadSpeed = maindata.uploadSpeed * 0.1 + this.avgUploadSpeed * 0.9;
-      /*
-      let serverSpeed;
-      if (this.sameServerClients) {
-        serverSpeed = {
-          uploadSpeed: this._sum(this.sameServerClients.map(id => global.runningClient[id].maindata.uploadSpeed)),
-          downloadSpeed: this._sum(this.sameServerClients.map(id => global.runningClient[id].maindata.downloadSpeed))
-        };
-      } else {
-        serverSpeed = {
-          uploadSpeed: this.maindata.uploadSpeed,
-          downloadSpeed: this.maindata.downloadSpeed
-        };
-      }
-      */
       logger.debug('下载器', this.alias, '获取种子信息成功');
       this.status = true;
       this.errorCount = 0;
@@ -325,8 +311,6 @@ class Client {
     if (this.maindata) {
       this.maindata.leechingCount += 1;
     }
-    await util.runRecord('insert into torrent_flow (hash, upload, download, time) values (?, ?, ?, ?)',
-      [hash, 0, 0, moment().unix() - moment().unix() % 300]);
   };
 
   async addTorrentTag (hash, tag) {
@@ -344,8 +328,6 @@ class Client {
     if (this.maindata) {
       this.maindata.leechingCount += 1;
     }
-    await util.runRecord('insert into torrent_flow (hash, upload, download, time) values (?, ?, ?, ?)',
-      [hash, 0, 0, moment().unix() - moment().unix() % 300]);
   };
 
   async reannounceTorrent (torrent) {
@@ -444,54 +426,14 @@ class Client {
           logger.info(torrent.name, '重新汇报完毕, 等待 2s');
           await util.sleep(2000);
           logger.info(torrent.name, '等待 2s 完毕, 执行删种');
-          await util.runRecord('update torrents set size = ?, tracker = ?, upload = ?, download = ?, delete_time = ?, record_note = ? where hash = ?',
-            [torrent.size, torrent.tracker, torrent.uploaded, torrent.downloaded, moment().unix(), `删种规则: ${rule.alias}`, torrent.hash]);
-          await util.runRecord('insert into torrent_flow (hash, upload, download, time) values (?, ?, ?, ?)',
-            [torrent.hash, torrent.uploaded, torrent.downloaded, moment().unix()]);
+          await util.runRecord('INSERT INTO torrent_d (hash, name, size, uploaded, downloaded, ratio, add_time, delete_time, seed_time, category, clientid, delete_rule) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',  
+            [torrent.hash, torrent.name, torrent.size, torrent.uploaded, torrent.downloaded, torrent.ratio, torrent.addedTime, moment().unix(), torrent.originProp.seeding_time, torrent.category, this.alias, `删种规则: ${rule.alias}`]);
           const deleteFiles = await this.deleteTorrent(torrent, rule);
           deletedTorrentHash.push(torrent.hash);
           if (!deleteFiles) {
             return;
           }
         }
-      }
-    }
-  };
-
-  async record () {
-    if (!this.maindata) return;
-    const torrentSet = {};
-    const now = moment().startOf('minute').unix();
-    const allTorrentLastMinute = await util.getRecords('select * from torrent_flow where time = ?', [moment().startOf('minute').subtract(5, 'minute').unix()]);
-    allTorrentLastMinute.forEach(i => {
-      torrentSet[i.hash] = i;
-    });
-    const trackerSet = {};
-    for (const torrent of this.maindata.torrents) {
-      const cache = await redis.get('qbitrace:torrent:' + torrent.hash);
-      // 0 无记录  1 种子存在  2 种子不存在
-      if (!cache) {
-        const sqlRes = await util.getRecord('SELECT * FROM torrents WHERE hash = ? and record_type = 1', [torrent.hash]);
-        await redis.set('qbitrace:torrent:' + torrent.hash, sqlRes ? 1 : 2);
-        if (!sqlRes) continue;
-      }
-      if (+cache === 2) continue;
-      await util.runRecord('update torrents set size = ?, tracker = ?, upload = ?, download = ? where hash = ?',
-        [torrent.size, torrent.tracker, torrent.uploaded, torrent.downloaded, torrent.hash]);
-      await util.runRecord('insert into torrent_flow (hash, upload, download, time) values (?, ?, ?, ?)',
-        [torrent.hash, torrent.uploaded, torrent.downloaded, now]);
-      if (!trackerSet[torrent.tracker]) trackerSet[torrent.tracker] = { upload: 0, download: 0, time: now };
-      torrentSet[torrent.hash] = torrentSet[torrent.hash] || { upload: torrent.uploaded, download: torrent.downloaded };
-      trackerSet[torrent.tracker].upload += torrent.uploaded - torrentSet[torrent.hash].upload;
-      trackerSet[torrent.tracker].download += torrent.downloaded - torrentSet[torrent.hash].download;
-    }
-    for (const key of Object.keys(trackerSet)) {
-      const tracker = trackerSet[key];
-      const record = await util.getRecord('select * from tracker_flow where tracker = ? and time = ?', [key, now]);
-      if (!record) {
-        await util.runRecord('insert into tracker_flow (tracker, upload, download, time) values (?, ?, ?, ?)', [key, tracker.upload, tracker.download, now]);
-      } else {
-        await util.runRecord('update tracker_flow set upload = upload + ?, download = download + ? where tracker = ? and time = ?', [tracker.upload, tracker.download, key, now]);
       }
     }
   };

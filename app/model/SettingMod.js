@@ -103,42 +103,19 @@ class SettingMod {
   };
 
   async getRunInfo () {
-    const { uploaded, downloaded } = (await util.getRecord('select sum(upload) as uploaded, sum(download) as downloaded from torrents'));
-    const addCountToday = (await util.getRecord('select count(*) as addCount from torrents where record_type = 1 and record_time > ?', [moment().startOf('day').unix()])).addCount;
-    const rejectCountToday = (await util.getRecord('select count(*) as rejectCount from torrents where record_type = 2 and record_time > ?', [moment().startOf('day').unix()])).rejectCount;
-    const deleteCountToday = (await util.getRecord('select count(*) as deleteCount from torrents where delete_time is not null and record_time > ?', [moment().startOf('day').unix()])).deleteCount;
-    const addCount = (await util.getRecord('select count(*) as addCount from torrents where record_type = 1')).addCount;
-    const rejectCount = (await util.getRecord('select count(*) as rejectCount from torrents where record_type = 2')).rejectCount;
-    const deleteCount = (await util.getRecord('select count(*) as deleteCount from torrents where delete_time is not null')).deleteCount;
-    const perTracker = (await util.getRecords('select sum(upload) as uploaded, sum(download) as downloaded, tracker from torrents where tracker is not null group by tracker'));
-    const perTrackerTodaySet = {};
-    let uploadedToday = 0;
-    let downloadedToday = 0;
-    const torrents = await util.getRecords('select a.hash as hash, max(a.upload) - min(a.upload) as upload,  max(a.download) - min(a.download) as download, b.tracker as tracker from torrent_flow a left join torrents b on a.hash = b.hash where a.time >= ? group by a.hash', [moment().startOf('day').unix()]);
-    for (const torrent of torrents) {
-      uploadedToday += torrent.upload;
-      downloadedToday += torrent.download;
-      if (!torrent.tracker) {
-        continue;
-      }
-      if (!perTrackerTodaySet[torrent.tracker]) {
-        perTrackerTodaySet[torrent.tracker] = { uploaded: 0, downloaded: 0 };
-      }
-      perTrackerTodaySet[torrent.tracker].uploaded += torrent.upload;
-      perTrackerTodaySet[torrent.tracker].downloaded += torrent.download;
-    }
-    const perTrackerToday = [];
-    for (const tracker of Object.keys(perTrackerTodaySet)) {
-      perTrackerToday.push({ tracker, ...perTrackerTodaySet[tracker] });
-    }
+    const { uploaded, downloaded } = (await util.getRecord('select sum(uploaded) as uploaded, sum(downloaded) as downloaded from torrent_d'));
+    const addCountToday = (await util.getRecord('select count(*) as addCount from torrent_r where record_type = 1 and record_time > ?', [moment().startOf('day').unix()])).addCount;
+    const rejectCountToday = (await util.getRecord('select count(*) as rejectCount from torrent_r where record_type = 2 and record_time > ?', [moment().startOf('day').unix()])).rejectCount;
+    const deleteCountToday = (await util.getRecord('select count(*) as deleteCount from torrent_d where delete_time > ?', [moment().startOf('day').unix()])).deleteCount;
+    const addCount = (await util.getRecord('select count(*) as addCount from torrent_r where record_type = 1')).addCount;
+    const rejectCount = (await util.getRecord('select count(*) as rejectCount from torrent_r where record_type = 2')).rejectCount;
+    const deleteCount = (await util.getRecord('select count(*) as deleteCount from torrent_d')).deleteCount;
     const errors = global.ignoreError ? [] : JSON.parse(await redis.get('qbitrace:error:list') || '[]');
     await redis.set('qbitrace:error:list', '[]');
     return {
       dashboardContent: global.dashboardContent,
       uploaded: uploaded || 0,
       downloaded: downloaded || 0,
-      uploadedToday: uploadedToday || 0,
-      downloadedToday: downloadedToday || 0,
       addCount,
       rejectCount,
       deleteCount,
@@ -146,8 +123,6 @@ class SettingMod {
       rejectCountToday,
       deleteCountToday,
       startTime: global.startTime,
-      perTracker,
-      perTrackerToday,
       errors
     };
   };
@@ -185,29 +160,6 @@ class SettingMod {
         cookie: options.cookie
       }
     });
-  }
-
-  async getTrackerFlowHistory () {
-    const _timeGroup = await util.getRecords('select time from tracker_flow where time >= ? group by time', [moment().unix() - 24 * 3600]);
-    const timeGroup = _timeGroup.map(i => i.time);
-    const res = await util.getRecords('select * from tracker_flow where time >= ?', [moment().unix() - 24 * 3600]);
-    const trackers = {};
-    for (const item of res) {
-      if (!item.tracker) continue;
-      if (!trackers[item.tracker]) trackers[item.tracker] = {};
-      trackers[item.tracker][item.time] = item;
-    }
-    for (const _tracker of Object.keys(trackers)) {
-      const tracker = trackers[_tracker];
-      for (const [index, time] of timeGroup.entries()) {
-        const _t = tracker[time] || tracker[timeGroup[index - 1]] || { download: 0, upload: 0 };
-        tracker[time] = { download: +(_t.download / 300).toFixed(2), upload: +(_t.upload / 300).toFixed(2) };
-      }
-    }
-    return {
-      trackers,
-      timeGroup
-    };
   }
 
   getHosts () {

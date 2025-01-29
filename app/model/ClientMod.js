@@ -77,7 +77,7 @@ class ClientMod {
       clientInfos.push(c);
     }
     return clientInfos;
-  }
+  };
 
   listTop10 ({ id }) {
     const top10 = [];
@@ -90,31 +90,6 @@ class ClientMod {
       top10.push(t);
     }
     return top10;
-  }
-
-  async getSpeedPerTracker () {
-    const clients = global.runningClient;
-    const trackers = {};
-    for (const clientId of Object.keys(clients)) {
-      if (!clients[clientId].maindata) continue;
-      for (const torrent of clients[clientId].maindata.torrents) {
-        const _tracker = torrent.tracker || '错误状态';
-        const tracker = _tracker.match(/.*?([^.]*\.[^.]*$)/)[1];
-        if (!trackers[tracker]) trackers[tracker] = { upload: 0, download: 0 };
-        trackers[tracker].upload += torrent.uploadSpeed;
-        trackers[tracker].download += torrent.downloadSpeed;
-      }
-    }
-    const trackerArr = Object.keys(trackers).map(i => {
-      return {
-        ...trackers[i],
-        tracker: i
-      };
-    });
-    return {
-      trackerList: trackerArr,
-      trackers: Object.keys(trackers)
-    };
   };
 
   async getLogs (options) {

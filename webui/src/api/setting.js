@@ -9,10 +9,6 @@ export default {
     const url = '/api/setting/modify';
     return await post(url, body);
   },
-  getTrackerFlowHistory: async () => {
-    const url = '/api/setting/getTrackerFlowHistory';
-    return await get(url);
-  },
   getRunInfo: async () => {
     const url = '/api/setting/getRunInfo?_=' + Math.random();
     return await get(url);
