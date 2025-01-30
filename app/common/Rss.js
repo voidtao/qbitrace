@@ -341,12 +341,11 @@ class Rss {
         } catch (e) {
           logger.error('通知信息发送失败: \n', e);
         }
-        await util.runRecord('INSERT INTO torrent_r (hash, name, size, rss_id, link, record_time, category, record_type, record_note) values (?, ?, ?, ?, ?, ?, ?, ?, ?)',
-          [torrent.hash, torrent.name, torrent.size, this.id, torrent.link, moment().unix(), category, 1, '添加种子']);
-        if (truehash && torrent.hash !== truehash) {
-          await util.runRecord('INSERT INTO torrent_r (hash, name, size, rss_id, link, record_time, category, record_type, record_note) values (?, ?, ?, ?, ?, ?, ?, ?, ?)',
-            [truehash, torrent.name, torrent.size, this.id, torrent.link, moment().unix(), category, 1, '添加种子']);
-        }
+        const hashToUse = truehash || torrent.hash;
+        await util.runRecord(
+          'INSERT INTO torrent_r (hash, name, size, rss_id, link, record_time, category, record_type, record_note) values (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+          [hashToUse, torrent.name, torrent.size, this.id, torrent.link, moment().unix(), category, 1, '添加种子']
+        );
       } catch (error) {
         logger.error(this.alias, '下载器', client.alias, '添加种子失败:', error.message);
         await util.runRecord('INSERT INTO torrent_r (hash, name, size, rss_id, link, record_time, category, record_type, record_note) values (?, ?, ?, ?, ?, ?, ?, ?, ?)',
