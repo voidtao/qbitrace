@@ -1,7 +1,6 @@
 const path = require('path');
 
 const { generateTheme, getLessVars } = require('antd-theme-generator');
-// const lessPath = './public/assets/styles/variables.less';
 
 const paths = [
   {

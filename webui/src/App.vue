@@ -55,26 +55,6 @@ img[lazy=loading] {
   z-index: 1055;
 }
 
-/*
-html {
-  overflow-y: scroll;
-}
-
-:root {
-  overflow-y: auto;
-  overflow-x: hidden;
-}
-
-:root body {
-  position: absolute;
-}
-
-body {
-  width: 100vw;
-  overflow: hidden;
-}
-*/
-
 *::-webkit-scrollbar-thumb {
   border-radius: 10px;
   background-color: #00BFFF;
