@@ -77,11 +77,6 @@
             </div>
           </template>
         </div>
-        <div
-          style="margin: 24px auto; text-align: center; max-width: 1440px;"
-          v-if="runInfo.dashboardContent.filter(item => item === 'server')[0]"
-          >
-        </div>
       </a-col>
     </a-row>
   </div>
@@ -141,7 +136,6 @@ export default {
       runInfo: {
         dashboardContent: []
       },
-      servers: [],
       downloaders: [],
       loading: true
     };
@@ -207,7 +201,6 @@ export default {
   async mounted () {
     await this.getRunInfo();
     const downloader = !!this.runInfo.dashboardContent.filter(item => item === 'downloader')[0];
-    const server = !!this.runInfo.dashboardContent.filter(item => item === 'server')[0];
     if (downloader) {
       this.listDownloader();
       this.listDownloaderInfo();

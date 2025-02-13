@@ -8,9 +8,6 @@ const otp = require('../libs/otp');
 
 const settingPath = path.join(__dirname, '../../storage/data/setting.json');
 const proxyPath = path.join(__dirname, '../../storage/data/setting/proxy.json');
-const torrentHistorySettingPath = path.join(__dirname, '../../storage/data/setting/torrent-history-setting.json');
-const torrentMixSettingPath = path.join(__dirname, '../../storage/data/setting/torrent-mix-setting.json');
-const torrentPushSettingPath = path.join(__dirname, '../../storage/data/setting/torrent-push-setting.json');
 
 class SettingMod {
   get () {
@@ -70,36 +67,6 @@ class SettingMod {
       global.webhookPush = new Push({ ...webhookPush, push: true });
     }
     return '修改全局设置成功, 部分设定需要刷新页面生效';
-  };
-
-  getTorrentHistorySetting () {
-    const settingStr = fs.readFileSync(torrentHistorySettingPath, { encoding: 'utf-8' });
-    return JSON.parse(settingStr);
-  };
-
-  modifyTorrentHistorySetting (options) {
-    fs.writeFileSync(torrentHistorySettingPath, JSON.stringify(options, null, 2));
-    return '修改成功';
-  };
-
-  getTorrentMixSetting () {
-    const settingStr = fs.readFileSync(torrentMixSettingPath, { encoding: 'utf-8' });
-    return JSON.parse(settingStr);
-  };
-
-  modifyTorrentMixSetting (options) {
-    fs.writeFileSync(torrentMixSettingPath, JSON.stringify(options, null, 2));
-    return '修改成功';
-  };
-
-  getTorrentPushSetting () {
-    const settingStr = fs.readFileSync(torrentPushSettingPath, { encoding: 'utf-8' });
-    return JSON.parse(settingStr);
-  };
-
-  modifyTorrentPushSetting (options) {
-    fs.writeFileSync(torrentPushSettingPath, JSON.stringify(options, null, 2));
-    return '修改成功';
   };
 
   async getRunInfo () {

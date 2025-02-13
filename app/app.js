@@ -30,7 +30,6 @@ const initPush = function () {
 const init = function () {
   global.CONFIG = config;
   global.LOGGER = logger;
-  global.linkMapping = JSON.parse(fs.readFileSync(path.join(__dirname, '../storage/data/link-mapping.json')));
   const setting = JSON.parse(fs.readFileSync(path.join(__dirname, '../storage/data/setting.json')));
   if (!setting.password) {
     const password = util.uuid.v4();

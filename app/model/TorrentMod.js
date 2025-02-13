@@ -121,10 +121,6 @@ class TorrentMod {
     return { torrents, total };
   }
 
-  getDelInfo (options) {
-    return global.linkMapping[options.hash] || [];
-  }
-
   async deleteTorrent (options) {
     if (!global.runningClient[options.clientId]) {
       throw new Error('客户端 ' + options.clientId + ' 未连接或未更新种子列表, 请稍后重试');
@@ -139,10 +135,6 @@ class TorrentMod {
     } catch (e) {
       isError = true;
       logger.error('删除种子失败: ', e);
-    }
-    if (!isError) {
-      delete global.linkMapping[options.hash];
-      util.saveLinkMapping();
     }
     return '任务执行完毕, 请检查错误日志是否存在报错信息, 若无报错信息, 才是成功执行';
   }

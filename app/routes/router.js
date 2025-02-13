@@ -140,12 +140,10 @@ module.exports = function (app, express, router) {
   router.post('/deleteRule/modify', ctrl.DeleteRule.modify);
   router.post('/deleteRule/delete', ctrl.DeleteRule.delete);
 
-
   router.get('/rssRule/list', ctrl.RssRule.list);
   router.post('/rssRule/add', ctrl.RssRule.add);
   router.post('/rssRule/modify', ctrl.RssRule.modify);
   router.post('/rssRule/delete', ctrl.RssRule.delete);
-
 
   router.get('/torrent/list', ctrl.Torrent.list);
   router.get('/torrent/listHistory', ctrl.Torrent.listHistory);
@@ -159,16 +157,8 @@ module.exports = function (app, express, router) {
 
   router.get('/setting/get', ctrl.Setting.get);
   router.get('/setting/getRunInfo', ctrl.Setting.getRunInfo);
-  router.get('/setting/getTorrentHistorySetting', ctrl.Setting.getTorrentHistorySetting);
-  router.get('/setting/getTorrentMixSetting', ctrl.Setting.getTorrentMixSetting);
-  router.get('/setting/getTorrentPushSetting', ctrl.Setting.getTorrentPushSetting);
-  router.get('/setting/getSitePushSetting', ctrl.Setting.getSitePushSetting);
   router.get('/setting/getBackground.less', ctrl.Setting.getBackground);
   router.post('/setting/modify', ctrl.Setting.modify);
-  router.post('/setting/modifyTorrentHistorySetting', ctrl.Setting.modifyTorrentHistorySetting);
-  router.post('/setting/modifyTorrentMixSetting', ctrl.Setting.modifyTorrentMixSetting);
-  router.post('/setting/modifyTorrentPushSetting', ctrl.Setting.modifyTorrentPushSetting);
-  router.post('/setting/modifySitePushSetting', ctrl.Setting.modifySitePushSetting);
   router.get('/setting/backupqbitrace', ctrl.Setting.backupqbitrace);
   router.post('/setting/restoreqbitrace', ctrl.Setting.restoreqbitrace);
   router.get('/setting/getCss.css', ctrl.Setting.getCss);
@@ -180,7 +170,6 @@ module.exports = function (app, express, router) {
   router.get('/setting/import', ctrl.Setting.import);
   router.get('/setting/getProxy', ctrl.Setting.getProxy);
   router.post('/setting/saveProxy', ctrl.Setting.saveProxy);
-
 
   app.use('/api', router);
   app.use('/proxy/client/:client', clientProxy);
