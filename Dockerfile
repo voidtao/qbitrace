@@ -1,16 +1,20 @@
+FROM debian:stable-slim AS builder
+ARG PAT
+RUN apt update && apt install git bash -y && \
+    git clone https://${PAT}@github.com/voidtao/qbitrace.git /pt/qbitrace && \
+    cd /pt/qbitrace && \
+    bash install.sh
+
 FROM debian:stable-slim
 LABEL maintainer="qbitrace"
 LABEL build_from="https://github.com/voidtao/qbitrace"
-
 ENV TZ=Asia/Shanghai
 
-# 使用构建参数 PAT 克隆私有仓库
-ARG PAT
-RUN \
-    apt update&&apt install git bash -y && \
-    git clone https://${PAT}@github.com/voidtao/qbitrace.git /pt/qbitrace && \
-    cd /pt/qbitrace && \
-    bash install.sh && \
+COPY --from=builder /pt/qbitrace /pt/qbitrace
+
+RUN apt update && apt install -y bash nodejs redis-server && \
+    npm install pm2 -g && \
+    npm cache clean --force && \
     apt-get autoclean && \
     rm -rf \
         /pt/qbitrace/.github \
@@ -23,9 +27,14 @@ RUN \
         /pt/qbitrace/package.json \
         /pt/qbitrace/README.md \
         /root/.cache \
+        /root/.npm/_cacache \
         /var/lib/apt/lists/* \
         /var/tmp/* \
         /tmp/*
+
+WORKDIR /pt/qbitrace
 EXPOSE 3000
-CMD \
-  pm2 resurrect
+
+COPY docker-entrypoint.sh /
+RUN chmod +x /docker-entrypoint.sh
+ENTRYPOINT ["/docker-entrypoint.sh"]
