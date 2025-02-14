@@ -1,6 +1,6 @@
 FROM debian:stable-slim AS builder
 ARG PAT
-RUN apt update && apt install -y --no-install-recommends git bash && \
+RUN apt update && apt upgrade -y && apt install -y git bash && \
     git clone https://${PAT}@github.com/voidtao/qbitrace.git /pt/qbitrace && \
     cd /pt/qbitrace && \
     bash install.sh
@@ -13,7 +13,7 @@ ENV TZ=Asia/Shanghai
 COPY --from=builder /pt/qbitrace /pt/qbitrace
 
 RUN apt update && \
-    apt install -y --no-install-recommends bash redis-server && \
+    apt install -y redis-server && \
     npm install pm2 -g && \
     npm cache clean --force && \
     apt-get clean && \
