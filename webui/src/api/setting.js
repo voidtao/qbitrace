@@ -29,10 +29,6 @@ export default {
     const url = '/api/setting/import';
     return await get(url);
   },
-  loginMTeam: async (body) => {
-    const url = '/api/setting/loginMTeam';
-    return await post(url, body);
-  },
   networkTest: async (body) => {
     const url = '/api/setting/networkTest';
     return await post(url, body);

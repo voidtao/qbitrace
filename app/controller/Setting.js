@@ -112,22 +112,6 @@ class Setting {
     }
   }
 
-  async loginMTeam (req, res) {
-    try {
-      const r = await settingMod.loginMTeam(req.body);
-      res.send({
-        success: true,
-        message: r
-      });
-    } catch (e) {
-      logger.error(e);
-      res.send({
-        success: false,
-        message: e.message
-      });
-    }
-  };
-
   async getCss (req, res) {
     try {
       const r = settingMod.getCss();

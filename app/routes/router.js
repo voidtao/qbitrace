@@ -162,7 +162,6 @@ module.exports = function (app, express, router) {
   router.get('/setting/backupqbitrace', ctrl.Setting.backupqbitrace);
   router.post('/setting/restoreqbitrace', ctrl.Setting.restoreqbitrace);
   router.get('/setting/getCss.css', ctrl.Setting.getCss);
-  router.post('/setting/loginMTeam', ctrl.Setting.loginMTeam);
   router.post('/setting/networkTest', ctrl.Setting.networkTest);
   router.get('/setting/getHosts', ctrl.Setting.getHosts);
   router.post('/setting/save', ctrl.Setting.save);
