@@ -1,7 +1,6 @@
 ## 原始项目
 
 [vertex 原始仓库](https://github.com/vertex-app/vertex)  
-开源许可证：MIT
 ---
 
 ## 相较于原版的改动
@@ -12,11 +11,14 @@
    - 现直接删了，建议改为外部 Python 脚本定期任务处理
 
 2. **更新所有软件包至最新版本，以下除外：**  
-   - `ant-design-vue` 4.x 废弃了 less，需要大量重写和测试  
-   - `bencode` 2.0.3 后转向 esm，兼容性测试工作量大  
-   - `redis`、`connect-redis` 新调用方式，需要重写和测试  
+   - `ant-design-vue` 4.x 废弃了 less。
+   - `less`、`less-loader` 升级后会报错内联 JS 问题。
+
+   - `bencode` 2.0.3 后转向 esm，没有必须进行混用的升级项。
+   - `redis`、`connect-redis` 新调用方式，没有必须升级的功能 。
+   
    - `eslint` 9.x 改动配置文件，自动转换效果差  
-   - `less`、`less-loader` 升级后会出现内联 JS 问题，重新编译不值得
+
 
 3. **部分结构调整，符合 ECMA 14 规范**
 

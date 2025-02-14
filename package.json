@@ -1,6 +1,6 @@
 {
   "name": "qbitrace",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
   "main": "app/app.js",
   "scripts": {
@@ -8,7 +8,6 @@
     "eslint": "eslint app"
   },
   "author": "tong",
-  "license": "MIT",
   "dependencies": {
     "bencode": "^2.0.3",
     "better-sqlite3": "~11.1.2",
