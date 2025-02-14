@@ -3,7 +3,7 @@
 # 安装node和redis
 apt update&&apt upgrade -y
 
-apt install lsb-release curl gpg -y
+apt install curl -y
 
 curl -fsSL https://deb.nodesource.com/setup_22.x -o nodesource_setup.sh
 
@@ -12,8 +12,6 @@ bash nodesource_setup.sh
 apt update
 
 apt install bash git nodejs redis-server -y
-
-systemctl enable redis-server
 
 systemctl start redis-server
 
@@ -73,7 +71,6 @@ EOF
 # 创建 follow.less 文件
 touch ./public/assets/styles/follow.less
 
-npm i --legacy-peer-deps --save-dev
 npm run build
 
 cd ..
