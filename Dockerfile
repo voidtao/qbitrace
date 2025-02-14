@@ -10,6 +10,8 @@ LABEL maintainer="qbitrace"
 LABEL build_from="https://github.com/voidtao/qbitrace"
 ENV TZ=Asia/Shanghai
 
+COPY --from=builder /pt/qbitrace/app /pt/qbitrace/app
+COPY --from=builder /pt/qbitrace/node_modules /pt/qbitrace/node_modules
 RUN mkdir -p /pt/qbitrace/storage.init
 COPY --from=builder /pt/qbitrace/storage /pt/qbitrace/storage.init
 
@@ -19,15 +21,6 @@ RUN apt update && \
     npm cache clean --force && \
     apt-get clean && \
     rm -rf \
-        /pt/qbitrace/.github \
-        /pt/qbitrace/webui \
-        /pt/qbitrace/.eslintrc.yml \
-        /pt/qbitrace/.gitignore \
-        /pt/qbitrace/Dockerfile \
-        /pt/qbitrace/install.sh \
-        /pt/qbitrace/package-lock.json \
-        /pt/qbitrace/package.json \
-        /pt/qbitrace/README.md \
         /root/.cache \
         /root/.npm/_cacache \
         /var/lib/apt/lists/* \
