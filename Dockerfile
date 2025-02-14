@@ -10,7 +10,8 @@ LABEL maintainer="qbitrace"
 LABEL build_from="https://github.com/voidtao/qbitrace"
 ENV TZ=Asia/Shanghai
 
-COPY --from=builder /pt/qbitrace /pt/qbitrace
+RUN mkdir -p /pt/qbitrace/storage.init
+COPY --from=builder /pt/qbitrace/storage /pt/qbitrace/storage.init
 
 RUN apt update && \
     apt install -y redis-server && \
