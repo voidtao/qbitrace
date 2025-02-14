@@ -1,22 +1,22 @@
 FROM debian:stable-slim AS builder
 ARG PAT
-RUN apt update && apt install git bash -y && \
+RUN apt update && apt install -y --no-install-recommends git bash && \
     git clone https://${PAT}@github.com/voidtao/qbitrace.git /pt/qbitrace && \
     cd /pt/qbitrace && \
     bash install.sh
 
-FROM node:slim
+FROM node:lts-slim
 LABEL maintainer="qbitrace"
 LABEL build_from="https://github.com/voidtao/qbitrace"
 ENV TZ=Asia/Shanghai
 
 COPY --from=builder /pt/qbitrace /pt/qbitrace
 
-RUN apt update&&apt upgrade -y && \
-    apt install bash redis-server -y && \
+RUN apt update && \
+    apt install -y --no-install-recommends bash redis-server && \
     npm install pm2 -g && \
     npm cache clean --force && \
-    apt-get autoclean && \
+    apt-get clean && \
     rm -rf \
         /pt/qbitrace/.github \
         /pt/qbitrace/webui \
