@@ -5,14 +5,15 @@ RUN apt update && apt install git bash -y && \
     cd /pt/qbitrace && \
     bash install.sh
 
-FROM debian:stable-slim
+FROM node:slim
 LABEL maintainer="qbitrace"
 LABEL build_from="https://github.com/voidtao/qbitrace"
 ENV TZ=Asia/Shanghai
 
 COPY --from=builder /pt/qbitrace /pt/qbitrace
 
-RUN apt update && apt install -y bash nodejs redis-server && \
+RUN apt update&&apt upgrade -y && \
+    apt install bash redis-server -y && \
     npm install pm2 -g && \
     npm cache clean --force && \
     apt-get autoclean && \
