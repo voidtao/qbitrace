@@ -413,25 +413,25 @@ class Rss {
       }));
       torrents = torrents.flat(); // 使用 flat 展平数组
     }
-    const availableClients = this.clientArr
-      .map(item => global.runningClient[item])
-      .filter(item => {
-        return !!item && !!item.status && !!item.maindata &&
+    for (const torrent of torrents) {
+      const availableClients = this.clientArr
+        .map(item => global.runningClient[item])
+        .filter(item => {
+          return !!item && !!item.status && !!item.maindata &&
           (!this.maxClientUploadSpeed || this.maxClientUploadSpeed > item.avgUploadSpeed) &&
           (!this.maxClientDownloadSpeed || this.maxClientDownloadSpeed > item.avgDownloadSpeed) &&
           (!this.maxClientDownloadCount || this.maxClientDownloadCount > item.maindata.leechingCount);
-      });
-    const firstClient = availableClients
-      .filter(item => {
-        return (!item.maxDownloadSpeed || item.maxDownloadSpeed > item.avgDownloadSpeed) &&
+        });
+      const firstClient = availableClients
+        .filter(item => {
+          return (!item.maxDownloadSpeed || item.maxDownloadSpeed > item.avgDownloadSpeed) &&
           (!item.maxUploadSpeed || item.maxUploadSpeed > item.avgUploadSpeed) &&
           (!item.maxLeechNum || item.maxLeechNum > item.maindata.leechingCount) &&
           (!item.minFreeSpace || item.minFreeSpace < item.maindata.freeSpaceOnDisk);
-      })
-      .sort((a, b) => (this.clientSortBy === 'freeSpaceOnDisk' ? -1 : 1) *
+        })
+        .sort((a, b) => (this.clientSortBy === 'freeSpaceOnDisk' ? -1 : 1) *
         (a.maindata[this.clientSortBy] - b.maindata[this.clientSortBy])
-      )[0] || availableClients[0];
-    for (const torrent of torrents) {
+        )[0] || availableClients[0];
       const sqlRes = await util.getRecord('SELECT * FROM torrent_r WHERE hash = ? AND rss_id = ?', [torrent.hash, this.id]);
       if (sqlRes && sqlRes.id) continue;
       if (torrent.name.indexOf('[FROZEN]') !== -1) continue;

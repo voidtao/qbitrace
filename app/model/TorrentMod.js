@@ -129,11 +129,9 @@ class TorrentMod {
       throw new Error('客户端 ' + global.runningClient[options.clientId].alias + ' 未连接或未更新种子列表, 请稍后重试');
     }
     const client = global.runningClient[options.clientId];
-    let isError = false;
     try {
       await client.client.deleteTorrent(client.clientUrl, client.cookie, options.hash, true);
     } catch (e) {
-      isError = true;
       logger.error('删除种子失败: ', e);
     }
     return '任务执行完毕, 请检查错误日志是否存在报错信息, 若无报错信息, 才是成功执行';
