@@ -16,7 +16,5 @@ sleep 2
 # 切换工作目录
 cd /pt/qbitrace
 
-# 启动应用并输出日志
-npx pm2 start app/app.js --name qbitrace 
-
-npx pm2 logs --no-daemon
+# 启动应用
+node app/app.js --name qbitrace
