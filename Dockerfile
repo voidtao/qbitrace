@@ -1,4 +1,4 @@
-FROM debian:stable-slim AS builder
+FROM debian:stable AS builder
 ARG PAT
 RUN apt update && apt upgrade -y && apt install -y git bash && \
     git clone https://${PAT}@github.com/voidtao/qbitrace.git /pt/qbitrace && \
