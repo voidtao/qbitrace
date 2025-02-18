@@ -1,6 +1,6 @@
 FROM debian:stable AS builder
 ARG PAT
-RUN apt update && apt upgrade -y && apt install -y git bash && \
+RUN apt-get update && apt-get upgrade -y && apt-get install -y git bash && \
     git clone https://${PAT}@github.com/voidtao/qbitrace.git /pt/qbitrace && \
     cd /pt/qbitrace && \
     bash install.sh
@@ -11,37 +11,32 @@ LABEL build_from="https://github.com/voidtao/qbitrace"
 ENV TZ=Asia/Shanghai
 
 # 创建非 root 用户和必要的目录
-RUN groupadd -r qbitrace && useradd -r -g qbitrace -m -s /sbin/nologin qbitrace && \
-    mkdir -p /pt/qbitrace/storage.init /pt/qbitrace/storage && \
-    chown -R qbitrace:qbitrace /pt/qbitrace
+RUN groupadd -r qbitrace && \
+    useradd -r -g qbitrace -m -s /sbin/nologin qbitrace && \
+    mkdir -p /pt/qbitrace/storage.init /pt/qbitrace/storage
 
 COPY --from=builder /pt/qbitrace/app /pt/qbitrace/app
 COPY --from=builder /pt/qbitrace/node_modules /pt/qbitrace/node_modules
 COPY --from=builder /pt/qbitrace/storage /pt/qbitrace/storage.init
+
 COPY docker-entrypoint.sh /
 
-RUN apt update && \
-    apt --no-install-recommends install -y redis-server sudo && \
-    npm install --ignore-scripts pm2 -g && \
+RUN apt-get update && \
+    apt-get install --no-install-recommends -y redis-server && \
+    npm install --ignore-scripts -g pm2 && \
     npm cache clean --force && \
-    # 添加 sudo 配置
-    echo "qbitrace ALL=(redis) NOPASSWD: /usr/bin/redis-server" >> /etc/sudoers.d/qbitrace && \
-    chmod 0440 /etc/sudoers.d/qbitrace && \
-    # 设置入口脚本权限
-    chmod +x docker-entrypoint.sh && \
-    # 清理
+    # 创建 redis 数据目录并设置权限
+    mkdir -p /var/lib/redis && \
+    chown redis:redis /var/lib/redis && \
+    chmod 770 /var/lib/redis && \
+    # 设置应用目录权限
+    chown -R qbitrace:qbitrace /pt/qbitrace && \
+    chmod +x /docker-entrypoint.sh && \
     apt-get clean && \
-    rm -rf \
-        /root/.cache \
-        /root/.npm/_cacache \
-        /var/lib/apt/lists/* \
-        /var/tmp/* \
-        /tmp/* && \
-    chown -R qbitrace:qbitrace /pt/qbitrace
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /root/.cache
 
 WORKDIR /pt/qbitrace
 
-# 最后才切换到非 root 用户
 USER qbitrace
 
 EXPOSE 3000
