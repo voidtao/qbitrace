@@ -21,8 +21,8 @@ COPY --from=builder /pt/qbitrace/storage /pt/qbitrace/storage.init
 COPY docker-entrypoint.sh /
 
 RUN apt update && \
-    apt install -y redis-server sudo && \
-    npm install pm2 -g && \
+    apt --no-install-recommends install -y redis-server sudo && \
+    npm install --ignore-scripts pm2 -g && \
     npm cache clean --force && \
     # 添加 sudo 配置
     echo "qbitrace ALL=(redis) NOPASSWD: /usr/bin/redis-server" >> /etc/sudoers.d/qbitrace && \
