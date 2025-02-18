@@ -1,3 +1,8 @@
+## 数据库不兼容，无法直接导入，可手动复制配置文件导入，其他配置兼容。
+---
+```
+docker run -d --name qbitrace --restart unless-stopped --network host -v /app/qbitrace/storage:/pt/qbitrace/storage -e TZ=Asia/Shanghai -e HOST=0.0.0.0 taovoid/qbitrace:latest
+```
 ## 原始项目
 
 [vertex 原始仓库](https://github.com/vertex-app/vertex)  
@@ -28,7 +33,7 @@
 5. **默认监听 127.0.0.1**  
    - 强制反向代理
 
-6. **删除了一系列可替代或半成品功能**
+6. **删除了一系列可替代功能**
 
 7. **调整数据存储方式**  
    - 便于备份与还原
@@ -42,6 +47,13 @@
    - 2.torrent_d 用于记录通过qbitrace的删种功能删除的种子，仅在删种时进行记录
    - 3.client_q 用于记录qbittorrent的随时间变化的基本数据。
 
+10. 在原始代码中，`pt.soulvoice.club` 获取 RSS 时需带上 Cookie  
+   - 原先使用site模块参数实现，我把这个模块删了 ，改为从rss模块获取
+   - 使用方法为：
+   1.手动更改storage/data/rss/下该站点的文件名为soul1234.json
+   2.填写抓免栏的 Cookie，保存，然后取消勾选抓免功能，保存。
+   （其他更优雅的实现需要改动函数过多，碰到这种需要带cookie进行rss的，更推荐使用jackett）
+
 ---
 
 ## 计划的修改
@@ -53,10 +65,7 @@
 1. `log4js` 的 `defaultParseCallStack error`  
    参见 [log4js-node #1413](https://github.com/log4js-node/log4js-node/issues/1413)
 
-2. `pt.soulvoice.club` 获取 RSS 时需带上 Cookie  
-   - 删除 site 模块且无号可测试  
-   - 目前硬编码 Cookie 至 `app/libs/rss.js`
-   - 理论上可以改为填写抓免栏的 Cookie，然后取消勾选抓免功能。
+2. 使用cyber主题时，如果不填写背景图片，会出现一个undefined报错，暂且定位是前端问题，由于本人不擅前端，且这个报错不影响任何的功能，故暂且忽略它。
 
 ---
 

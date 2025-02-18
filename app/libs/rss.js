@@ -34,11 +34,11 @@ const _getRssContent = async function (rssUrl, suffix = true) {
       url += (rssUrl.indexOf('?') === -1 ? '?' : '&') + `${placeholder}=` + Math.random();
     }
     let res;
-    if (rssUrl.includes('https://pt.soulvoice.club/')) {
+    if (rssUrl.includes('https://pt.soulvoice.club/') && global.runningRss['soul1234']) {
       res = await util.requestPromise({
         url,
         headers: {
-          cookie: 'Hard coded need'
+          cookie: global.runningRss['soul1234'].cookie
         }
       }, true);
     } else {
