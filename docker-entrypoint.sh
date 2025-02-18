@@ -17,6 +17,6 @@ sleep 2
 cd /pt/qbitrace
 
 # 启动应用并输出日志
-pm2 start app/app.js --name qbitrace 
+npx pm2 start app/app.js --name qbitrace 
 
-pm2 logs --no-daemon
+npx pm2 logs --no-daemon

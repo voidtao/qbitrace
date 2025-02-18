@@ -1,6 +1,15 @@
 ## 数据库不兼容，无法直接导入，可手动复制配置文件导入，其他配置兼容。
 ---
+本机安装命令
 ```
+bash install.sh
+```
+---
+docker 安装命令
+```
+mkdir -p /app/qbitrace/storage
+sudo chown -R www-data:www-data /app/qbitrace/storage
+sudo chmod -R 755 /app/qbitrace/storage
 docker run -d --name qbitrace --restart unless-stopped --network host -v /app/qbitrace/storage:/pt/qbitrace/storage -e TZ=Asia/Shanghai -e HOST=0.0.0.0 taovoid/qbitrace:latest
 ```
 ## 原始项目
