@@ -15,6 +15,10 @@ const _getSum = function (a, b) {
   return a + b;
 };
 
+const _getHashLink = (link) => {
+  return crypto.createHash('md5').update(link || '').digest('hex');
+};
+
 const _getRssContent = async function (rssUrl, suffix = true) {
   let body;
   const cache = await redis.get(`qbitrace:rss:${rssUrl}`);
@@ -77,7 +81,6 @@ const _getTorrents = async function (rssUrl) {
     const link = items[i].link[0];
     torrent.link = link;
     torrent.description = items[i].description ? items[i].description[0] : '';
-    torrent.id = link.substring(link.indexOf('?id=') + 4);
     torrent.url = items[i].enclosure[0].$.url;
     torrent.hash = items[i].guid[0]._ || items[i].guid[0];
     torrent.pubTime = moment(items[i].pubDate[0]).unix();
@@ -104,7 +107,6 @@ const _getTorrentsMTeam = async function (rssUrl) {
     const link = items[i].link[0];
     torrent.link = link;
     torrent.description = items[i].description ? items[i].description[0] : '';
-    torrent.id = link.match(/\/(\d+)/)[1];
     torrent.url = items[i].enclosure[0].$.url;
     torrent.hash = items[i].guid[0]._ || items[i].guid[0];
     torrent.pubTime = moment(items[i].pubDate[0]).unix();
@@ -142,7 +144,6 @@ const _getTorrentsPuTao = async function (rssUrl) {
     torrent.name = items[i].title[0];
     const link = items[i].link[0];
     torrent.link = link.substring(0, link.indexOf('&passkey=')).replace('download', 'details');
-    torrent.id = torrent.link.substring(link.indexOf('?id=') + 4);
     torrent.url = link;
     torrent.hash = items[i].guid[0]._ || items[i].guid[0];
     torrent.pubTime = moment(items[i].pubDate[0]).unix();
@@ -176,9 +177,8 @@ const _getTorrentsFileList = async function (rssUrl) {
     torrent.name = items[i].title[0].replace(/\n/, ' ');
     const link = items[i].link[0].match(/https:\/\/filelist.io\/download\.php\?id=\d*/)[0].replace('download', 'details');
     torrent.link = link;
-    torrent.id = link.substring(link.indexOf('?id=') + 4);
-    torrent.hash = 'fakehash' + torrent.id + 'fakehash';
     torrent.url = items[i].link[0];
+    torrent.hash = _getHashLink(link);
     torrents.push(torrent);
   }
   return torrents;
@@ -208,8 +208,7 @@ const _getTorrentsBeyondHD = async function (rssUrl) {
     torrent.size = parseFloat(regRes[1]) * map[regRes[2]];
     torrent.name = items[i].title[0].split('\n')[0];
     torrent.link = items[i].guid[0];
-    torrent.id = torrent.link.match(/\.(\d+)/)[1];
-    torrent.hash = 'fakehash' + torrent.id + 'fakehash';
+    torrent.hash = _getHashLink(torrent.link);
     torrent.url = items[i].link[0];
     torrents.push(torrent);
   }
@@ -240,10 +239,9 @@ const _getTorrentsUnit3D2 = async function (rssUrl) {
     torrent.size = parseFloat(regRes[1]) * map[regRes[2]];
     torrent.name = items[i].title[0];
     const link = items[i].link[0];
-    torrent.id = link.match(/download\/(\d*)\./)[1];
-    torrent.hash = 'fakehash' + torrent.id + 'fakehash';
     torrent.url = link;
     torrent.link = link.replace(/download\//, '').replace(/(\d+)\..*/, '$1');
+    torrent.hash = _getHashLink(torrent.link);
     torrents.push(torrent);
   }
   return torrents;
@@ -274,8 +272,7 @@ const _getTorrentsUnit3D = async function (rssUrl) {
     torrent.name = items[i].title[0];
     const link = items[i].link[0];
     torrent.link = link;
-    torrent.id = link.match(/torrents\/(\d*)/)[1];
-    torrent.hash = 'fakehash' + torrent.id + 'fakehash';
+    torrent.hash = _getHashLink(link);
     torrent.url = items[i].enclosure[0].$.url;
     torrents.push(torrent);
   }
@@ -330,7 +327,6 @@ const _getTorrentsLuminance = async function (rssUrl) {
     torrent.name = items[i].title[0];
     const link = items[i].link[0];
     torrent.link = link;
-    torrent.id = link.substring(link.indexOf('?id=') + 4);
     torrent.url = items[i].enclosure[0].$.url;
     torrent.hash = items[i].torrent[0].infoHash[0];
     torrent.size = items[i].torrent[0].contentLength[0];
@@ -357,7 +353,6 @@ const _getTorrentsGazelle = async function (rssUrl) {
     const link = items[i].comments[0];
     torrent.link = link;
     torrent.url = items[i].link[0];
-    torrent.id = +torrent.url.match(/id=(\d+)/)[1];
     const cache = await redis.get(`qbitrace:hash:${torrent.url}`);
     if (cache) {
       const _torrent = JSON.parse(cache);
@@ -404,7 +399,6 @@ const _getTorrentsSkyeySnow = async function (rssUrl) {
     torrent.name = items[i].title[0];
     const link = items[i].link[0];
     torrent.link = link;
-    torrent.id = link.substring(link.indexOf('?id=') + 4);
     torrent.url = items[i].enclosure[0].$.url;
     if (torrent.url.indexOf('skyey') !== -1) {
       const cache = await redis.get(`qbitrace:hash:${torrent.url}`);
@@ -442,9 +436,9 @@ const _getTorrentsHDBits = async function (rssUrl) {
     };
     torrent.name = items[i].title[0];
     const url = items[i].link[0];
-    torrent.id = url.match(/id=(\d+)/)[1];
+    const hdbid = url.match(/id=(\d+)/)[1];
     torrent.url = url;
-    torrent.link = `https://hdbits.org/details.php?id=${torrent.id}&source=browse`;
+    torrent.link = `https://hdbits.org/details.php?id=${hdbid}&source=browse`;
     if (torrent.url.indexOf('hdbits') !== -1) {
       const cache = await redis.get(`qbitrace:hash:${torrent.url}`);
       if (cache) {
@@ -483,7 +477,6 @@ const _getTorrentsHDTorrents = async function (rssUrl) {
     torrent.name = items[i].title[0];
     const link = items[i].link[0];
     torrent.link = link;
-    torrent.id = moment().unix();
     torrent.url = link;
     torrent.hash = link.match(/hash=(.*?)&/)[1];
     torrent.pubTime = moment(items[i].pubDate[0]).unix();
@@ -508,10 +501,10 @@ const _getTorrentsHDCity = async function (rssUrl) {
     torrent.size = items[i].enclosure[0].$.length;
     torrent.name = items[i].title[0];
     const link = items[i].link[0];
-    torrent.id = link.substring(link.indexOf('?t=') + 3);
-    torrent.link = 'https://hdcity.leniter.org/t-' + torrent.id;
+    const hdcityid = link.substring(link.indexOf('?t=') + 3);
+    torrent.link = 'https://hdcity.leniter.org/t-' + hdcityid;
     torrent.url = items[i].enclosure[0].$.url;
-    torrent.hash = 'fakehash' + torrent.id + 'fakehash';
+    torrent.hash = _getHashLink(torrent.link);
     torrents.push(torrent);
   }
   return torrents;
@@ -534,10 +527,9 @@ const _getTorrentsIPTorrents = async function (rssUrl) {
     torrent.size = util.calSize(...size.split(' '));
     torrent.name = items[i].title[0];
     const link = items[i].link[0];
-    torrent.id = link.match(/\/(\d+)\//)[1];
     torrent.link = link;
     torrent.url = items[i].link[0];
-    torrent.hash = 'fakehashipt' + torrent.id + 'fakehashipt';
+    torrent.hash = _getHashLink(link);
     torrent.pubTime = moment(items[i].pubDate[0]).unix();
     torrents.push(torrent);
   }
@@ -567,9 +559,8 @@ const _getTorrentsLearnFlakes = async function (rssUrl) {
     torrent.name = items[i].title[0];
     const link = items[i].link[0];
     torrent.link = link;
-    torrent.id = link.match(/&tid=(\d+)/)[1];
     torrent.url = items[i].guid[0]._;
-    torrent.hash = 'learnflakes' + torrent.id + 'learnflakes';
+    torrent.hash = _getHashLink(link);
     torrent.pubTime = moment(items[i].pubDate[0]).unix();
     torrents.push(torrent);
   }
@@ -601,7 +592,6 @@ const _getTorrentsAvistaZ = async function (rssUrl) {
     torrent.name = items[i].title[0];
     const link = items[i].link[0];
     torrent.link = link;
-    torrent.id = link.match(/torrent\/(\d+)/)[1];
     torrent.url = items[i].enclosure[0].$.url;
     torrent.hash = items[i].guid[0]._.match(/-(.*)/)[1];
     torrent.pubTime = moment(items[i].pubDate[0]).unix();
@@ -627,7 +617,6 @@ const _getTorrentsTorrentLeech = async function (rssUrl) {
     torrent.name = items[i].title[0];
     torrent.url = items[i].link[0];
     torrent.link = guid;
-    torrent.id = guid.substring(torrent.hash.indexOf('torrent/') + 8);
     torrent.pubTime = moment(items[i].pubDate[0]).unix();
     const cache = await redis.get(`qbitrace:hash:${torrent.url}`);
     if (cache) {
@@ -670,7 +659,6 @@ const _getTorrentsFSM = async function (rssUrl) {
     torrent.name = items[i].title[0];
     const link = items[i].link[0];
     torrent.link = link;
-    torrent.id = link.substring(link.indexOf('?tid=') + 5);
     torrent.url = items[i].enclosure[0].$.url;
     torrent.hash = items[i].guid[0]._ || items[i].guid[0];
     torrents.push(torrent);
@@ -695,7 +683,6 @@ const _getTorrentsHappyFappy = async function (rssUrl) {
     torrent.name = items[i].title[0];
     const link = items[i].link[0];
     torrent.link = link;
-    torrent.id = link.substring(link.indexOf('?id=') + 4);
     torrent.url = items[i].enclosure[0].$.url;
     torrent.hash = items[i].torrent[0].infoHash[0];
     torrent.hash = Buffer.from(unescape(torrent.hash), 'binary').toString('hex');
@@ -728,10 +715,9 @@ const _getTorrentsKimoji = async function (rssUrl) {
     torrent.size = parseFloat(regRes[1]) * map[regRes[2]];
     torrent.name = items[i].title[0];
     const link = items[i].link[0];
-    torrent.id = link.match(/download\/(\d*)\./)[1];
-    torrent.hash = 'fakehash' + torrent.id + 'fakehash';
     torrent.url = link;
     torrent.link = link.replace(/\/torrent\/download\/(\d+).*/, '/torrents/$1');
+    torrent.hash = _getHashLink(torrent.link);
     torrents.push(torrent);
   }
   return torrents;
@@ -758,10 +744,10 @@ const _getTorrentsFappaizuri = async function (rssUrl) {
     }
     torrent.name = items[i].title[0];
     const url = items[i].link[0];
-    torrent.id = url.match(/id=(\d+)/)[1];
-    torrent.link = 'https://fappaizuri.me/torrents-details.php?id=' + torrent.id;
+    const fapid = url.match(/id=(\d+)/)[1];
+    torrent.link = 'https://fappaizuri.me/torrents-details.php?id=' + fapid;
     torrent.url = url;
-    torrent.hash = 'fappaizuri' + torrent.id + 'fappaizuri';
+    torrent.hash = _getHashLink(torrent.link);
     torrent.pubTime = moment(items[i].pubDate[0]).unix();
     torrents.push(torrent);
   }
@@ -786,9 +772,33 @@ const _getTorrentsLusthive = async function (rssUrl) {
     const link = items[i].link[0];
     torrent.link = link;
     torrent.description = items[i].description ? items[i].description[0] : '';
-    torrent.id = link.substring(link.indexOf('?id=') + 4);
     torrent.url = items[i].enclosure[0].$.url;
     torrent.hash = items[i].guid[0]._ || items[i].guid[0];
+    torrent.pubTime = moment(items[i].pubDate[0]).unix();
+    torrents.push(torrent);
+  }
+  return torrents;
+};
+
+const _getTorrentsTorznab = async function (rssUrl) {
+  const rss = await parseXml(await _getRssContent(rssUrl));
+  const torrents = [];
+  const items = rss.rss.channel[0].item;
+  for (let i = 0; i < items.length; ++i) {
+    const torrent = {
+      size: 0,
+      name: '',
+      hash: '',
+      id: 0,
+      url: '',
+      link: ''
+    };
+    torrent.size = items[i].size[0];
+    torrent.name = items[i].title[0];
+    const link = items[i].guid[0];
+    torrent.link = link;
+    torrent.url = items[i].link[0];
+    torrent.hash = _getHashLink(link);
     torrent.pubTime = moment(items[i].pubDate[0]).unix();
     torrents.push(torrent);
   }
@@ -838,6 +848,9 @@ exports.getTorrents = async function (rssUrl) {
   try {
     if (host.indexOf('m-team') !== -1) {
       return await _getTorrentsMTeam(rssUrl);
+    }
+    if (host.indexOf('jackett') !== -1) {
+      return await _getTorrentsTorznab(rssUrl);
     }
     if (_getTorrentsWrapper[host]) {
       return await _getTorrentsWrapper[host](rssUrl);
