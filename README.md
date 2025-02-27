@@ -74,8 +74,9 @@ docker run -d --name qbitrace --restart unless-stopped --network host -v /app/qb
    - 需要反向代理域名内包含jackett
    - rss链接形如jackett.1.com/api/v2.0/indexers......
 
-12. **删除fakehash**
+12. **删除fakehash与truehash**
    - 对于没有hash的rss链接，改为由链接地址生成hash
+   - 不再补充记录真实hash，torrent_r中的hash仅用于去重
 
 13. **更改缓存方式**
    - 现在缓存为在./app/common/Rss.js统一进行，缓存50秒，而不在./app/libs/rss.js进行。

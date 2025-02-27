@@ -312,12 +312,10 @@ class Rss {
       const category = fitRule.category || this.category;
       const client = fitRule.client ? global.runningClient[fitRule.client] : _client;
       try {
-        let truehash = '';
         this.addCount += 1;
         if (this.pushTorrentFile) {
-          const { filepath, hash } = await this._downloadTorrent(torrent.url, torrent.hash);
-          truehash = hash;
-          await client.addTorrentByTorrentFile(filepath, hash, false, this.uploadLimit, this.downloadLimit, savePath, category, this.autoTMM, this.paused);
+          const { filepath } = await this._downloadTorrent(torrent.url, torrent.hash);
+          await client.addTorrentByTorrentFile(filepath, false, this.uploadLimit, this.downloadLimit, savePath, category, this.autoTMM, this.paused);
         } else {
           if (this.useCustomRegex) {
             const match = this.regexStr.match(/^\/(.*)\/([gimuy]*)$/);
