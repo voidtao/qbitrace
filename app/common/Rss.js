@@ -96,13 +96,7 @@ class Rss {
     const buffer = Buffer.from(res.body, 'utf-8');
     const torrent = bencode.decode(buffer);
     const size = torrent.info.length || torrent.info.files.map(i => i.length).reduce(this._getSum, 0);
-    const fsHash = crypto.createHash('sha1');
-    fsHash.update(bencode.encode(torrent.info));
-    const md5 = fsHash.digest('md5');
-    let hash = '';
-    for (const v of md5) {
-      hash += v < 16 ? '0' + v.toString(16) : v.toString(16);
-    };
+    const hash = crypto.createHash('sha1').update(bencode.encode(torrent.info)).digest('hex');
     const filepath = path.join(__dirname, '../../storage/torrents', hash + '.torrent');
     fs.writeFileSync(filepath, buffer);
     return {
