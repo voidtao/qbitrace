@@ -835,7 +835,7 @@ exports.getTorrentNameByBencode = async function (url) {
     const torrent = bencode.decode(buffer);
     const size = torrent.info.length || torrent.info.files.map(i => i.length).reduce(_getSum, 0);
     const hash = crypto.createHash('sha1').update(bencode.encode(torrent.info)).digest('hex');
-    const filepath = path.join(__dirname, '../../torrents', hash + '.torrent');
+    const filepath = path.join(__dirname, '../../storage/torrents', hash + '.torrent');
     fs.writeFileSync(filepath, buffer);
     return {
       exists: true,
