@@ -5,7 +5,6 @@ const path = require('path');
 const fs = require('fs');
 const bencode = require('bencode');
 const util = require('./util');
-const redis = require('./redis');
 const logger = require('./logger');
 
 
@@ -16,50 +15,34 @@ const _getSum = function (a, b) {
 };
 
 const _getHashLink = (link) => {
-  return crypto.createHash('md5').update(link || '').digest('hex');
+  return crypto.createHash('md5').update(link).digest('hex');
 };
 
 const _getRssContent = async function (rssUrl, suffix = true) {
-  let body;
-  const cache = await redis.get(`qbitrace:rss:${rssUrl}`);
-  if (cache) {
-    body = cache;
+  let url = rssUrl;
+  const isPig = rssUrl.includes('https://piggo.me/');
+  const isKamept = rssUrl.includes('https://kamept.com/');
+  let placeholder;
+  if (isKamept) {
+    placeholder = 'placeholder';
   } else {
-    let url = rssUrl;
-    const isPig = rssUrl.includes('https://piggo.me/');
-    const isKamept = rssUrl.includes('https://kamept.com/');
-    let placeholder;
-    if (isKamept) {
-      placeholder = 'placeholder';
-    } else {
-      placeholder = '____';
-    }
-    if (suffix && !isPig) {
-      url += (rssUrl.indexOf('?') === -1 ? '?' : '&') + `${placeholder}=` + Math.random();
-    }
-    let res;
-    if (rssUrl.includes('https://pt.soulvoice.club/') && global.runningRss['soul1234']) {
-      res = await util.requestPromise({
-        url,
-        headers: {
-          cookie: global.runningRss['soul1234'].cookie
-        }
-      }, true);
-    } else {
-      res = await util.requestPromise(url, true);
-    }
-    body = res.body;
-    const isHTML = body.indexOf('xml-viewer-style') !== -1;
-    if (isHTML) {
-      body = '<?xml version="1.0" encoding="utf-8"?>\n' + res.body.match(/<rss[\s\S]*<\/rss>/)[0];
-    }
-    const host = new URL(rssUrl).host;
-    let cacheTime = ['lemon', 'hhanclub'].some(item => host.indexOf(item) !== -1) ? 150 : 40;
-    if (host.indexOf('sharkpt') !== -1) {
-      cacheTime = 310;
-    }
-    await redis.setWithExpire(`qbitrace:rss:${rssUrl}`, body, isHTML ? 310 : cacheTime);
+    placeholder = '____';
   }
+  if (suffix && !isPig) {
+    url += (rssUrl.indexOf('?') === -1 ? '?' : '&') + `${placeholder}=` + Math.random();
+  }
+  let res;
+  if (rssUrl.includes('https://pt.soulvoice.club/') && global.runningRss['soul1234']) {
+    res = await util.requestPromise({
+      url,
+      headers: {
+        cookie: global.runningRss['soul1234'].cookie
+      }
+    }, true);
+  } else {
+    res = await util.requestPromise(url, true);
+  }
+  const body = res.body;
   return body;
 };
 
@@ -353,24 +336,15 @@ const _getTorrentsGazelle = async function (rssUrl) {
     const link = items[i].comments[0];
     torrent.link = link;
     torrent.url = items[i].link[0];
-    const cache = await redis.get(`qbitrace:hash:${torrent.url}`);
-    if (cache) {
-      const _torrent = JSON.parse(cache);
-      torrent.hash = _torrent.hash;
-      torrent.size = _torrent.size;
-    } else {
-      try {
-        const { exists, hash, size } = await exports.getTorrentNameByBencode(torrent.url);
-        if (!exists) {
-          continue;
-        }
-        torrent.hash = hash;
-        torrent.size = size;
-        await redis.set(`qbitrace:hash:${torrent.url}`, JSON.stringify(torrent));
-      } catch (e) {
-        await redis.set(`qbitrace:hash:${torrent.url}`, JSON.stringify({ hash: 'gzl' + moment().unix() + 'gzl', size: 0 }));
-        throw e;
+    try {
+      const { exists, hash, size } = await exports.getTorrentNameByBencode(torrent.url);
+      if (!exists) {
+        continue;
       }
+      torrent.hash = hash;
+      torrent.size = size;
+    } catch (error) {
+      logger.error(`解析 RSS ${rssUrl} 失败:`, error);
     }
     torrent.pubTime = moment(items[i].pubDate[0]).unix();
     torrents.push(torrent);
@@ -401,18 +375,11 @@ const _getTorrentsSkyeySnow = async function (rssUrl) {
     torrent.link = link;
     torrent.url = items[i].enclosure[0].$.url;
     if (torrent.url.indexOf('skyey') !== -1) {
-      const cache = await redis.get(`qbitrace:hash:${torrent.url}`);
-      if (cache) {
-        torrent.hash = cache;
-      } else {
-        try {
-          const { hash } = await exports.getTorrentNameByBencode(torrent.url);
-          torrent.hash = hash;
-          await redis.set(`qbitrace:hash:${torrent.url}`, hash);
-        } catch (e) {
-          await redis.set(`qbitrace:hash:${torrent.url}`, 'skyey' + moment().unix() + 'skyey');
-          throw e;
-        }
+      try {
+        const { hash } = await exports.getTorrentNameByBencode(torrent.url);
+        torrent.hash = hash;
+      } catch (error) {
+        logger.error(`解析 RSS ${rssUrl} 失败:`, error);
       }
     }
     torrent.pubTime = moment(items[i].pubDate[0]).unix();
@@ -440,19 +407,12 @@ const _getTorrentsHDBits = async function (rssUrl) {
     torrent.url = url;
     torrent.link = `https://hdbits.org/details.php?id=${hdbid}&source=browse`;
     if (torrent.url.indexOf('hdbits') !== -1) {
-      const cache = await redis.get(`qbitrace:hash:${torrent.url}`);
-      if (cache) {
-        torrent.hash = cache;
-      } else {
-        try {
-          const { hash, size } = await exports.getTorrentNameByBencode(torrent.url);
-          torrent.hash = hash;
-          torrent.size = size;
-          await redis.set(`qbitrace:hash:${torrent.url}`, JSON.stringify(torrent));
-        } catch (e) {
-          await redis.set(`qbitrace:hash:${torrent.url}`, JSON.stringify({ hash: 'hdbits' + moment().unix() + 'hdbits', size: 0 }));
-          throw e;
-        }
+      try {
+        const { hash, size } = await exports.getTorrentNameByBencode(torrent.url);
+        torrent.hash = hash;
+        torrent.size = size;
+      } catch (error) {
+        logger.error(`解析 RSS ${rssUrl} 失败:`, error);
       }
     }
     torrent.pubTime = moment(items[i].pubDate[0]).unix();
@@ -618,24 +578,15 @@ const _getTorrentsTorrentLeech = async function (rssUrl) {
     torrent.url = items[i].link[0];
     torrent.link = guid;
     torrent.pubTime = moment(items[i].pubDate[0]).unix();
-    const cache = await redis.get(`qbitrace:hash:${torrent.url}`);
-    if (cache) {
-      const _torrent = JSON.parse(cache);
-      torrent.hash = _torrent.hash;
-      torrent.size = _torrent.size;
-    } else {
-      try {
-        const { exists, hash, size } = await exports.getTorrentNameByBencode(torrent.url);
-        if (!exists) {
-          continue;
-        }
-        torrent.hash = hash;
-        torrent.size = size;
-        await redis.set(`qbitrace:hash:${torrent.url}`, JSON.stringify(torrent));
-      } catch (e) {
-        await redis.set(`qbitrace:hash:${torrent.url}`, JSON.stringify({ hash: 'tl' + moment().unix() + 'tl', size: 0 }));
-        throw e;
+    try {
+      const { exists, hash, size } = await exports.getTorrentNameByBencode(torrent.url);
+      if (!exists) {
+        continue;
       }
+      torrent.hash = hash;
+      torrent.size = size;
+    } catch (error) {
+      logger.error(`解析 RSS ${rssUrl} 失败:`, error);
     }
     torrents.push(torrent);
   }
@@ -856,8 +807,8 @@ exports.getTorrents = async function (rssUrl) {
       return await _getTorrentsWrapper[host](rssUrl);
     }
     return await _getTorrents(rssUrl);
-  } catch (e) {
-    logger.error(host, '获取 Rss 报错', e);
+  } catch (error) {
+    logger.error(host, '获取 Rss 报错', error);
     return [];
   }
 };

@@ -1,6 +1,11 @@
-## 数据库不兼容，无法直接导入
-**可手动复制配置文件导入，其他配置兼容。**
-**我会尽可能地向vertex提pr，但由于数据库改了，有些更改客观提不了**
+## 原始项目
+**[vertex 仓库](https://github.com/vertex-app/vertex)**  
+数据库不兼容，无法直接导入
+---
+**可手动复制配置文件导入，其他配置兼容。**  
+**大规模商业使用建议使用原版vertex，本项目未计划提供商业支持**  
+**使用第三方提供的本软件请向第三方咨询技术支持**  
+**欢迎提issue，我会尽快回复，空闲时会尽量解决**
 ---
 本机安装命令
 ```
@@ -16,9 +21,6 @@ sudo chown -R www-data:www-data /app/qbitrace/storage
 sudo chmod -R 755 /app/qbitrace/storage
 docker run -d --name qbitrace --restart unless-stopped --network host -v /app/qbitrace/storage:/pt/qbitrace/storage -e TZ=Asia/Shanghai -e HOST=0.0.0.0 taovoid/qbitrace:latest
 ```
-## 原始项目
-
-[vertex 原始仓库](https://github.com/vertex-app/vertex)  
 ---
 
 ## 相较于原版的改动
@@ -75,6 +77,9 @@ docker run -d --name qbitrace --restart unless-stopped --network host -v /app/qb
 12. **删除fakehash**
    - 对于没有hash的rss链接，改为由链接地址生成hash
 
+13. **更改缓存方式**
+   - 现在缓存为在./app/common/Rss.js统一进行，缓存50秒，而不在./app/libs/rss.js进行。
+   - 缓存的应用场景为对相同rss链接创建多个任务，其他场景请调大rss周期。
 ---
 
 ## 计划的修改
