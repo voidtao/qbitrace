@@ -73,6 +73,7 @@ docker run -d --name qbitrace --restart unless-stopped --network host -v /app/qb
 11. **尝试性支持jackett**
    - 需要反向代理域名内包含jackett
    - rss链接形如jackett.1.com/api/v2.0/indexers......
+   - 对于jackett的rss链接，最好打开跳过大小相同种子的功能，容错更高。
 
 12. **删除fakehash与truehash**
    - 对于没有hash的rss链接，改为由链接地址生成hash

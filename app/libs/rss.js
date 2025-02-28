@@ -160,8 +160,9 @@ const _getTorrentsFileList = async function (rssUrl) {
     torrent.name = items[i].title[0].replace(/\n/, ' ');
     const link = items[i].link[0].match(/https:\/\/filelist.io\/download\.php\?id=\d*/)[0].replace('download', 'details');
     torrent.link = link;
+    const flid = link.substring(link.indexOf('?id=') + 4);
     torrent.url = items[i].link[0];
-    torrent.hash = _getHashLink(link);
+    torrent.hash = _getHashLink(flid);
     torrents.push(torrent);
   }
   return torrents;
@@ -191,7 +192,8 @@ const _getTorrentsBeyondHD = async function (rssUrl) {
     torrent.size = parseFloat(regRes[1]) * map[regRes[2]];
     torrent.name = items[i].title[0].split('\n')[0];
     torrent.link = items[i].guid[0];
-    torrent.hash = _getHashLink(torrent.link);
+    const bhdid = torrent.link.match(/\.(\d+)/)[1];
+    torrent.hash = _getHashLink(bhdid);
     torrent.url = items[i].link[0];
     torrents.push(torrent);
   }
@@ -222,9 +224,10 @@ const _getTorrentsUnit3D2 = async function (rssUrl) {
     torrent.size = parseFloat(regRes[1]) * map[regRes[2]];
     torrent.name = items[i].title[0];
     const link = items[i].link[0];
+    const u3d2id = link.match(/download\/(\d*)\./)[1];
     torrent.url = link;
     torrent.link = link.replace(/download\//, '').replace(/(\d+)\..*/, '$1');
-    torrent.hash = _getHashLink(torrent.link);
+    torrent.hash = _getHashLink(u3d2id);
     torrents.push(torrent);
   }
   return torrents;
@@ -254,8 +257,9 @@ const _getTorrentsUnit3D = async function (rssUrl) {
     torrent.size = parseFloat(regRes[1]) * map[regRes[2]];
     torrent.name = items[i].title[0];
     const link = items[i].link[0];
+    const u3did = link.match(/torrents\/(\d*)/)[1];
     torrent.link = link;
-    torrent.hash = _getHashLink(link);
+    torrent.hash = _getHashLink(u3did);
     torrent.url = items[i].enclosure[0].$.url;
     torrents.push(torrent);
   }
@@ -464,7 +468,7 @@ const _getTorrentsHDCity = async function (rssUrl) {
     const hdcityid = link.substring(link.indexOf('?t=') + 3);
     torrent.link = 'https://hdcity.leniter.org/t-' + hdcityid;
     torrent.url = items[i].enclosure[0].$.url;
-    torrent.hash = _getHashLink(torrent.link);
+    torrent.hash = _getHashLink(hdcityid);
     torrents.push(torrent);
   }
   return torrents;
@@ -487,9 +491,10 @@ const _getTorrentsIPTorrents = async function (rssUrl) {
     torrent.size = util.calSize(...size.split(' '));
     torrent.name = items[i].title[0];
     const link = items[i].link[0];
+    const iptid = link.match(/\/(\d+)\//)[1];
     torrent.link = link;
     torrent.url = items[i].link[0];
-    torrent.hash = _getHashLink(link);
+    torrent.hash = _getHashLink(iptid);
     torrent.pubTime = moment(items[i].pubDate[0]).unix();
     torrents.push(torrent);
   }
@@ -518,9 +523,10 @@ const _getTorrentsLearnFlakes = async function (rssUrl) {
     }
     torrent.name = items[i].title[0];
     const link = items[i].link[0];
+    const lfid = link.match(/&tid=(\d+)/)[1];
     torrent.link = link;
     torrent.url = items[i].guid[0]._;
-    torrent.hash = _getHashLink(link);
+    torrent.hash = _getHashLink(lfid);
     torrent.pubTime = moment(items[i].pubDate[0]).unix();
     torrents.push(torrent);
   }
@@ -666,9 +672,10 @@ const _getTorrentsKimoji = async function (rssUrl) {
     torrent.size = parseFloat(regRes[1]) * map[regRes[2]];
     torrent.name = items[i].title[0];
     const link = items[i].link[0];
+    const kimojiid = link.match(/download\/(\d*)\./)[1];
     torrent.url = link;
     torrent.link = link.replace(/\/torrent\/download\/(\d+).*/, '/torrents/$1');
-    torrent.hash = _getHashLink(torrent.link);
+    torrent.hash = _getHashLink(kimojiid);
     torrents.push(torrent);
   }
   return torrents;
@@ -698,7 +705,7 @@ const _getTorrentsFappaizuri = async function (rssUrl) {
     const fapid = url.match(/id=(\d+)/)[1];
     torrent.link = 'https://fappaizuri.me/torrents-details.php?id=' + fapid;
     torrent.url = url;
-    torrent.hash = _getHashLink(torrent.link);
+    torrent.hash = _getHashLink(fapid);
     torrent.pubTime = moment(items[i].pubDate[0]).unix();
     torrents.push(torrent);
   }
