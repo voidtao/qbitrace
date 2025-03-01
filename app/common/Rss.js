@@ -322,10 +322,10 @@ class Rss {
             if (match) {
               const [, pattern, flags] = match;
               const regex = new RegExp(pattern, flags);
-              await client.addTorrent(torrent.url.replace(regex, this.replaceStr), torrent.hash, false, this.uploadLimit, this.downloadLimit, savePath, category, this.autoTMM, this.paused);
+              await client.addTorrent(torrent.url.replace(regex, this.replaceStr), false, this.uploadLimit, this.downloadLimit, savePath, category, this.autoTMM, this.paused);
             }
           } else {
-            await client.addTorrent(torrent.url, torrent.hash, false, this.uploadLimit, this.downloadLimit, savePath, category, this.autoTMM, this.paused);
+            await client.addTorrent(torrent.url, false, this.uploadLimit, this.downloadLimit, savePath, category, this.autoTMM, this.paused);
           }
         }
         try {

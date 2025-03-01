@@ -301,7 +301,7 @@ class Client {
     }
   };
 
-  async addTorrent (torrentUrl, hash, isSkipChecking = false, uploadLimit = 0, downloadLimit = 0, savePath, category, autoTMM, paused) {
+  async addTorrent (torrentUrl, isSkipChecking = false, uploadLimit = 0, downloadLimit = 0, savePath, category, autoTMM, paused) {
     if (!this.status) {
       throw new Error('客户端' + this.alias + '当前状态为不可用');
     }
