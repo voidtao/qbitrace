@@ -10,16 +10,23 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
+    
+    - name: Get version from package.json
+      id: package-version
+      run: echo "VERSION=$(node -p "require('./package.json').version")" >> $GITHUB_ENV
+      
     - name: Login to Docker Hub
       run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+      
     - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v2 # 添加 setup-buildx-action
+      uses: docker/setup-buildx-action@v3
+      
     - name: Build and push Docker image
-      uses: docker/build-push-action@v3 # 使用 build-push-action 简化构建和推送步骤
+      uses: docker/build-push-action@v6
       with:
         context: .
         file: ./Dockerfile
         push: true
-        tags: taovoid/qbitrace:latest
+        tags: taovoid/qbitrace:latest,taovoid/qbitrace:${{ env.VERSION }}
         platforms: linux/amd64,linux/arm64
         build-args: PAT=${{ secrets.PERSONAL_ACCESS_TOKEN }}
