@@ -101,7 +101,7 @@ exports.addTorrentTag = async function (clientUrl, cookie, hash, tag) {
 };
 
 exports.deleteTorrent = async function (clientUrl, cookie, hash, isDeleteFiles) {
-  await exports.pauseTorrent(clientUrl, cookie, hash);
+  await exports.stopTorrent(clientUrl, cookie, hash);
   const message = {
     url: clientUrl + '/api/v2/torrents/delete',
     method: 'POST',
@@ -133,9 +133,9 @@ exports.reannounceTorrent = async (clientUrl, cookie, hash) => {
   return res;
 };
 
-exports.resumeTorrent = async (clientUrl, cookie, hash) => {
+exports.startTorrent = async (clientUrl, cookie, hash) => {
   const message = {
-    url: clientUrl + '/api/v2/torrents/resume',
+    url: clientUrl + '/api/v2/torrents/start',
     method: 'POST',
     headers: {
       cookie
@@ -148,9 +148,9 @@ exports.resumeTorrent = async (clientUrl, cookie, hash) => {
   return res;
 };
 
-exports.pauseTorrent = async (clientUrl, cookie, hash) => {
+exports.stopTorrent = async (clientUrl, cookie, hash) => {
   const message = {
-    url: clientUrl + '/api/v2/torrents/pause',
+    url: clientUrl + '/api/v2/torrents/stop',
     method: 'POST',
     headers: {
       cookie

@@ -1,6 +1,10 @@
 ## 原始项目
 **[vertex 仓库](https://github.com/vertex-app/vertex)**  
-数据库不兼容，无法直接导入
+数据库不兼容，无法直接导入  
+此分支为适用于qbittorrent 5.x版本的分支，不适用于4.x版本  
+分支对应docker版本号为2.x.x
+---
+如若使用相关js功能，请将resume/pause替换为相应的start/stop
 ---
 **可手动复制配置文件导入，其他配置兼容。**  
 **大规模商业使用建议使用原版vertex，本项目未计划提供商业支持**  

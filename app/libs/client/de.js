@@ -261,7 +261,7 @@ exports.reannounceTorrent = async function (clientUrl, cookie, hash) {
   return res;
 };
 
-exports.pauseTorrent = async function (clientUrl, cookie, hash) {
+exports.stopTorrent = async function (clientUrl, cookie, hash) {
   const message = {
     method: 'POST',
     url: clientUrl + '/json',
@@ -284,7 +284,7 @@ exports.pauseTorrent = async function (clientUrl, cookie, hash) {
 
 exports.deleteTorrent = async function (clientUrl, cookie, hash, isDeleteFiles) {
   // Deluge删除种子不先暂停有可能会丢最后一次汇报的流量
-  await exports.pauseTorrent(clientUrl, cookie, hash);
+  await exports.stopTorrent(clientUrl, cookie, hash);
   const message = {
     method: 'POST',
     url: clientUrl + '/json',

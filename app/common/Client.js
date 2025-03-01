@@ -63,7 +63,7 @@ class Client {
     this.recordJob = cron.schedule('20 */5 * * * *', () => this.record());
     this.messageId = 0;
     this.errorCount = 0;
-    this.pausedTorrentHashes = [];
+    this.stopedTorrentHashes = [];
     this.getMaindata();
     this.avgUploadSpeed = 0;
     this.avgDownloadSpeed = 0;
@@ -356,10 +356,10 @@ class Client {
       }
       if (rule.limitSpeed) {
         await this.setSpeedLimit(torrent.hash, 'download', rule.limitSpeed);
-        this.pausedTorrentHashes.push(torrent.hash);
+        this.stopedTorrentHashes.push(torrent.hash);
       } else if (rule.pause) {
-        await this.pauseTorrent(torrent.hash);
-        this.pausedTorrentHashes.push(torrent.hash);
+        await this.stopTorrent(torrent.hash);
+        this.stopedTorrentHashes.push(torrent.hash);
       } else {
         await this.client.deleteTorrent(this.clientUrl, this.cookie, torrent.hash, isDeleteFiles);
       }
@@ -418,7 +418,7 @@ class Client {
           logger.debug('规则', rule.alias, ', 种子', torrent.name, '已删除', '跳过');
           continue;
         }
-        if ((rule.limitSpeed || rule.pause) && this.pausedTorrentHashes.includes(torrent.hash)) {
+        if ((rule.limitSpeed || rule.pause) && this.stopedTorrentHashes.includes(torrent.hash)) {
           logger.debug('规则', rule.alias, ', 种子', torrent.name, '已暂停或限速', '跳过');
           continue;
         }
@@ -490,15 +490,15 @@ class Client {
     }
   }
 
-  async resumeTorrent (hash) {
+  async startTorrent (hash) {
     if (this._client.type === 'qBittorrent') {
-      await this.client.resumeTorrent(this.clientUrl, this.cookie, hash);
+      await this.client.startTorrent(this.clientUrl, this.cookie, hash);
     }
   }
 
-  async pauseTorrent (hash) {
+  async stopTorrent (hash) {
     if (this._client.type === 'qBittorrent') {
-      await this.client.pauseTorrent(this.clientUrl, this.cookie, hash);
+      await this.client.stopTorrent(this.clientUrl, this.cookie, hash);
     }
   }
 
