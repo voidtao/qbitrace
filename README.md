@@ -2,6 +2,8 @@
 **[vertex 仓库](https://github.com/vertex-app/vertex)**  
 数据库不兼容，无法直接导入
 ---
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=voidtao_qbitrace&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=voidtao_qbitrace)
+---
 **可手动复制配置文件导入，其他配置兼容。**  
 **大规模商业使用建议使用原版vertex，本项目未计划提供商业支持**  
 **使用第三方提供的本软件请向第三方咨询技术支持**  
