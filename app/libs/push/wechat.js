@@ -16,7 +16,7 @@ class Wechat {
     if (global.wechatProxy) {
       this.WechatUrl = global.wechatProxy;
     } else {
-      this.WechatUrl = this.proxyKey ? 'https://dash.qbitrace-app.top/proxy/' + this.proxyKey + '/' : 'https://qyapi.weixin.qq.com/';
+      this.WechatUrl = this.proxyKey ? 'https://dash.vertex-app.top/proxy/' + this.proxyKey + '/' : 'https://qyapi.weixin.qq.com/';
     }
   };
 
@@ -54,8 +54,8 @@ class Wechat {
           {
             title: text,
             description: desp,
-            url: 'https://qbitrace.icu',
-            picurl: `https://image.qbitrace-app.top/api/image/cut/0.425/${path.basename(_poster)}/${encodeURIComponent(_poster)}`
+            url: 'https://wiki.vertex-app.top',
+            picurl: `https://image.vertex-app.top/api/image/cut/0.425/${path.basename(_poster)}/${encodeURIComponent(_poster)}`
           }
         ]
       };
