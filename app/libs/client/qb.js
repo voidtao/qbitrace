@@ -59,7 +59,7 @@ exports.getCachedApiVersion = async function (clientUrl, cookie) {
   }
 };
 
-const isVersionGreaterThan = function (version, compareVersion) {
+exports.isVersionGreaterThan = function (version, compareVersion) {
   const v1 = version.split('.').map(Number);
   const v2 = compareVersion.split('.').map(Number);
   
