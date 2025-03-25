@@ -40,22 +40,6 @@ class Webhook {
     await this.pushWebhook('rss.torrent.add', { rss, client, torrent });
   };
 
-  async addDoubanTorrent (client, torrent, rule, wish) {
-    await this.pushWebhook('douban.select.add', { client, torrent, rule, wish });
-  };
-
-  async addDoubanTorrentError (client, torrent, rule, wish) {
-    await this.pushWebhook('douban.select.add.error', { client, torrent, rule, wish });
-  };
-
-  async addDouban (alias, wishes) {
-    await this.pushWebhook('douban.task.add', { alias, wishes });
-  };
-
-  async addDoubanWish (alias, wish) {
-    await this.pushWebhook('douban.wish.add', { alias, wish });
-  };
-
   async addTorrentError (rss, client, torrent) {
     await this.pushWebhook('rss.torrent.add.error', { rss, client, torrent });
   };
