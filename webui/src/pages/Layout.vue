@@ -156,16 +156,6 @@ export default {
     } catch (e) {
       this.$message().error(e.message);
     }
-    /*
-    window.less.modifyVars({
-      'component-background': 'purple',
-      'layout-body-background': 'purple'
-    }).then((res) => {
-      console.log('成功');
-    }).catch((res) => {
-      console.log('错误');
-    });
-    */
   }
 };
 </script>
