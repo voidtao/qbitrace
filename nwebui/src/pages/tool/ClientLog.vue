@@ -1,87 +1,66 @@
 <template>
-  <div style="font-size: 24px; font-weight: bold;">下载器日志</div>
-  <a-divider></a-divider>
-  <div class="client-log">
-    <a-table
-      :style="`font-size: ${isMobile() ? '12px': '14px'};`"
-      :columns="columns"
-      size="small"
-      :data-source="logs"
-      :pagination="pagination"
-      :scroll="{ x: 640 }"
-    >
-      <template #title>
-        <span style="font-size: 16px; font-weight: bold;">下载器日志</span>
-      </template>
-      <template #bodyCell="{ column, record }">
-        <template v-if="column.dataIndex === 'timestamp'">
-          {{ $moment(record.timestamp > 1e11 ? record.timestamp : record.timestamp * 1e3).format('YYYY-MM-DD HH:mm:ss') }}
-        </template>
-        <template v-if="column.dataIndex === 'message'">
-          <span :style="`${record.type === 4 ? 'color: red' : ''}`">{{ record.message }}</span>
-        </template>
-      </template>
-    </a-table>
+  <div class="container mx-auto px-4 py-8 max-w-7xl">
+    <h1 class="text-2xl font-bold mb-6">下载器日志</h1>
+    <div class="divider"></div>
+    
+    <div class="card bg-base-100 shadow-xl">
+      <div class="card-body">
+        <div class="overflow-x-auto">
+          <table class="table table-zebra">
+            <thead>
+              <tr>
+                <th>时间</th>
+                <th>信息</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="log in logs" :key="log.timestamp">
+                <td>{{ formatTimestamp(log.timestamp) }}</td>
+                <td :class="{ 'text-error': log.type === 4 }">{{ log.message }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
-<script>
-export default {
-  data () {
-    const columns = [
-      {
-        title: '时间',
-        dataIndex: 'timestamp',
-        width: 16,
-        fixed: true
-      }, {
-        title: '信息',
-        dataIndex: 'message',
-        width: 96
-      }
-    ];
-    const pagination = {
-      position: ['topRight', 'bottomRight'],
-      total: 0,
-      pageSize: 100,
-      showSizeChanger: false
-    };
-    return {
-      pagination,
-      columns,
-      logs: []
-    };
-  },
-  methods: {
-    isMobile () {
-      if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-        return true;
-      } else {
-        return false;
-      }
-    },
-    async getLog () {
-      try {
-        const res = await this.$api().downloader.getLogs(this.$route.query.id);
-        this.logs = res.data.reverse();
-        this.pagination.total = this.logs.length;
-      } catch (e) {
-        this.$message().error(e.message);
-      }
-    }
-  },
-  async mounted () {
-    if (!this.$route.query.id) {
-      await this.$message().error('当前页面需要从下载器页面进入!');
-      return;
-    }
-    await this.getLog();
+
+<script setup>
+import { ref, onMounted } from 'vue'
+import { useToast } from 'vue-toastification'
+import { useRoute } from 'vue-router'
+import moment from 'moment'
+
+const toast = useToast()
+const route = useRoute()
+const logs = ref([])
+
+const formatTimestamp = (timestamp) => {
+  return moment(timestamp > 1e11 ? timestamp : timestamp * 1e3).format('YYYY-MM-DD HH:mm:ss')
+}
+
+const getLog = async () => {
+  try {
+    const response = await fetch(`/api/downloader/logs/${route.query.id}`)
+    const data = await response.json()
+    logs.value = data.reverse()
+  } catch (error) {
+    toast.error(error.message)
   }
-};
+}
+
+onMounted(async () => {
+  if (!route.query.id) {
+    toast.error('当前页面需要从下载器页面进入!')
+    return
+  }
+  await getLog()
+})
 </script>
+
 <style scoped>
-.client-log {
-  width: 100%;
+.container {
   max-width: 1440px;
-  margin: 0 auto;
 }
 </style>

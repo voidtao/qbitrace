@@ -96,7 +96,6 @@ const ruleRssRoute = {
   ]
 };
 
-
 const baseDownloaderRoute = {
   path: 'base/downloader',
   component: Layout,
@@ -352,7 +351,26 @@ const routes = [
   }
 ];
 
-export default createRouter({
+const router = createRouter({
   history: createWebHistory(),
   routes
 });
+
+router.beforeEach(async (to, from, next) => {
+  if (to.path === '/user/login') {
+    next();
+  } else {
+    try {
+      await router.app.$api().user.info();
+      next();
+    } catch (e) {
+      if (e.message === '需要登录') {
+        next('/user/login');
+      } else {
+        next();
+      }
+    }
+  }
+});
+
+export default router;

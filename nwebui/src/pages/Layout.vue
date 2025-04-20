@@ -1,125 +1,197 @@
 <template>
-  <div class="drawer lg:drawer-open">
-    <input id="my-drawer" type="checkbox" class="drawer-toggle" v-model="visible" />
-    
-    <div class="drawer-content flex flex-col">
-      <div class="w-full navbar bg-base-100 lg:hidden">
-        <div class="flex-none">
-          <label for="my-drawer" class="btn btn-square btn-ghost">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="inline-block w-5 h-5 stroke-current">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-            </svg>
-          </label>
+  <div class="min-h-screen flex">
+    <!-- 侧边栏 -->
+    <div class="hidden md:block w-64 bg-base-200">
+      <div class="h-full flex flex-col">
+        <div class="p-4">
+          <div class="flex items-center cursor-pointer" @click="gotoWiki">
+            <img src="/assets/images/logo.svg" class="w-8 h-8" alt="logo"/>
+            <span class="text-xl font-bold ml-2">qbitrace</span>
+          </div>
         </div>
-        <div class="flex-1">
-          <div class="flex items-center justify-center">
-            <div class="w-6 h-6 mr-2">
-              <img src="/assets/images/logo.svg" alt="logo" class="w-full h-full" />
+        
+        <div class="flex-1 overflow-y-auto">
+          <ul class="menu p-4">
+            <template v-for="item in menu" :key="item.path">
+              <li v-if="!item.hidden && !item.sub">
+                <a 
+                  :class="{ 'active': selectedKeys.includes(item.path) }"
+                  @click="goto(item.path)"
+                >
+                  <i class="w-8">
+                    <fa-icon :icon="item.icon"/>
+                  </i>
+                  {{ item.title }}
+                </a>
+              </li>
+              
+              <li v-if="!item.hidden && item.sub">
+                <details :open="openKeys.includes(item.path)">
+                  <summary>
+                    <i class="w-8">
+                      <fa-icon :icon="item.icon"/>
+                    </i>
+                    {{ item.title }}
+                  </summary>
+                  <ul>
+                    <li 
+                      v-for="subItem in item.sub" 
+                      :key="subItem.path"
+                      v-if="!subItem.hidden"
+                    >
+                      <a 
+                        :class="{ 'active': selectedKeys.includes(subItem.path) }"
+                        @click="goto(subItem.path)"
+                      >
+                        <i class="w-8">
+                          <fa-icon :icon="subItem.icon"/>
+                        </i>
+                        {{ subItem.title }}
+                      </a>
+                    </li>
+                  </ul>
+                </details>
+              </li>
+            </template>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- 移动端抽屉 -->
+    <div class="drawer md:hidden">
+      <input id="drawer" type="checkbox" class="drawer-toggle" v-model="visible"/>
+      <div class="drawer-content">
+        <div class="navbar bg-base-100">
+          <div class="flex-none">
+            <label for="drawer" class="btn btn-square btn-ghost">
+              <fa-icon :icon="['fas', 'bars']"/>
+            </label>
+          </div>
+          <div class="flex-1">
+            <div class="flex items-center">
+              <img src="/assets/images/logo.svg" class="w-8 h-8" alt="logo"/>
+              <span class="text-xl font-bold ml-2">qbitrace</span>
             </div>
-            <span class="text-xl font-bold">qbitrace</span>
           </div>
         </div>
       </div>
-      
-      <div class="p-4">
-        <router-view></router-view>
+      <div class="drawer-side">
+        <label for="drawer" class="drawer-overlay"></label>
+        <ul class="menu p-4 w-80 min-h-full bg-base-200">
+          <div class="p-4">
+            <div class="flex items-center cursor-pointer" @click="gotoWiki">
+              <img src="/assets/images/logo.svg" class="w-8 h-8" alt="logo"/>
+              <span class="text-xl font-bold ml-2">qbitrace</span>
+            </div>
+          </div>
+          
+          <template v-for="item in menu" :key="item.path">
+            <li v-if="!item.hidden && !item.sub">
+              <a 
+                :class="{ 'active': selectedKeys.includes(item.path) }"
+                @click="goto(item.path); visible = false"
+              >
+                <i class="w-8">
+                  <fa-icon :icon="item.icon"/>
+                </i>
+                {{ item.title }}
+              </a>
+            </li>
+            
+            <li v-if="!item.hidden && item.sub">
+              <details :open="openKeys.includes(item.path)">
+                <summary>
+                  <i class="w-8">
+                    <fa-icon :icon="item.icon"/>
+                  </i>
+                  {{ item.title }}
+                </summary>
+                <ul>
+                  <li 
+                    v-for="subItem in item.sub" 
+                    :key="subItem.path"
+                    v-if="!subItem.hidden"
+                  >
+                    <a 
+                      :class="{ 'active': selectedKeys.includes(subItem.path) }"
+                      @click="goto(subItem.path); visible = false"
+                    >
+                      <i class="w-8">
+                        <fa-icon :icon="subItem.icon"/>
+                      </i>
+                      {{ subItem.title }}
+                    </a>
+                  </li>
+                </ul>
+              </details>
+            </li>
+          </template>
+        </ul>
       </div>
     </div>
-    
-    <div class="drawer-side">
-      <label for="my-drawer" class="drawer-overlay"></label>
-      <ul class="menu p-4 w-80 h-full bg-base-200 text-base-content">
-        <li v-for="menu in menus" :key="menu.key">
-          <router-link :to="menu.key" :class="{'active': $route.path === menu.key}">
-            <font-awesome-icon :icon="menu.icon" />
-            {{ menu.text }}
-          </router-link>
-        </li>
-      </ul>
+
+    <!-- 主内容区 -->
+    <div class="flex-1 overflow-y-auto">
+      <router-view></router-view>
     </div>
   </div>
 </template>
 
-<script>
-export default {
-  data () {
-    return {
-      menus: [
-        {
-          key: '/',
-          text: '仪表盘',
-          icon: ['fas', 'chart-line']
-        },
-        {
-          key: '/task/rss',
-          text: 'RSS任务',
-          icon: ['fas', 'rss']
-        },
-        {
-          key: '/task/script',
-          text: '定时脚本',
-          icon: ['fas', 'clock']
-        },
-        {
-          key: '/setting/style',
-          text: '主题设置',
-          icon: ['fas', 'palette']
-        },
-        {
-          key: '/setting/base',
-          text: '基础设置',
-          icon: ['fas', 'cog']
-        },
-        {
-          key: '/setting/security',
-          text: '安全设置',
-          icon: ['fas', 'shield-alt']
-        },
-        {
-          key: '/setting/backup',
-          text: '备份还原',
-          icon: ['fas', 'archive']
-        },
-        {
-          key: '/info/info',
-          text: '相关信息',
-          icon: ['fas', 'info-circle']
-        },
-        {
-          key: '/info/log',
-          text: '日志',
-          icon: ['fas', 'clipboard-list']
-        }
-      ],
-      visible: false
-    };
-  },
-  methods: {
-    isMobile () {
-      if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-        return true;
-      } else {
-        return false;
-      }
-    },
-    async getUserInfo () {
-      try {
-        await this.$api().user.info();
-      } catch (e) {
-        if (e.message === '需要登录') {
-          this.$router.push('/user/login');
-        }
+<script setup>
+import { ref, onMounted } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { useToast } from 'vue-toastification'
+
+const route = useRoute()
+const router = useRouter()
+const toast = useToast()
+
+const selectedKeys = ref([])
+const openKeys = ref([])
+const visible = ref(false)
+const menu = ref([])
+
+const goto = (to) => {
+  router.push(to)
+  setTimeout(() => {
+    selectedKeys.value = [route.path]
+    const keys = []
+    for (const item of menu.value.filter(item => item.sub)) {
+      if (route.path.startsWith(item.path)) {
+        keys.push(item.path)
       }
     }
-  },
-  async mounted () {
-    await this.getUserInfo();
+    openKeys.value = keys
+  }, 100)
+}
+
+const gotoWiki = () => {
+  window.open('https://wiki.vertex-app.top')
+}
+
+onMounted(async () => {
+  selectedKeys.value = [route.path]
+  try {
+    const response = await fetch('/api/user')
+    const data = await response.json()
+    toast.success('欢迎回来')
+    menu.value = data.menu
+    const keys = []
+    for (const item of menu.value.filter(item => item.sub)) {
+      if (route.path.startsWith(item.path)) {
+        keys.push(item.path)
+      }
+    }
+    openKeys.value = keys
+  } catch (error) {
+    toast.error(error.message)
   }
-};
+})
 </script>
 
 <style scoped>
-.menu .active {
-  @apply bg-primary text-primary-content;
+.min-h-screen {
+  min-height: 100vh;
 }
 </style>

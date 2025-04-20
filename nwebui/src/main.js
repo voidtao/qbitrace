@@ -68,7 +68,6 @@ app.use(router);
 const message = () => {
   return {
     success: (msg) => {
-      // 使用 DaisyUI 的 toast 组件
       const toast = document.createElement('div');
       toast.className = 'toast toast-top toast-end';
       toast.innerHTML = `

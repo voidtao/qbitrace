@@ -21,12 +21,12 @@
             <td>{{ record.alias }}</td>
             <td>{{ record.type }}</td>
             <td>
-              <span
-                class="badge"
-                :class="record.enable ? 'badge-success' : 'badge-error'"
-              >
-                {{ record.enable ? '启用' : '禁用' }}
-              </span>
+              <input
+                type="checkbox"
+                class="toggle toggle-primary"
+                :checked="record.enable"
+                @change="enableNotification(record)"
+              />
             </td>
             <td>
               <span
@@ -40,9 +40,17 @@
               <button class="btn btn-sm btn-secondary" @click="modifyClick(record)">
                 编辑
               </button>
-              <button class="btn btn-sm btn-error" @click="deleteNotification(record)">
-                删除
-              </button>
+              <div class="dropdown dropdown-end inline-block">
+                <button class="btn btn-sm btn-error">删除</button>
+                <div class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
+                  <div class="p-2">
+                    <p class="text-sm">确定要删除吗？</p>
+                    <button class="btn btn-sm btn-error w-full mt-2" @click="deleteNotification(record)">
+                      确认删除
+                    </button>
+                  </div>
+                </div>
+              </div>
             </td>
           </tr>
         </tbody>
@@ -89,7 +97,7 @@
         <label class="label">
           <span class="label-text">类型</span>
         </label>
-        <select v-model="notification.type" class="select select-bordered">
+        <select v-model="notification.type" class="select select-bordered" required>
           <option value="telegram">Telegram</option>
           <option value="wechat">WeChat</option>
           <option value="slack">Slack</option>
@@ -97,28 +105,195 @@
           <option value="webhook">Webhook</option>
         </select>
       </div>
-      <div v-if="notification.type === 'telegram'" class="form-control">
-        <label class="label">
-          <span class="label-text">机器人 Token</span>
-        </label>
-        <input
-          type="text"
-          v-model="notification.telegramBotToken"
-          class="input input-bordered"
-          required
-        />
-      </div>
-      <div v-if="notification.type === 'telegram'" class="form-control">
-        <label class="label">
-          <span class="label-text">频道 ID</span>
-        </label>
-        <input
-          type="text"
-          v-model="notification.telegramChannel"
-          class="input input-bordered"
-          required
-        />
-      </div>
+
+      <!-- Telegram 配置 -->
+      <template v-if="notification.type === 'telegram'">
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text">机器人 Token</span>
+          </label>
+          <input
+            type="text"
+            v-model="notification.telegramBotToken"
+            class="input input-bordered"
+            required
+          />
+        </div>
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text">频道 ID</span>
+          </label>
+          <input
+            type="text"
+            v-model="notification.telegramChannel"
+            class="input input-bordered"
+            required
+          />
+        </div>
+      </template>
+
+      <!-- WeChat 配置 -->
+      <template v-if="notification.type === 'wechat'">
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text">企业 ID</span>
+          </label>
+          <input
+            type="text"
+            v-model="notification.corpid"
+            class="input input-bordered"
+            required
+          />
+        </div>
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text">Agent ID</span>
+          </label>
+          <input
+            type="text"
+            v-model="notification.agentid"
+            class="input input-bordered"
+            required
+          />
+        </div>
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text">Secret</span>
+          </label>
+          <input
+            type="text"
+            v-model="notification.corpsecret"
+            class="input input-bordered"
+            required
+          />
+        </div>
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text">ProxyKey</span>
+          </label>
+          <input
+            type="text"
+            v-model="notification.proxyKey"
+            class="input input-bordered"
+          />
+        </div>
+      </template>
+
+      <!-- Ntfy 配置 -->
+      <template v-if="notification.type === 'ntfy'">
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text">Ntfy URL</span>
+          </label>
+          <input
+            type="text"
+            v-model="notification.ntfyUrl"
+            class="input input-bordered"
+            placeholder="格式: https://ntfy.sh/mytopic"
+            required
+          />
+        </div>
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text">用户名</span>
+          </label>
+          <input
+            type="text"
+            v-model="notification.ntfyUsername"
+            class="input input-bordered"
+          />
+        </div>
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text">密码</span>
+          </label>
+          <input
+            type="password"
+            v-model="notification.ntfyPassword"
+            class="input input-bordered"
+          />
+        </div>
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text">Token</span>
+          </label>
+          <input
+            type="text"
+            v-model="notification.ntfyToken"
+            class="input input-bordered"
+            placeholder="使用Token或用户名+密码进行认证"
+          />
+        </div>
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text">优先级</span>
+          </label>
+          <input
+            type="number"
+            v-model="notification.ntfyPriority"
+            class="input input-bordered"
+            placeholder="5最高, 1最低, 不填写为默认值3"
+            min="1"
+            max="5"
+          />
+        </div>
+      </template>
+
+      <!-- Slack 配置 -->
+      <template v-if="notification.type === 'slack'">
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text">Webhook</span>
+          </label>
+          <input
+            type="text"
+            v-model="notification.slackWebhook"
+            class="input input-bordered"
+            required
+          />
+        </div>
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text">Token</span>
+          </label>
+          <input
+            type="text"
+            v-model="notification.slackToken"
+            class="input input-bordered"
+            placeholder="如果仅使用推送通知功能，可随意填写内容"
+            required
+          />
+        </div>
+      </template>
+
+      <!-- Webhook 配置 -->
+      <template v-if="notification.type === 'webhook'">
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text">Url</span>
+          </label>
+          <input
+            type="text"
+            v-model="notification.webhookurl"
+            class="input input-bordered"
+            placeholder="填写目标地址, 请注意推送内容中包含敏感信息, 因此必须保证目标地址可信"
+            required
+          />
+        </div>
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text">Token</span>
+          </label>
+          <input
+            type="text"
+            v-model="notification.token"
+            class="input input-bordered"
+            placeholder="在请求时会将 token 放入请求头的 x-qbitrace-token 中"
+            required
+          />
+        </div>
+      </template>
+
       <div class="form-control">
         <label class="label">
           <span class="label-text">推送类型</span>
@@ -160,7 +335,28 @@ export default {
         maxErrorCount: '',
         clearCountCron: '',
         type: '',
-        pushType: []
+        pushType: [],
+        enable: true,
+        // Telegram
+        telegramBotToken: '',
+        telegramChannel: '',
+        // WeChat
+        corpid: '',
+        agentid: '',
+        corpsecret: '',
+        proxyKey: '',
+        // Ntfy
+        ntfyUrl: '',
+        ntfyUsername: '',
+        ntfyPassword: '',
+        ntfyToken: '',
+        ntfyPriority: '',
+        // Slack
+        slackWebhook: '',
+        slackToken: '',
+        // Webhook
+        webhookurl: '',
+        token: ''
       },
       pushType: [
         { key: 'rssError', value: 'Rss 失败' },
@@ -200,6 +396,15 @@ export default {
         this.$message().error(e.message);
       }
     },
+    async enableNotification(record) {
+      try {
+        await this.$api().notification.modify({ ...record, enable: !record.enable });
+        this.$message().success('状态更新成功');
+        this.listNotification();
+      } catch (e) {
+        this.$message().error(e.message);
+      }
+    },
     modifyClick(record) {
       this.notification = { ...record };
     },
@@ -210,7 +415,28 @@ export default {
         maxErrorCount: '',
         clearCountCron: '',
         type: '',
-        pushType: []
+        pushType: [],
+        enable: true,
+        // Telegram
+        telegramBotToken: '',
+        telegramChannel: '',
+        // WeChat
+        corpid: '',
+        agentid: '',
+        corpsecret: '',
+        proxyKey: '',
+        // Ntfy
+        ntfyUrl: '',
+        ntfyUsername: '',
+        ntfyPassword: '',
+        ntfyToken: '',
+        ntfyPriority: '',
+        // Slack
+        slackWebhook: '',
+        slackToken: '',
+        // Webhook
+        webhookurl: '',
+        token: ''
       };
     },
     async deleteNotification(record) {

@@ -43,6 +43,7 @@ export default {
 </script>
 
 <style>
+@import './style/theme.css';
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -59,7 +60,6 @@ html, body {
   width: 100%;
 }
 
-@import './style/theme.css';
 
 @font-face {
   font-family: 'consolas';

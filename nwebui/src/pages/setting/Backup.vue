@@ -1,87 +1,130 @@
 <template>
-  <div>
-    <h1 class="text-2xl font-bold">备份还原</h1>
+  <div class="container mx-auto px-4 py-8 max-w-7xl">
+    <h1 class="text-2xl font-bold mb-6">备份设置</h1>
     <div class="divider"></div>
     
-    <form class="space-y-4">
-      <div class="form-control">
-        <label class="label cursor-pointer">
-          <span class="label-text">种子文件</span>
-          <span class="label-text-alt">备份时是否备份种子文件, 如不备份, 恢复时将清空所有已有种子</span>
-          <input type="checkbox" v-model="setting.backupTorrent" class="toggle toggle-primary" />
-        </label>
-      </div>
+    <div class="card bg-base-100 shadow-xl">
+      <div class="card-body">
+        <form @submit.prevent="modify" class="space-y-6">
+          <div class="form-control">
+            <label class="label">
+              <span class="label-text">备份路径</span>
+            </label>
+            <input 
+              type="text" 
+              v-model="setting.backupPath"
+              class="input input-bordered"
+              placeholder="备份文件保存路径"
+            />
+            <label class="label">
+              <span class="label-text-alt">备份文件保存路径，留空则使用默认路径</span>
+            </label>
+          </div>
 
-      <div class="form-control">
-        <label class="label">
-          <span class="label-text">备份</span>
-        </label>
-        <button type="button" class="btn btn-primary" @click="backupqbitrace">下载备份</button>
-      </div>
+          <div class="form-control">
+            <label class="label">
+              <span class="label-text">备份间隔</span>
+            </label>
+            <input 
+              type="number" 
+              v-model="setting.backupInterval"
+              class="input input-bordered"
+              placeholder="备份间隔（小时）"
+            />
+            <label class="label">
+              <span class="label-text-alt">自动备份的时间间隔，单位为小时，0表示禁用自动备份</span>
+            </label>
+          </div>
 
-      <div class="form-control">
-        <label class="label">
-          <span class="label-text">恢复</span>
-        </label>
-        <input type="file" 
-               class="file-input file-input-bordered w-full" 
-               @change="handleFileChange"
-               accept=".zip" />
+          <div class="form-control">
+            <label class="label">
+              <span class="label-text">保留备份数量</span>
+            </label>
+            <input 
+              type="number" 
+              v-model="setting.backupCount"
+              class="input input-bordered"
+              placeholder="保留的备份文件数量"
+            />
+            <label class="label">
+              <span class="label-text-alt">保留的备份文件数量，超过此数量将自动删除最旧的备份</span>
+            </label>
+          </div>
+
+          <div class="form-control">
+            <label class="label cursor-pointer">
+              <span class="label-text">启用自动备份</span>
+              <input 
+                type="checkbox" 
+                v-model="setting.autoBackup"
+                class="checkbox checkbox-primary"
+              />
+            </label>
+            <label class="label">
+              <span class="label-text-alt">是否启用自动备份功能</span>
+            </label>
+          </div>
+
+          <div class="form-control mt-6">
+            <button type="submit" class="btn btn-primary">保存</button>
+          </div>
+        </form>
       </div>
-    </form>
+    </div>
   </div>
 </template>
 
-<script>
-export default {
-  data() {
-    return {
-      setting: {
-        backupTorrent: false
-      }
-    };
-  },
-  methods: {
-    isMobile() {
-      return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-    },
-    async backupqbitrace() {
-      const url = this.setting.backupTorrent
-        ? '/api/setting/backupqbitrace?bt=true'
-        : '/api/setting/backupqbitrace';
-      window.open(url);
-    },
-    async handleFileChange(event) {
-      const file = event.target.files[0];
-      if (!file) return;
+<script setup>
+import { ref, onMounted } from 'vue'
+import { useToast } from 'vue-toastification'
 
-      const formData = new FormData();
-      formData.append('file', file);
+const toast = useToast()
+const setting = ref({
+  backupPath: '',
+  backupInterval: 24,
+  backupCount: 7,
+  autoBackup: true
+})
 
-      try {
-        const res = await fetch('/api/setting/restoreqbitrace', {
-          method: 'POST',
-          body: formData
-        });
-
-        if (res.ok) {
-          this.$message.success('恢复备份成功, 重启后生效');
-        } else {
-          this.$message.error('恢复备份失败');
-        }
-      } catch (e) {
-        this.$message.error('恢复备份失败');
-      }
+const get = async () => {
+  try {
+    const response = await fetch('/api/setting/backup')
+    const data = await response.json()
+    setting.value = {
+      backupPath: data.backupPath,
+      backupInterval: data.backupInterval,
+      backupCount: data.backupCount,
+      autoBackup: data.autoBackup
     }
+  } catch (error) {
+    toast.error(error.message)
   }
-};
+}
+
+const modify = async () => {
+  try {
+    const response = await fetch('/api/setting/backup', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(setting.value)
+    })
+    if (!response.ok) throw new Error('保存失败')
+    toast.success('修改成功')
+    await get()
+  } catch (error) {
+    toast.error(error.message)
+  }
+}
+
+onMounted(() => {
+  get()
+})
 </script>
 
 <style scoped>
-.backup {
-  height: calc(100% - 92px);
-  width: 100%;
+.container {
   max-width: 1440px;
-  margin: 0 auto;
 }
 </style>
