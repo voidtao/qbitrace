@@ -12,7 +12,7 @@
         
         <div class="flex-1 overflow-y-auto">
           <ul class="menu p-4">
-            <template v-for="item in menu" :key="item.path">
+            <template v-for="item of menu">
               <li v-if="!item.hidden && !item.sub">
                 <a 
                   :class="{ 'active': selectedKeys.includes(item.path) }"
@@ -35,7 +35,7 @@
                   </summary>
                   <ul>
                     <li 
-                      v-for="subItem in item.sub" 
+                      v-for="subItem of item.sub" 
                       :key="subItem.path"
                       v-if="!subItem.hidden"
                     >
@@ -86,7 +86,7 @@
             </div>
           </div>
           
-          <template v-for="item in menu" :key="item.path">
+          <template v-for="item of menu">
             <li v-if="!item.hidden && !item.sub">
               <a 
                 :class="{ 'active': selectedKeys.includes(item.path) }"
@@ -109,7 +109,7 @@
                 </summary>
                 <ul>
                   <li 
-                    v-for="subItem in item.sub" 
+                    v-for="subItem of item.sub" 
                     :key="subItem.path"
                     v-if="!subItem.hidden"
                   >
@@ -138,56 +138,59 @@
   </div>
 </template>
 
-<script setup>
-import { ref, onMounted } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
-import { useToast } from 'vue-toastification'
-
-const route = useRoute()
-const router = useRouter()
-const toast = useToast()
-
-const selectedKeys = ref([])
-const openKeys = ref([])
-const visible = ref(false)
-const menu = ref([])
-
-const goto = (to) => {
-  router.push(to)
-  setTimeout(() => {
-    selectedKeys.value = [route.path]
-    const keys = []
-    for (const item of menu.value.filter(item => item.sub)) {
-      if (route.path.startsWith(item.path)) {
-        keys.push(item.path)
+<script>
+export default {
+  data () {
+    return {
+      selectedKeys: [],
+      openKeys: [],
+      visible: false,
+      menu: []
+    };
+  },
+  methods: {
+    isMobile () {
+      if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+        return true;
+      } else {
+        return false;
       }
+    },
+    async goto (to) {
+      this.$goto(to, this.$router);
+      setTimeout(() => {
+        this.selectedKeys = [this.$route.path];
+        const keys = [];
+        for (const item of this.menu.filter(item => item.sub)) {
+          if (this.$route.path.startsWith(item.path)) {
+            keys.push(item.path);
+          }
+        }
+        this.openKeys = keys;
+      }, 100);
+    },
+    async gotoWiki () {
+      window.open('https://wiki.vertex-app.top');
     }
-    openKeys.value = keys
-  }, 100)
-}
-
-const gotoWiki = () => {
-  window.open('https://wiki.vertex-app.top')
-}
-
-onMounted(async () => {
-  selectedKeys.value = [route.path]
-  try {
-    const response = await fetch('/api/user')
-    const data = await response.json()
-    toast.success('欢迎回来')
-    menu.value = data.menu
-    const keys = []
-    for (const item of menu.value.filter(item => item.sub)) {
-      if (route.path.startsWith(item.path)) {
-        keys.push(item.path)
+  },
+  async mounted () {
+    this.selectedKeys = [this.$route.path];
+    try {
+      const res = await this.$api().user.get();
+      this.$message().success('欢迎回来');
+      this.menu = res.data.menu;
+      const keys = [];
+      for (const item of this.menu.filter(item => item.sub)) {
+        if (this.$route.path.startsWith(item.path)) {
+          keys.push(item.path);
+        }
       }
+      this.openKeys = keys;
+    } catch (e) {
+      this.$message().error(e.message);
     }
-    openKeys.value = keys
-  } catch (error) {
-    toast.error(error.message)
   }
-})
+};
 </script>
 
 <style scoped>
