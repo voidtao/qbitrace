@@ -1,41 +1,40 @@
 <template>
-  <div class="container mx-auto px-4 py-8 max-w-7xl">
-    <h1 class="text-2xl font-bold mb-6">网络测试</h1>
-    <div class="divider"></div>
+  <div class="container mx-auto p-4">
+    <h1 class="text-2xl font-bold mb-4">网络测试</h1>
     
     <div class="card bg-base-100 shadow-xl">
       <div class="card-body">
-        <form @submit.prevent="doTest" class="space-y-4">
-          <div class="form-control">
+        <form @submit.prevent="doTest" class="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div class="form-control md:col-span-4">
             <label class="label">
               <span class="label-text">地址</span>
             </label>
             <input 
               type="text" 
               v-model="info.address"
-              class="input input-bordered"
+              class="input input-bordered w-full"
               placeholder="输入要测试的地址"
               required
             />
           </div>
 
-          <div class="form-control">
+          <div class="form-control md:col-span-4">
             <label class="label">
               <span class="label-text">Cookie</span>
             </label>
             <input 
               type="text" 
               v-model="info.cookie"
-              class="input input-bordered"
+              class="input input-bordered w-full"
               placeholder="输入 Cookie（可选）"
             />
           </div>
 
-          <div class="form-control">
-            <button type="submit" class="btn btn-primary">执行</button>
+          <div class="form-control md:col-span-4">
+            <button type="submit" class="btn btn-primary w-full md:w-auto">执行</button>
           </div>
 
-          <div class="form-control">
+          <div class="form-control md:col-span-4">
             <label class="label">
               <span class="label-text">结果</span>
             </label>
@@ -51,31 +50,29 @@
   </div>
 </template>
 
-<script setup>
-import { ref } from 'vue'
-import { useToast } from 'vue-toastification'
-
-const toast = useToast()
-const info = ref({
-  address: '',
-  cookie: ''
-})
-const result = ref('')
-
-const doTest = async () => {
-  try {
-    const response = await fetch('/api/setting/network-test', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
+<script>
+export default {
+  data() {
+    return {
+      info: {
+        address: '',
+        cookie: ''
       },
-      body: JSON.stringify(info.value)
-    })
-    if (!response.ok) throw new Error('测试失败')
-    const data = await response.json()
-    result.value = data
-  } catch (error) {
-    toast.error(error.message)
+      result: ''
+    }
+  },
+  methods: {
+    isMobile() {
+      return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+    },
+    async doTest() {
+      try {
+        const res = await window.$api.setting.networkTest(this.info)
+        this.result = res.data
+      } catch (e) {
+        window.$toast.error(e.message)
+      }
+    }
   }
 }
 </script>

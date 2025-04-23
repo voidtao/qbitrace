@@ -1,54 +1,113 @@
 <template>
-  <div class="container mx-auto p-4">
-    <h1 class="text-2xl font-bold mb-4">RSS 历史</h1>
-    <div class="alert alert-warning mb-4">
-      <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
-      <span>遇到问题先去看 Wiki，特别是 Wiki 里的常见问题, 实在找不到再去交流群问, 别 TM Wiki 不看直接在群里问。</span>
+  <div class="container mx-auto px-6 py-8">
+    <h1 class="text-2xl font-bold mb-4 text-base-content">
+      <i class="fas fa-history mr-2 text-primary"></i>
+      RSS 历史记录
+    </h1>
+    <div class="divider"></div>
+    
+    <div class="alert alert-warning bg-warning/10 text-warning-content mb-6">
+      <i class="fas fa-exclamation-triangle"></i>
+      <span>遇到问题请先查阅Wiki中的常见问题，若仍未解决再到交流群咨询</span>
     </div>
 
     <div class="card bg-base-100 shadow-xl">
       <div class="card-body">
-        <div class="flex flex-col md:flex-row gap-4 mb-4">
-          <div class="form-control w-full md:w-64">
-            <div class="input-group">
-              <input type="text" placeholder="筛选关键词" class="input input-bordered w-full" v-model="qs.key" />
-              <button class="btn btn-primary" @click="() => { qs.page = 1; listHistory(); }">筛选</button>
+        <!-- 筛选表单 -->
+        <div class="bg-base-200/50 rounded-lg p-4 mb-6">
+          <div class="flex flex-col md:flex-row gap-4">
+            <div class="form-control flex-1">
+              <div class="input-group">
+                <input 
+                  type="text" 
+                  placeholder="输入关键词筛选" 
+                  class="input input-bordered w-full bg-base-100 transition-all duration-200 focus:ring-2 focus:ring-primary focus:ring-opacity-50" 
+                  v-model="qs.key"
+                />
+                <button 
+                  class="btn btn-primary transition-all duration-200 hover:shadow-lg"
+                  @click="() => { qs.page = 1; listHistory(); }"
+                  :disabled="loading"
+                >
+                  <span v-if="loading" class="loading loading-spinner"></span>
+                  <span v-else>筛选</span>
+                </button>
+              </div>
             </div>
-          </div>
-          <div class="form-control w-full md:w-48">
-            <select class="select select-bordered" v-model="qs.rss" @change="() => { qs.page = 1; listHistory(); }">
-              <option value="">全部 RSS</option>
-              <option v-for="rss in rssList" :key="rss.id" :value="rss.id">{{ rss.alias }}</option>
-              <option value="deleted">已删除</option>
-            </select>
+            
+            <div class="form-control w-full md:w-48">
+              <select 
+                class="select select-bordered w-full bg-base-100 transition-all duration-200 focus:ring-2 focus:ring-primary focus:ring-opacity-50" 
+                v-model="qs.rss" 
+                @change="() => { qs.page = 1; listHistory(); }"
+                :disabled="loading"
+              >
+                <option value="" class="text-base-content/60">全部 RSS</option>
+                <option 
+                  v-for="rss in rssList" 
+                  :key="rss.id" 
+                  :value="rss.id"
+                  class="text-base-content/80"
+                >
+                  {{ rss.alias }}
+                </option>
+                <option value="deleted" class="text-base-content/80">已删除</option>
+              </select>
+            </div>
           </div>
         </div>
 
         <div class="overflow-x-auto">
-          <table class="table table-zebra">
+          <table class="table table-zebra w-full">
             <thead>
-              <tr>
-                <th>RSS</th>
-                <th>种子名称</th>
-                <th>种子大小</th>
-                <th>记录时间</th>
-                <th>种子状态</th>
-                <th>操作</th>
+              <tr class="bg-base-200/50">
+                <th class="text-base-content/70">RSS</th>
+                <th class="text-base-content/70">种子名称</th>
+                <th class="text-base-content/70">大小</th>
+                <th class="text-base-content/70">记录时间</th>
+                <th class="text-base-content/70">状态</th>
+                <th class="text-base-content/70">操作</th>
               </tr>
             </thead>
             <tbody>
-              <tr v-for="record in torrents" :key="record.id">
-                <td>{{ (rssList.filter(item => item.id === record.rssId)[0] || { alias: '已删除' }).alias }}</td>
-                <td>{{ record.name }}</td>
-                <td>{{ $formatSize(record.size) }}</td>
-                <td>{{ record.recordTime ? $moment(record.recordTime * 1000).format('YYYY-MM-DD HH:mm:ss') : '-' }}</td>
-                <td>{{ record.recordNote.indexOf('wish') !== -1 ? '豆瓣' : record.recordNote }}</td>
+              <tr 
+                v-for="record in torrents" 
+                :key="record.id"
+                class="hover:bg-base-200/30 transition-colors duration-200"
+              >
+                <td class="text-base-content/80">{{ (rssList.filter(item => item.id === record.rssId)[0] || { alias: '已删除' }).alias }}</td>
+                <td class="text-base-content/80">{{ record.name }}</td>
+                <td class="text-base-content/80">{{ $formatSize(record.size) }}</td>
+                <td class="text-base-content/80">{{ record.recordTime ? $moment(record.recordTime * 1000).format('YYYY-MM-DD HH:mm:ss') : '-' }}</td>
+                <td>
+                  <span class="badge badge-sm" :class="{
+                    'badge-success bg-success/20 text-success-content': record.recordNote === 'success',
+                    'badge-error bg-error/20 text-error-content': record.recordNote === 'error',
+                    'badge-warning bg-warning/20 text-warning-content': record.recordNote.indexOf('wish') !== -1,
+                    'badge-info bg-info/20 text-info-content': record.recordNote === 'skip'
+                  }">
+                    {{ record.recordNote.indexOf('wish') !== -1 ? '豆瓣' : 
+                       record.recordNote === 'success' ? '成功' :
+                       record.recordNote === 'error' ? '失败' : 
+                       record.recordNote === 'skip' ? '跳过' : record.recordNote }}
+                  </span>
+                </td>
                 <td>
                   <div class="flex gap-2">
-                    <button class="btn btn-sm btn-primary" @click="gotoDetail(record)">打开</button>
-                    <div class="dropdown dropdown-end">
-                      <button class="btn btn-sm btn-error" @click="delRecord(record)">删除</button>
-                    </div>
+                    <button 
+                      class="btn btn-sm btn-primary btn-outline" 
+                      @click="gotoDetail(record)"
+                    >
+                      <i class="fas fa-external-link-alt mr-1"></i>
+                      打开
+                    </button>
+                    <button 
+                      class="btn btn-sm btn-error btn-outline" 
+                      @click="delRecord(record)"
+                    >
+                      <i class="fas fa-trash-alt mr-1"></i>
+                      删除
+                    </button>
                   </div>
                 </td>
               </tr>
@@ -56,11 +115,27 @@
           </table>
         </div>
 
-        <div class="flex justify-center mt-4">
+        <div class="flex justify-center mt-6">
           <div class="join">
-            <button class="join-item btn" :class="{ 'btn-disabled': qs.page === 1 }" @click="() => { qs.page--; listHistory(); }">«</button>
-            <button class="join-item btn">第 {{ qs.page }} 页</button>
-            <button class="join-item btn" :class="{ 'btn-disabled': torrents.length < qs.length }" @click="() => { qs.page++; listHistory(); }">»</button>
+            <button 
+              class="join-item btn btn-sm md:btn-md" 
+              :class="{ 'btn-disabled': qs.page === 1 }" 
+              @click="() => { qs.page--; listHistory(); }"
+              :disabled="qs.page === 1 || loading"
+            >
+              <i class="fas fa-chevron-left"></i>
+            </button>
+            <button class="join-item btn btn-sm md:btn-md">
+              第 {{ qs.page }} 页
+            </button>
+            <button 
+              class="join-item btn btn-sm md:btn-md" 
+              :class="{ 'btn-disabled': torrents.length < qs.length }" 
+              @click="() => { qs.page++; listHistory(); }"
+              :disabled="torrents.length < qs.length || loading"
+            >
+              <i class="fas fa-chevron-right"></i>
+            </button>
           </div>
         </div>
       </div>

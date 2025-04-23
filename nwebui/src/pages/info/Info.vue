@@ -4,37 +4,50 @@
     
     <div class="card bg-base-100 shadow-xl">
       <div class="card-body">
-        <div class="stats stats-vertical lg:stats-horizontal shadow">
-          <div class="stat">
-            <div class="stat-title">主版本</div>
-            <div class="stat-value">{{ version.version }}</div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div class="stat bg-base-200/50 rounded-lg p-4">
+            <div class="stat-title text-base-content/80">主版本</div>
+            <div class="stat-value text-primary">{{ version.version }}</div>
           </div>
           
-          <div class="stat">
-            <div class="stat-title">编译版本</div>
+          <div class="stat bg-base-200/50 rounded-lg p-4">
+            <div class="stat-title text-base-content/80">编译版本</div>
             <div class="stat-value">
-              <a class="link link-primary" @click="gotoVersion">{{ version.head }}</a>
+              <a 
+                class="link link-primary hover:text-primary-focus transition-colors duration-200" 
+                @click="gotoVersion"
+              >
+                {{ version.head }}
+              </a>
             </div>
           </div>
           
-          <div class="stat">
-            <div class="stat-title">发布时间</div>
+          <div class="stat bg-base-200/50 rounded-lg p-4">
+            <div class="stat-title text-base-content/80">发布时间</div>
             <div class="stat-value">{{ version.updateTime }}</div>
           </div>
           
-          <div class="stat">
-            <div class="stat-title">更新信息</div>
-            <div class="stat-value">{{ version.commitInfo }}</div>
+          <div class="stat bg-base-200/50 rounded-lg p-4">
+            <div class="stat-title text-base-content/80">更新信息</div>
+            <div class="stat-desc">{{ version.commitInfo }}</div>
           </div>
         </div>
-      </div>
-    </div>
 
-    <div class="card bg-base-100 shadow-xl mt-4">
-      <div class="card-body">
-        <div class="alert alert-info">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-          <span>本项目由vertex-app/vertex项目修改而来，只保留了最核心的功能</span>
+        <div class="divider"></div>
+
+        <div class="alert alert-info bg-info/10 text-info-content">
+          <i class="fas fa-code-branch"></i>
+          <span>
+            本项目基于
+            <a 
+              href="https://github.com/vertex-app/vertex" 
+              target="_blank"
+              class="link link-info hover:text-info-focus transition-colors duration-200"
+            >
+              vertex-app/vertex
+            </a> 
+            项目修改而来，只保留了最核心的功能
+          </span>
         </div>
       </div>
     </div>
@@ -42,36 +55,22 @@
 </template>
 
 <script>
-import { onMounted, ref } from 'vue'
-
 export default {
-  setup() {
-    const version = ref({})
-    const runInfo = ref({})
-
-    const getRunInfo = async () => {
-      try {
-        const res = await window.$api.setting.getRunInfo()
-        runInfo.value = res.data
-      } catch (e) {
-        window.$toast.error(e.message)
-      }
+  data() {
+    return {
+      version: {}
     }
-
-    const gotoVersion = () => {
+  },
+  methods: {
+    isMobile() {
+      return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+    },
+    gotoVersion() {
       window.open('https://github.com/vertex-app/vertex')
     }
-
-    onMounted(() => {
-      getRunInfo()
-      version.value = process.env.version
-    })
-
-    return {
-      version,
-      runInfo,
-      gotoVersion
-    }
+  },
+  mounted() {
+    this.version = process.env.version
   }
 }
 </script>

@@ -5,7 +5,7 @@
     <div class="card bg-base-100 shadow-xl">
       <div class="card-body">
         <div class="overflow-x-auto">
-          <table class="table table-zebra">
+          <table class="table table-zebra w-full">
             <thead>
               <tr>
                 <th class="cursor-pointer" @click="sortBy('alias')">
@@ -14,9 +14,9 @@
                     {{ sortOrder === 'asc' ? '↑' : '↓' }}
                   </span>
                 </th>
-                <th class="cursor-pointer" @click="sortBy('speed')">
+                <th class="cursor-pointer" @click="sortBy('uploadSpeed')">
                   实时速度
-                  <span v-if="sortKey === 'speed'" class="ml-1">
+                  <span v-if="sortKey === 'uploadSpeed'" class="ml-1">
                     {{ sortOrder === 'asc' ? '↑' : '↓' }}
                   </span>
                 </th>
@@ -85,11 +85,6 @@ export default {
             : valueB.localeCompare(valueA)
         }
 
-        if (sortKey.value === 'speed') {
-          valueA = a.uploadSpeed
-          valueB = b.uploadSpeed
-        }
-
         return sortOrder.value === 'asc' 
           ? valueA - valueB
           : valueB - valueA
@@ -105,12 +100,19 @@ export default {
       }
     }
 
+    const isMobile = () => {
+      return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+    }
+
     const listDownloader = async () => {
       try {
+        loading.value = true
         const res = await window.$api.downloader.listMainInfo()
         downloaders.value = res.data
       } catch (e) {
         window.$toast.error(e.message)
+      } finally {
+        loading.value = false
       }
     }
 
@@ -130,7 +132,8 @@ export default {
       downloaders: sortedDownloaders,
       sortKey,
       sortOrder,
-      sortBy
+      sortBy,
+      isMobile
     }
   }
 }

@@ -1,45 +1,71 @@
 <template>
-  <div class="container mx-auto p-4">
-    <h1 class="text-2xl font-bold mb-4">RSS 规则</h1>
+  <div class="container mx-auto px-6 py-8">
+    <h1 class="text-2xl font-bold mb-4 text-base-content">
+      <i class="fas fa-rss mr-2 text-primary"></i>
+      RSS 规则管理
+    </h1>
+    <div class="divider"></div>
     
-    <div class="card bg-base-100 shadow-xl mb-8">
+    <div class="card bg-base-100 shadow-sm hover:shadow-md transition-all duration-300 mb-8">
       <div class="card-body">
-        <h2 class="card-title mb-4">RSS 规则列表</h2>
+        <h2 class="card-title mb-6 text-base-content">规则列表</h2>
         <div class="overflow-x-auto">
-          <table class="table table-zebra">
+          <table class="table table-zebra w-full">
             <thead>
-              <tr>
-                <th>ID</th>
-                <th>别名</th>
-                <th>下载器</th>
-                <th>操作</th>
+              <tr class="bg-base-200/50">
+                <th class="text-base-content/70">ID</th>
+                <th class="text-base-content/70">别名</th>
+                <th class="text-base-content/70">下载器</th>
+                <th class="text-base-content/70">操作</th>
               </tr>
             </thead>
             <tbody>
-              <tr v-for="rule in rssRuleList" :key="rule.id">
-                <td>{{ rule.id }}</td>
-                <td>{{ rule.alias }}</td>
+              <tr v-for="rule in rssRuleList" 
+                  :key="rule.id"
+                  class="hover:bg-base-200/30 transition-colors duration-200">
+                <td class="text-base-content/80">{{ rule.id }}</td>
+                <td class="text-base-content/80 font-medium">{{ rule.alias }}</td>
                 <td>
                   <select 
-                    class="select select-bordered select-sm w-full" 
+                    class="select select-bordered select-sm w-full bg-base-100 transition-all duration-200 focus:ring-2 focus:ring-primary focus:ring-opacity-50" 
                     v-model="rule.client"
                     @change="modifyRssRuleDownloader(rule)"
                   >
-                    <option value="">未选择</option>
-                    <option v-for="downloader in downloaders" :key="downloader.id" :value="downloader.id">
+                    <option value="" class="text-base-content/60">选择下载器</option>
+                    <option v-for="downloader in downloaders" 
+                            :key="downloader.id" 
+                            :value="downloader.id"
+                            class="text-base-content/80">
                       {{ downloader.alias }}
                     </option>
                   </select>
                 </td>
                 <td>
                   <div class="flex gap-2">
-                    <button class="btn btn-sm btn-primary" @click="cloneClick(rule)">克隆</button>
-                    <button class="btn btn-sm btn-secondary" @click="modifyClick(rule)">编辑</button>
+                    <button class="btn btn-sm btn-primary btn-outline" 
+                            @click="cloneClick(rule)">
+                      <i class="fas fa-copy mr-1"></i>
+                      克隆
+                    </button>
+                    <button class="btn btn-sm btn-secondary btn-outline" 
+                            @click="modifyClick(rule)">
+                      <i class="fas fa-edit mr-1"></i>
+                      编辑
+                    </button>
                     <div class="dropdown dropdown-end">
-                      <button class="btn btn-sm btn-error">删除</button>
-                      <ul class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
-                        <li><a @click="deleteRssRule(rule)">确认删除</a></li>
-                      </ul>
+                      <label tabindex="0" 
+                             class="btn btn-sm btn-error btn-outline">
+                        <i class="fas fa-trash-alt mr-1"></i>
+                        删除
+                      </label>
+                      <div tabindex="0" 
+                           class="dropdown-content menu p-2 shadow-lg bg-base-100 rounded-lg w-52">
+                        <div class="p-2 text-sm text-base-content/70 text-center">确认删除此规则？</div>
+                        <button class="btn btn-sm btn-error w-full" 
+                                @click="deleteRssRule(rule)">
+                          确认删除
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </td>
@@ -50,128 +76,224 @@
       </div>
     </div>
 
-    <div class="card bg-base-100 shadow-xl">
+    <div class="card bg-base-100 shadow-sm hover:shadow-md transition-all duration-300">
       <div class="card-body">
-        <h2 class="card-title mb-4">新增 | 编辑 RSS 规则</h2>
-        <form @submit.prevent="modifyRssRule" class="space-y-4">
-          <div class="form-control">
-            <label class="label">
-              <span class="label-text">别名</span>
-              <span class="label-text-alt">给 RSS 规则取一个好记的名字</span>
-            </label>
-            <input type="text" v-model="rssRule.alias" class="input input-bordered" required />
+        <h2 class="card-title mb-6 text-base-content">
+          <i class="fas fa-edit mr-2 text-primary"></i>
+          新增 | 编辑 RSS 规则
+        </h2>
+        <form @submit.prevent="modifyRssRule" class="space-y-6">
+          <!-- 基本信息 -->
+          <div class="bg-base-200/50 rounded-lg p-4 space-y-4">
+            <h3 class="font-medium text-base-content/80 mb-2">基本信息</h3>
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text text-base-content/80">规则别名</span>
+              </label>
+              <input 
+                type="text" 
+                v-model="rssRule.alias" 
+                class="input input-bordered w-full bg-base-100 transition-all duration-200 focus:ring-2 focus:ring-primary focus:ring-opacity-50"
+                placeholder="输入规则名称"
+                required
+              />
+              <span class="text-xs text-base-content/60 mt-2">给RSS规则取一个好记的名字</span>
+            </div>
+
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text text-base-content/80">分类</span>
+              </label>
+              <input 
+                type="text" 
+                v-model="rssRule.category" 
+                class="input input-bordered w-full bg-base-100 transition-all duration-200 focus:ring-2 focus:ring-primary focus:ring-opacity-50"
+                placeholder="输入分类名称"
+              />
+              <span class="text-xs text-base-content/60 mt-2">留空则使用RSS任务设置的分类</span>
+            </div>
+
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text text-base-content/80">保存路径</span>
+              </label>
+              <input 
+                type="text" 
+                v-model="rssRule.savePath" 
+                class="input input-bordered w-full bg-base-100 transition-all duration-200 focus:ring-2 focus:ring-primary focus:ring-opacity-50"
+                placeholder="输入保存路径"
+              />
+              <span class="text-xs text-base-content/60 mt-2">留空则使用RSS任务设置的保存路径</span>
+            </div>
+
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text text-base-content/80">下载器</span>
+              </label>
+              <select 
+                class="select select-bordered w-full bg-base-100 transition-all duration-200 focus:ring-2 focus:ring-primary focus:ring-opacity-50" 
+                v-model="rssRule.client"
+              >
+                <option value="" class="text-base-content/60">选择下载器</option>
+                <option 
+                  v-for="downloader in downloaders" 
+                  :key="downloader.id" 
+                  :value="downloader.id"
+                  class="text-base-content/80"
+                >
+                  {{ downloader.alias }}
+                </option>
+              </select>
+              <span class="text-xs text-base-content/60 mt-2">该选项会覆盖RSS任务的下载器选择</span>
+            </div>
+
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text text-base-content/80">优先级</span>
+              </label>
+              <input 
+                type="number" 
+                v-model="rssRule.priority" 
+                class="input input-bordered w-full bg-base-100 transition-all duration-200 focus:ring-2 focus:ring-primary focus:ring-opacity-50"
+                placeholder="输入优先级数值"
+              />
+              <span class="text-xs text-base-content/60 mt-2">优先级高的规则会优先匹配</span>
+            </div>
           </div>
 
-          <div class="form-control">
-            <label class="label">
-              <span class="label-text">分类</span>
-              <span class="label-text-alt">添加种子时下载器内的分类,留空使用 RSS 任务设置的分类</span>
-            </label>
-            <input type="text" v-model="rssRule.category" class="input input-bordered" />
-          </div>
-
-          <div class="form-control">
-            <label class="label">
-              <span class="label-text">保存路径</span>
-              <span class="label-text-alt">添加种子时下载器内的保存路径,留空使用 RSS 任务设置的保存路径</span>
-            </label>
-            <input type="text" v-model="rssRule.savePath" class="input input-bordered" />
-          </div>
-
-          <div class="form-control">
-            <label class="label">
-              <span class="label-text">下载器</span>
-              <span class="label-text-alt">添加种子时选择的下载器,该选项会直接覆盖 RSS 任务的下载器选择</span>
-            </label>
-            <select class="select select-bordered" v-model="rssRule.client">
-              <option value="">未选择</option>
-              <option v-for="downloader in downloaders" :key="downloader.id" :value="downloader.id">
-                {{ downloader.alias }}
-              </option>
+          <!-- 规则类型 -->
+          <div class="bg-base-200/50 rounded-lg p-4">
+            <h3 class="font-medium text-base-content/80 mb-4">规则类型</h3>
+            <select 
+              v-model="rssRule.type" 
+              class="select select-bordered w-full bg-base-100 transition-all duration-200 focus:ring-2 focus:ring-primary focus:ring-opacity-50" 
+              required
+            >
+              <option value="normal" class="text-base-content/80">普通规则</option>
+              <option value="javascript" class="text-base-content/80">JavaScript脚本</option>
             </select>
+            <span class="text-xs text-base-content/60 mt-2">
+              <i class="fas fa-info-circle mr-1"></i>
+              选择规则类型：普通规则使用条件匹配，JavaScript脚本使用自定义代码
+            </span>
           </div>
 
-          <div class="form-control">
-            <label class="label">
-              <span class="label-text">优先级</span>
-              <span class="label-text-alt">优先级最高的规则最先匹配,留空则按默认顺序</span>
-            </label>
-            <input type="number" v-model="rssRule.priority" class="input input-bordered" />
-          </div>
-
-          <div class="form-control">
-            <label class="label">
-              <span class="label-text">类型</span>
-            </label>
-            <select v-model="rssRule.type" class="select select-bordered" required>
-              <option value="normal">普通</option>
-              <option value="javascript">JavaScript</option>
-            </select>
-          </div>
-
-          <div v-if="rssRule.type === 'normal'" class="form-control">
-            <label class="label">
-              <span class="label-text">限制条件</span>
-            </label>
+          <div v-if="rssRule.type === 'normal'" class="bg-base-200/50 rounded-lg p-4">
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="font-medium text-base-content/80">匹配条件</h3>
+              <button 
+                class="btn btn-primary btn-sm btn-outline"
+                @click="rssRule.conditions.push({ ...condition })"
+              >
+                <i class="fas fa-plus mr-2"></i>
+                新增条件
+              </button>
+            </div>
+            
             <div class="overflow-x-auto">
-              <table class="table table-zebra">
+              <table class="table table-zebra w-full">
                 <thead>
-                  <tr>
-                    <th>选项</th>
-                    <th>比较类型</th>
-                    <th>值</th>
-                    <th>操作</th>
+                  <tr class="bg-base-200/50">
+                    <th class="text-base-content/70">选项</th>
+                    <th class="text-base-content/70">比较类型</th>
+                    <th class="text-base-content/70">值</th>
+                    <th class="text-base-content/70">操作</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-for="(condition, index) in rssRule.conditions" :key="index">
+                  <tr v-for="(condition, index) in rssRule.conditions" 
+                      :key="index"
+                      class="hover:bg-base-200/30 transition-colors duration-200">
                     <td>
-                      <select v-model="condition.key" class="select select-bordered">
-                        <option v-for="key in conditionKeys" :key="key.key" :value="key.key">
+                      <select 
+                        v-model="condition.key" 
+                        class="select select-bordered select-sm w-full bg-base-100 transition-all duration-200 focus:ring-2 focus:ring-primary focus:ring-opacity-50"
+                      >
+                        <option 
+                          v-for="key in conditionKeys" 
+                          :key="key.key" 
+                          :value="key.key"
+                          class="text-base-content/80"
+                        >
                           {{ key.name }}
                         </option>
                       </select>
                     </td>
                     <td>
-                      <select v-model="condition.compareType" class="select select-bordered">
-                        <option value="equals">等于</option>
-                        <option value="bigger">大于</option>
-                        <option value="smaller">小于</option>
-                        <option value="contain">包含</option>
-                        <option value="includeIn">包含于</option>
-                        <option value="notContain">不包含</option>
-                        <option value="notIncludeIn">不包含于</option>
-                        <option value="regExp">正则匹配</option>
-                        <option value="notRegExp">正则不匹配</option>
+                      <select 
+                        v-model="condition.compareType" 
+                        class="select select-bordered select-sm w-full bg-base-100 transition-all duration-200 focus:ring-2 focus:ring-primary focus:ring-opacity-50"
+                      >
+                        <option value="equals" class="text-base-content/80">等于</option>
+                        <option value="bigger" class="text-base-content/80">大于</option>
+                        <option value="smaller" class="text-base-content/80">小于</option>
+                        <option value="contain" class="text-base-content/80">包含</option>
+                        <option value="includeIn" class="text-base-content/80">包含于</option>
+                        <option value="notContain" class="text-base-content/80">不包含</option>
+                        <option value="notIncludeIn" class="text-base-content/80">不包含于</option>
+                        <option value="regExp" class="text-base-content/80">正则匹配</option>
+                        <option value="notRegExp" class="text-base-content/80">正则不匹配</option>
                       </select>
                     </td>
                     <td>
-                      <input type="text" v-model="condition.value" class="input input-bordered" />
+                      <input 
+                        type="text" 
+                        v-model="condition.value" 
+                        class="input input-bordered input-sm w-full bg-base-100 transition-all duration-200 focus:ring-2 focus:ring-primary focus:ring-opacity-50" 
+                      />
                     </td>
                     <td>
-                      <button class="btn btn-sm btn-error" @click="rssRule.conditions.splice(index, 1)">
-                        删除
+                      <button 
+                        class="btn btn-sm btn-error btn-outline"
+                        @click="rssRule.conditions.splice(index, 1)"
+                      >
+                        <i class="fas fa-trash-alt"></i>
                       </button>
                     </td>
                   </tr>
                 </tbody>
               </table>
             </div>
-            <button class="btn btn-primary mt-2" @click="rssRule.conditions.push({ ...condition })">
-              新增条件
-            </button>
+            
+            <span class="text-xs text-base-content/60 mt-4 block">
+              <i class="fas fa-info-circle mr-1"></i>
+              所有条件都满足时才会匹配该规则
+            </span>
           </div>
 
-          <div v-if="rssRule.type === 'javascript'" class="form-control">
-            <label class="label">
-              <span class="label-text">自定义代码</span>
-            </label>
-            <textarea v-model="rssRule.code" class="textarea textarea-bordered h-32" required></textarea>
+          <div v-if="rssRule.type === 'javascript'" class="bg-base-200/50 rounded-lg p-4">
+            <h3 class="font-medium text-base-content/80 mb-4">JavaScript 脚本</h3>
+            <textarea 
+              v-model="rssRule.code" 
+              class="textarea textarea-bordered w-full h-64 font-mono bg-base-100 transition-all duration-200 focus:ring-2 focus:ring-primary focus:ring-opacity-50" 
+              placeholder="输入JavaScript代码"
+              required
+            ></textarea>
+            <span class="text-xs text-base-content/60 mt-2">
+              <i class="fas fa-info-circle mr-1"></i>
+              返回true表示匹配该规则，可使用内置API如logger.info()等
+            </span>
           </div>
 
-          <div class="flex gap-2 mt-6">
-            <button type="submit" class="btn btn-primary">应用 | 完成</button>
-            <button type="button" class="btn" @click="clearRssRule">清空</button>
+          <!-- 操作按钮 -->
+          <div class="form-control mt-8">
+            <div class="flex flex-col md:flex-row gap-4">
+              <button 
+                type="submit" 
+                class="btn btn-primary flex-1"
+              >
+                <i class="fas fa-save mr-2"></i>
+                保存规则
+              </button>
+              <button 
+                type="button" 
+                class="btn btn-ghost flex-1"
+                @click="clearRssRule"
+              >
+                <i class="fas fa-trash-alt mr-2"></i>
+                清空表单
+              </button>
+            </div>
           </div>
         </form>
       </div>

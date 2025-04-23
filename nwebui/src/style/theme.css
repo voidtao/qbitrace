@@ -1,55 +1,60 @@
 :root {
-  --primary: #c084fc; /* 浅紫 */
-  --primary-focus: #a855f7; /* 深紫 */
-  --primary-content: #e9d5ff;
-
-  --secondary: #93c5fd; /* 浅蓝 */
-  --secondary-focus: #60a5fa; /* 深蓝 */
-  --secondary-content: #e9d5ff;
-
-  --accent: #f9a8d4; /* 浅粉 */
-  --accent-focus: #f472b6; /* 深粉 */
-  --accent-content: #e9d5ff;
-
-  --neutral: #e9d5ff; /* 浅灰 */
-  --neutral-focus: #e9d5ff; /* 深灰 */
-  --neutral-content: #1f2937;
-
-  --base-100: #e9d5ff; /* 浅紫背景 */
-  --base-200: #e9d5ff; /* 更深的浅紫 */
-  --base-300: #e9d5ff; /* 深浅紫 */
-  --base-content: #4b5563;
-
-  --info: #93c5fd; /* 浅蓝 */
-  --success: #86efac; /* 浅绿 */
-  --warning: #fde047; /* 浅黄 */
-  --error: #fca5a5; /* 浅红 */
-}
-
-[data-theme="dark"] {
-  --primary: #c084fc; /* 浅紫 */
-  --primary-focus: #a855f7; /* 深紫 */
+  /* 主色调：浅紫色 */
+  --primary: #c084fc;
+  --primary-focus: #a855f7;
   --primary-content: #ffffff;
 
-  --secondary: #93c5fd; /* 浅蓝 */
-  --secondary-focus: #60a5fa; /* 深蓝 */
+  /* 次要色调：浅蓝色 */
+  --secondary: #93c5fd;
+  --secondary-focus: #60a5fa;
   --secondary-content: #ffffff;
 
-  --accent: #f9a8d4; /* 浅粉 */
-  --accent-focus: #f472b6; /* 深粉 */
+  /* 强调色：浅粉色 */
+  --accent: #f9a8d4;
+  --accent-focus: #f472b6;
   --accent-content: #ffffff;
 
-  --neutral: #1f2937; /* 深灰 */
-  --neutral-focus: #111827; /* 更深的灰 */
-  --neutral-content: #f3f4f6;
+  /* 中性色调 */
+  --neutral: #f3f4f6;
+  --neutral-focus: #e5e7eb;
+  --neutral-content: #1f2937;
 
-  --base-100: #1e293b; /* 深蓝背景 */
-  --base-200: #1c1f2e; /* 更深的深蓝 */
-  --base-300: #131a2b; /* 深蓝 */
-  --base-content: #e5e7eb;
+  /* 背景色系 */
+  --base-100: #ffffff;
+  --base-200: #f9fafb;
+  --base-300: #f3f4f6;
+  --base-content: #4b5563;
 
-  --info: #93c5fd; /* 浅蓝 */
+  /* 功能色 */
+  --info: #93c5fd;    /* 浅蓝 */
   --success: #86efac; /* 浅绿 */
   --warning: #fde047; /* 浅黄 */
-  --error: #fca5a5; /* 浅红 */
+  --error: #fca5a5;   /* 浅红 */
+
+  /* 布局相关 */
+  --layout-background: var(--base-100);
+  --header-background: rgba(192, 132, 252, 0.6); /* 更浅的紫色，增加透明度 */
+  --header-text: #ffffff;
+  --sidebar-background: var(--base-200);
+}
+
+/* 针对base/downloader和base/notification页面的样式 */
+.card-body {
+  padding: 1.5rem;
+}
+
+/* 确保所有页面内容有足够的间距 */
+.container {
+  padding: 1rem;
+}
+
+/* 移动端适配优化 */
+@media (max-width: 768px) {
+  .container {
+    padding: 0.75rem;
+  }
+  
+  .card-body {
+    padding: 1rem;
+  }
 }

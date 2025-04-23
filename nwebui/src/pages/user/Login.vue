@@ -1,12 +1,16 @@
 <template>
-  <div class="min-h-screen flex">
-    <div class="hidden md:block w-1/3 bg-primary">
-      <div class="h-full flex items-center justify-center">
-        <img src="/assets/images/logo.svg" class="w-48" alt="logo"/>
+  <div class="min-h-screen flex bg-base-100">
+    <!-- 左侧图片区 -->
+    <div class="hidden md:block w-1/3 bg-gradient-to-b from-primary to-primary-focus">
+      <div class="h-full flex flex-col items-center justify-center p-8">
+        <img src="/assets/images/logo.svg" class="w-48 mb-8" alt="logo"/>
+        <h2 class="text-3xl font-bold text-white mb-2">qbitrace</h2>
+        <p class="text-white/80">for qbittorrent racing</p>
       </div>
     </div>
     
-    <div class="w-full md:w-2/3 flex flex-col items-center justify-center p-4">
+    <!-- 右侧登录区 -->
+    <div class="w-full md:w-2/3 flex flex-col items-center justify-center p-6">
       <div class="w-full max-w-md">
         <div class="text-center mb-8">
           <img src="/assets/images/logo.svg" class="w-16 mx-auto mb-4 md:hidden" alt="logo"/>
@@ -14,49 +18,77 @@
           <p class="text-gray-500">for qbittorrent racing</p>
         </div>
 
-        <form @submit.prevent="login" class="space-y-4">
+        <form @submit.prevent="login" class="space-y-6">
+          <!-- 用户名 -->
           <div class="form-control">
             <label class="label">
-              <span class="label-text">用户名</span>
+              <span class="label-text text-base-content/80">用户名</span>
             </label>
             <input 
               type="text" 
               v-model="user.username"
-              class="input input-bordered"
+              class="input input-bordered w-full bg-base-100 transition-all duration-200 focus:ring-2 focus:ring-primary focus:ring-opacity-50"
               placeholder="请输入用户名"
               required
             />
           </div>
 
+          <!-- 密码 -->
           <div class="form-control">
             <label class="label">
-              <span class="label-text">密码</span>
+              <span class="label-text text-base-content/80">密码</span>
             </label>
             <input 
               type="password" 
               v-model="user.password"
-              class="input input-bordered"
+              class="input input-bordered w-full bg-base-100 transition-all duration-200 focus:ring-2 focus:ring-primary focus:ring-opacity-50"
               placeholder="请输入密码"
               required
             />
           </div>
 
+          <!-- 二步验证 -->
           <div class="form-control">
             <label class="label">
-              <span class="label-text">二步验证</span>
+              <span class="label-text text-base-content/80">二步验证</span>
             </label>
             <input 
               type="text" 
               v-model="user.otpPw"
-              class="input input-bordered"
+              class="input input-bordered w-full bg-base-100 transition-all duration-200 focus:ring-2 focus:ring-primary focus:ring-opacity-50"
               placeholder="请输入二步验证码（可选）"
             />
           </div>
 
-          <div class="form-control mt-6">
-            <button type="submit" class="btn btn-primary w-full">登录</button>
+          <!-- 登录按钮 -->
+          <div class="form-control mt-8">
+            <button 
+              type="submit" 
+              class="btn btn-primary w-full transition-all duration-200 hover:shadow-lg"
+              :disabled="loading"
+            >
+              <span v-if="loading" class="loading loading-spinner"></span>
+              <span v-else>登录</span>
+            </button>
           </div>
         </form>
+
+        <!-- 错误提示 -->
+        <div v-if="error" class="alert alert-error bg-error/10 text-error-content mt-6">
+          <i class="fas fa-exclamation-circle"></i>
+          <span>{{ error }}</span>
+        </div>
+
+        <!-- 底部链接 -->
+        <div class="mt-8 text-center space-y-2">
+          <a href="#" class="link link-primary hover:text-primary-focus transition-colors duration-200">
+            <i class="fas fa-question-circle mr-1"></i>
+            忘记密码？
+          </a>
+          <div class="text-sm text-base-content/60">
+            没有账号？<a href="#" class="link link-primary hover:text-primary-focus transition-colors duration-200">联系管理员</a>
+          </div>
+        </div>
       </div>
     </div>
   </div>

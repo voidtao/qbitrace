@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="p-2 md:p-4">
     <h1 class="text-2xl font-bold">通知工具</h1>
     <div class="divider"></div>
 

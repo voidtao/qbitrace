@@ -13,31 +13,6 @@ export default {
     return {
       theme: 'light'
     };
-  },
-  methods: {
-    async getTheme () {
-      try {
-        const setting = (await this.$api().setting.get()).data;
-        if (setting.theme === 'follow') {
-          if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-            this.theme = 'dark';
-          } else {
-            this.theme = 'light';
-          }
-        } else {
-          this.theme = setting.theme;
-        }
-      } catch (e) {
-        this.theme = 'light';
-      }
-    }
-  },
-  async mounted () {
-    await this.getTheme();
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', this.getTheme);
-  },
-  beforeUnmount () {
-    window.matchMedia('(prefers-color-scheme: dark)').removeEventListener('change', this.getTheme);
   }
 };
 </script>
