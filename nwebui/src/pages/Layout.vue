@@ -307,6 +307,11 @@ export default {
 
 /* 添加移动设备下的内容区样式，覆盖默认样式 */
 @media (max-width: 768px) {
+  /* Explicitly hide the PC layout container on screens smaller than md */
+  .app-container > .hidden.md\:flex {
+    display: none;
+  }
+
   .content-container {
     margin-left: 0;
     width: 100%;
@@ -352,7 +357,7 @@ export default {
   
   .drawer-side .header-bg img {
     width: 1.75rem !important;
-    height: 1.75rem !important;
+    height: 1.75rem !重要;
   }
   
   .content-container {

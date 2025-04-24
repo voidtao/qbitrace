@@ -1,398 +1,487 @@
 <template>
   <div class="container mx-auto p-4">
-    <h1 class="text-2xl font-bold mb-4">下载器</h1>
+    <h1 class="text-2xl font-bold mb-4 text-base-content">下载器管理</h1>
     <div class="divider"></div>
 
-    <div class="downloader">
-      <table class="table table-zebra w-full">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>别名</th>
-            <th>启用</th>
-            <th>URL</th>
-            <th>自动删种</th>
-            <th>状态</th>
-            <th>操作</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="record in downloaders" :key="record.id">
-            <td>{{ record.id }}</td>
-            <td>{{ record.alias }}</td>
-            <td>
-              <input
-                type="checkbox"
-                class="toggle toggle-primary"
-                :checked="record.enable"
-                :disabled="record.used"
-                @change="enableDownloader(record)"
-              />
-            </td>
-            <td>{{ record.clientUrl }}</td>
-            <td>
-              <span
-                class="badge"
-                :class="record.autoDelete ? 'badge-success' : 'badge-error'"
-              >
-                {{ record.autoDelete ? '启用' : '禁用' }}
-              </span>
-            </td>
-            <td>
-              <span
-                class="badge"
-                :class="record.status ? 'badge-success' : 'badge-error'"
-              >
-                {{ record.status ? '正常' : '异常' }}
-              </span>
-            </td>
-            <td>
-              <div class="dropdown dropdown-end">
-                <button class="btn btn-sm btn-primary" @click="goto(record)">
-                  打开
-                </button>
-                <button class="btn btn-sm btn-secondary" @click="modifyClick(record)">
-                  编辑
-                </button>
-                <button class="btn btn-sm btn-accent" @click="cloneClick(record)">
-                  克隆
-                </button>
-                <div class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
-                  <button class="btn btn-sm btn-error" @click="deleteDownloader(record)">
-                    删除
-                  </button>
-                  <button class="btn btn-sm" @click="gotoLog(record)">
-                    日志
-                  </button>
-                </div>
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+    <!-- Downloader List Card -->
+    <div class="card bg-base-100 shadow-sm hover:shadow-md transition-all duration-300 mb-8">
+      <div class="card-body">
+        <h2 class="card-title mb-4 text-base-content/90">下载器列表</h2>
+        <div class="overflow-x-auto">
+          <table class="table table-zebra w-full">
+            <thead>
+              <tr class="bg-base-200/50">
+                <th class="text-base-content/70">ID</th>
+                <th class="text-base-content/70">别名</th>
+                <th class="text-base-content/70">启用</th>
+                <th class="text-base-content/70">URL</th>
+                <th class="text-base-content/70">自动删种</th>
+                <th class="text-base-content/70">状态</th>
+                <th class="text-base-content/70">操作</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="record in downloaders" 
+                  :key="record.id"
+                  class="hover:bg-base-200/30 transition-colors duration-200">
+                <td class="text-base-content/80 text-sm">{{ record.id }}</td>
+                <td class="text-base-content/90 font-medium">{{ record.alias }}</td>
+                <td>
+                  <input
+                    type="checkbox"
+                    class="toggle toggle-primary toggle-sm"
+                    :checked="record.enable"
+                    :disabled="record.used"
+                    @change="enableDownloader(record)"
+                  />
+                </td>
+                <td class="text-base-content/80 text-sm">{{ record.clientUrl }}</td>
+                <td>
+                  <span
+                    class="badge badge-sm"
+                    :class="record.autoDelete ? 'badge-success' : 'badge-error'"
+                  >
+                    {{ record.autoDelete ? '启用' : '禁用' }}
+                  </span>
+                </td>
+                <td>
+                  <span
+                    class="badge badge-sm"
+                    :class="record.status ? 'badge-success' : 'badge-error'"
+                  >
+                    {{ record.status ? '正常' : '异常' }}
+                  </span>
+                </td>
+                <td>
+                  <div class="flex gap-2">
+                    <button class="btn btn-xs btn-outline btn-info" @click="goto(record)">
+                      <i class="fas fa-external-link-alt mr-1"></i>打开
+                    </button>
+                    <div class="dropdown dropdown-end">
+                      <label tabindex="0" class="btn btn-xs btn-outline btn-secondary">
+                        <i class="fas fa-ellipsis-h mr-1"></i>操作
+                      </label>
+                      <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow-lg bg-base-100 rounded-lg w-32">
+                        <li><a @click="modifyClick(record)"><i class="fas fa-edit w-4 mr-2"></i>编辑</a></li>
+                        <li><a @click="cloneClick(record)"><i class="fas fa-copy w-4 mr-2"></i>克隆</a></li>
+                        <li><a @click="gotoLog(record)"><i class="fas fa-file-alt w-4 mr-2"></i>日志</a></li>
+                        <li><hr class="my-1 border-base-300"></li>
+                        <li>
+                          <details>
+                             <summary class="text-error"><i class="fas fa-trash-alt w-4 mr-2"></i>删除</summary>
+                             <ul class="p-2 bg-base-100 rounded-t-none">
+                               <li><a class="text-error" @click="deleteDownloader(record)">确认删除</a></li>
+                             </ul>
+                           </details>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
 
-    <div class="divider"></div>
-    <h2 class="text-xl font-bold">新增 | 编辑下载器</h2>
-    <form @submit.prevent="modifyDownloader" class="space-y-4">
-      <div class="form-control">
-        <label class="label">
-          <span class="label-text">别名</span>
-          <span class="label-text-alt text-xs text-opacity-60">给下载器取一个好记的名字</span>
-        </label>
-        <input
-          type="text"
-          v-model="downloader.alias"
-          class="input input-bordered"
-          required
-        />
+    <!-- Add/Edit Downloader Card -->
+    <div class="card bg-base-100 shadow-sm hover:shadow-md transition-all duration-300">
+      <div class="card-body">
+        <h2 class="card-title mb-6 text-base-content/90">
+          <i class="fas fa-edit mr-2 text-primary"></i>
+          新增 | 编辑下载器
+        </h2>
+        
+        <form @submit.prevent="modifyDownloader" class="space-y-6">
+          <!-- 基本信息区域 -->
+          <div class="bg-base-200/50 rounded-lg p-4 space-y-4">
+             <h3 class="font-medium text-base-content/80 mb-2">基本信息</h3>
+             <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+                <div class="form-control w-full">
+                  <label class="label">
+                    <span class="label-text text-base-content/80">别名</span>
+                  </label>
+                  <input
+                    type="text"
+                    v-model="downloader.alias"
+                    class="input input-bordered w-full bg-base-100 transition-all duration-200 focus:ring-2 focus:ring-primary focus:ring-opacity-50"
+                    placeholder="输入别名"
+                    required
+                  />
+                  <span class="text-xs text-base-content/60 mt-1">给下载器取一个好记的名字</span>
+                </div>
+                
+                <div class="form-control w-full">
+                  <label class="label">
+                    <span class="label-text text-base-content/80">下载器类型</span>
+                  </label>
+                  <select v-model="downloader.type" class="select select-bordered w-full bg-base-100 transition-all duration-200 focus:ring-2 focus:ring-primary focus:ring-opacity-50">
+                    <option value="qBittorrent">qBittorrent</option>
+                    <option value="Transmission">Transmission</option>
+                    <option value="deluge">Deluge</option>
+                  </select>
+                  <span class="text-xs text-base-content/60 mt-1">目前完整支持 qBittorrent</span>
+                </div>
+                
+                <div class="form-control w-full">
+                  <label class="label">
+                    <span class="label-text text-base-content/80">用户名</span>
+                  </label>
+                  <input
+                    type="text"
+                    v-model="downloader.username"
+                    class="input input-bordered w-full bg-base-100 transition-all duration-200 focus:ring-2 focus:ring-primary focus:ring-opacity-50"
+                    placeholder="输入用户名"
+                    required
+                  />
+                </div>
+                
+                <div class="form-control w-full">
+                  <label class="label">
+                    <span class="label-text text-base-content/80">密码</span>
+                  </label>
+                  <input
+                    type="password"
+                    v-model="downloader.password"
+                    class="input input-bordered w-full bg-base-100 transition-all duration-200 focus:ring-2 focus:ring-primary focus:ring-opacity-50"
+                    placeholder="输入密码"
+                    required
+                  />
+                </div>
+                
+                <div class="form-control w-full md:col-span-2">
+                  <label class="label">
+                    <span class="label-text text-base-content/80">URL</span>
+                  </label>
+                  <input
+                    type="text"
+                    v-model="downloader.clientUrl"
+                    class="input input-bordered w-full bg-base-100 transition-all duration-200 focus:ring-2 focus:ring-primary focus:ring-opacity-50"
+                    placeholder="例如 http://192.168.1.100:8080"
+                    required
+                  />
+                  <span class="text-xs text-base-content/60 mt-1">下载器的链接, 结尾不要带 /</span>
+                </div>
+                
+                <div class="form-control w-full">
+                  <label class="label cursor-pointer justify-start gap-4">
+                    <span class="label-text text-base-content/80">启用</span>
+                    <input
+                      type="checkbox"
+                      v-model="downloader.enable"
+                      :disabled="downloader.used"
+                      class="toggle toggle-primary toggle-sm"
+                    />
+                  </label>
+                  <span class="text-xs text-base-content/60 mt-1">选择是否启用下载器</span>
+                </div>
+                
+                <div class="form-control w-full">
+                  <label class="label">
+                    <span class="label-text text-base-content/80">信息更新周期 (Cron)</span>
+                  </label>
+                  <input
+                    type="text"
+                    v-model="downloader.cron"
+                    class="input input-bordered w-full bg-base-100 transition-all duration-200 focus:ring-2 focus:ring-primary focus:ring-opacity-50"
+                    placeholder="*/4 * * * * *"
+                  />
+                  <span class="text-xs text-base-content/60 mt-1">默认 4s 更新一次, 种子量过多请增加间隔</span>
+                </div>
+             </div>
+          </div>
+          
+          <!-- 通知设置 -->
+          <div class="bg-base-200/50 rounded-lg p-4 space-y-4">
+            <h3 class="font-medium text-base-content/80 mb-2">通知设置</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+                <div class="form-control w-full">
+                  <label class="label cursor-pointer justify-start gap-4">
+                    <span class="label-text text-base-content/80">推送通知</span>
+                    <input
+                      type="checkbox"
+                      v-model="downloader.pushNotify"
+                      class="toggle toggle-primary toggle-sm"
+                    />
+                  </label>
+                  <span class="text-xs text-base-content/60 mt-1">启用后，删种等操作会发送通知</span>
+                </div>
+                
+                <div class="form-control w-full" v-if="downloader.pushNotify">
+                  <label class="label">
+                    <span class="label-text text-base-content/80">通知方式</span>
+                  </label>
+                  <select v-model="downloader.notify" class="select select-bordered w-full bg-base-100 transition-all duration-200 focus:ring-2 focus:ring-primary focus:ring-opacity-50" required>
+                    <option disabled value="">选择通知方式</option>
+                    <option v-for="notification in notifications" :key="notification.id" :value="notification.id">
+                      {{ notification.alias }}
+                    </option>
+                  </select>
+                  <span class="text-xs text-base-content/60 mt-1">在 <router-link to="/setting/notification" class="link link-primary">通知工具</router-link> 页面创建</span>
+                </div>
+                
+                <div class="form-control w-full">
+                  <label class="label cursor-pointer justify-start gap-4">
+                    <span class="label-text text-base-content/80">监控频道</span>
+                    <input
+                      type="checkbox"
+                      v-model="downloader.pushMonitor"
+                      class="toggle toggle-primary toggle-sm"
+                    />
+                  </label>
+                   <span class="text-xs text-base-content/60 mt-1">启用后，下载器异常会发送通知</span>
+                </div>
+                
+                <div class="form-control w-full" v-if="downloader.pushMonitor">
+                  <label class="label">
+                    <span class="label-text text-base-content/80">监控频道 (Telegram)</span>
+                  </label>
+                  <select v-model="downloader.monitor" class="select select-bordered w-full bg-base-100 transition-all duration-200 focus:ring-2 focus:ring-primary focus:ring-opacity-50" required>
+                     <option disabled value="">选择 Telegram 通知方式</option>
+                    <option v-for="notification in notifications" :key="notification.id" :value="notification.id" :disabled="notification.type !== 'telegram'">
+                      {{ notification.alias }}
+                    </option>
+                  </select>
+                   <span class="text-xs text-base-content/60 mt-1">仅支持 Telegram, 在 <router-link to="/setting/notification" class="link link-primary">通知工具</router-link> 页面创建</span>
+                </div>
+            </div>
+          </div>
+          
+          <!-- 下载设置 -->
+          <div class="bg-base-200/50 rounded-lg p-4 space-y-4">
+            <h3 class="font-medium text-base-content/80 mb-2">下载设置</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+                <div class="form-control w-full">
+                  <label class="label cursor-pointer justify-start gap-4">
+                    <span class="label-text text-base-content/80">自动汇报</span>
+                    <input
+                      type="checkbox"
+                      v-model="downloader.autoReannounce"
+                      class="toggle toggle-primary toggle-sm"
+                    />
+                  </label>
+                  <span class="text-xs text-base-content/60 mt-1">添加种子 2 分钟后自动汇报 Tracker</span>
+                </div>
+                
+                <div class="form-control w-full">
+                  <label class="label cursor-pointer justify-start gap-4">
+                    <span class="label-text text-base-content/80">优先下载首尾块</span>
+                    <input
+                      type="checkbox"
+                      v-model="downloader.firstLastPiecePrio"
+                      class="toggle toggle-primary toggle-sm"
+                    />
+                  </label>
+                  <span class="text-xs text-base-content/60 mt-1">同 qBittorrent 设置</span>
+                </div>
+                
+                <div class="form-control w-full">
+                  <label class="label">
+                    <span class="label-text text-base-content/80">最大下载数量</span>
+                  </label>
+                  <input
+                    type="number"
+                    v-model="downloader.maxLeechNum"
+                    class="input input-bordered w-full bg-base-100 transition-all duration-200 focus:ring-2 focus:ring-primary focus:ring-opacity-50"
+                    placeholder="留空表示不限制"
+                  />
+                  <span class="text-xs text-base-content/60 mt-1">下载中的种子超过此数量则不添加新种</span>
+                </div>
+            </div>
+          </div>
+          
+          <!-- 限速和空间设置 -->
+          <div class="bg-base-200/50 rounded-lg p-4 space-y-4">
+            <h3 class="font-medium text-base-content/80 mb-2">限速与空间</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+                <div class="form-control w-full">
+                  <label class="label">
+                    <span class="label-text text-base-content/80">上传速度上限</span>
+                  </label>
+                  <div class="join w-full">
+                    <input
+                      type="number"
+                      v-model="downloader.maxUploadSpeed"
+                      class="input input-bordered join-item flex-1 bg-base-100 transition-all duration-200 focus:ring-2 focus:ring-primary focus:ring-opacity-50"
+                      placeholder="留空不限制"
+                    />
+                    <select v-model="downloader.maxUploadSpeedUnit" class="select select-bordered join-item w-28 bg-base-100 transition-all duration-200 focus:ring-2 focus:ring-primary focus:ring-opacity-50">
+                      <option value="KiB">KiB/s</option>
+                      <option value="MiB">MiB/s</option>
+                      <option value="GiB">GiB/s</option>
+                    </select>
+                  </div>
+                  <span class="text-xs text-base-content/60 mt-1">上传速度超过此值则不添加新种</span>
+                </div>
+                
+                <div class="form-control w-full">
+                  <label class="label">
+                    <span class="label-text text-base-content/80">下载速度上限</span>
+                  </label>
+                   <div class="join w-full">
+                    <input
+                      type="number"
+                      v-model="downloader.maxDownloadSpeed"
+                      class="input input-bordered join-item flex-1 bg-base-100 transition-all duration-200 focus:ring-2 focus:ring-primary focus:ring-opacity-50"
+                      placeholder="留空不限制"
+                    />
+                    <select v-model="downloader.maxDownloadSpeedUnit" class="select select-bordered join-item w-28 bg-base-100 transition-all duration-200 focus:ring-2 focus:ring-primary focus:ring-opacity-50">
+                      <option value="KiB">KiB/s</option>
+                      <option value="MiB">MiB/s</option>
+                      <option value="GiB">GiB/s</option>
+                    </select>
+                  </div>
+                  <span class="text-xs text-base-content/60 mt-1">下载速度超过此值则不添加新种</span>
+                </div>
+                
+                <div class="form-control w-full">
+                  <label class="label">
+                    <span class="label-text text-base-content/80">最小剩余空间</span>
+                  </label>
+                  <div class="join w-full">
+                    <input
+                      type="number"
+                      v-model="downloader.minFreeSpace"
+                      class="input input-bordered join-item flex-1 bg-base-100 transition-all duration-200 focus:ring-2 focus:ring-primary focus:ring-opacity-50"
+                      placeholder="留空不限制"
+                    />
+                    <select v-model="downloader.minFreeSpaceUnit" class="select select-bordered join-item w-28 bg-base-100 transition-all duration-200 focus:ring-2 focus:ring-primary focus:ring-opacity-50">
+                      <option value="KiB">KiB</option>
+                      <option value="MiB">MiB</option>
+                      <option value="GiB">GiB</option>
+                    </select>
+                  </div>
+                  <span class="text-xs text-base-content/60 mt-1">剩余空间低于此值则不添加新种</span>
+                </div>
+                
+                <div class="form-control w-full">
+                  <label class="label cursor-pointer justify-start gap-4">
+                    <span class="label-text text-base-content/80">空间警告</span>
+                    <input
+                      type="checkbox"
+                      v-model="downloader.spaceAlarm"
+                      class="toggle toggle-primary toggle-sm"
+                    />
+                  </label>
+                  <span class="text-xs text-base-content/60 mt-1">启用后，空间低于阈值会发送通知</span>
+                </div>
+                
+                <div class="form-control w-full" v-if="downloader.spaceAlarm">
+                  <label class="label">
+                    <span class="label-text text-base-content/80">空间警告阈值</span>
+                  </label>
+                  <div class="join w-full">
+                    <input
+                      type="number"
+                      v-model="downloader.alarmSpace"
+                      class="input input-bordered join-item flex-1 bg-base-100 transition-all duration-200 focus:ring-2 focus:ring-primary focus:ring-opacity-50"
+                      placeholder="输入阈值"
+                      required
+                    />
+                    <select v-model="downloader.alarmSpaceUnit" class="select select-bordered join-item w-28 bg-base-100 transition-all duration-200 focus:ring-2 focus:ring-primary focus:ring-opacity-50">
+                      <option value="KiB">KiB</option>
+                      <option value="MiB">MiB</option>
+                      <option value="GiB">GiB</option>
+                    </select>
+                  </div>
+                  <span class="text-xs text-base-content/60 mt-1">剩余空间低于此值发送通知 (15分钟/次)</span>
+                </div>
+            </div>
+          </div>
+          
+          <!-- 自动删种设置 -->
+          <div class="bg-base-200/50 rounded-lg p-4 space-y-4">
+            <h3 class="font-medium text-base-content/80 mb-2">自动删种</h3>
+            
+            <div class="form-control w-full">
+              <label class="label cursor-pointer justify-start gap-4">
+                <span class="label-text text-base-content/80">启用自动删种</span>
+                <input
+                  type="checkbox"
+                  v-model="downloader.autoDelete"
+                  class="toggle toggle-primary toggle-sm"
+                />
+              </label>
+            </div>
+            
+            <div v-if="downloader.autoDelete" class="space-y-4 pt-2 border-t border-base-300/50">
+                <div class="form-control w-full">
+                  <label class="label">
+                    <span class="label-text text-base-content/80">删种周期 (Cron)</span>
+                  </label>
+                  <input
+                    type="text"
+                    v-model="downloader.autoDeleteCron"
+                    class="input input-bordered w-full bg-base-100 transition-all duration-200 focus:ring-2 focus:ring-primary focus:ring-opacity-50"
+                    placeholder="* * * * *"
+                    required
+                  />
+                  <span class="text-xs text-base-content/60 mt-1">默认 1 分钟检查一次</span>
+                </div>
+                
+                <div class="form-control w-full">
+                  <label class="label">
+                    <span class="label-text text-base-content/80">拒绝删种规则</span>
+                  </label>
+                  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 p-3 border rounded-lg bg-base-100/50">
+                    <label 
+                      v-for="deleteRule in deleteRules" 
+                      :key="deleteRule.id" 
+                      class="flex items-center gap-2 cursor-pointer p-1 rounded hover:bg-base-200/50"
+                    >
+                      <input
+                        type="checkbox"
+                        v-model="downloader.rejectDeleteRules"
+                        :value="deleteRule.id"
+                        class="checkbox checkbox-primary checkbox-xs"
+                      />
+                      <span class="text-sm text-base-content/90">{{ deleteRule.alias }}</span>
+                    </label>
+                  </div>
+                  <span class="text-xs text-base-content/60 mt-1">满足任一选中规则的种子 <span class="font-bold text-warning">不会</span> 被自动删除</span>
+                </div>
+                
+                <div class="form-control w-full">
+                  <label class="label">
+                    <span class="label-text text-base-content/80">删种规则</span>
+                  </label>
+                  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 p-3 border rounded-lg bg-base-100/50">
+                    <label 
+                      v-for="deleteRule in deleteRules" 
+                      :key="deleteRule.id" 
+                      class="flex items-center gap-2 cursor-pointer p-1 rounded hover:bg-base-200/50"
+                    >
+                      <input
+                        type="checkbox"
+                        v-model="downloader.deleteRules"
+                        :value="deleteRule.id"
+                        class="checkbox checkbox-primary checkbox-xs"
+                      />
+                      <span class="text-sm text-base-content/90">{{ deleteRule.alias }}</span>
+                    </label>
+                  </div>
+                   <span class="text-xs text-base-content/60 mt-1">满足任一选中规则的种子 <span class="font-bold text-error">会</span> 被自动删除 (需同时不满足拒绝规则)</span>
+                </div>
+            </div>
+          </div>
+          
+          <!-- Action Buttons -->
+          <div class="form-control pt-4">
+             <div class="flex flex-col md:flex-row gap-4">
+                <button type="submit" class="btn btn-primary flex-1">
+                  <i class="fas fa-save mr-2"></i>
+                  {{ downloader.id ? '保存修改' : '确认新增' }}
+                </button>
+                <button type="button" class="btn btn-ghost flex-1" @click="clearDownloader">
+                  <i class="fas fa-times mr-2"></i>
+                  清空表单
+                </button>
+             </div>
+          </div>
+        </form>
       </div>
-      <div class="form-control">
-        <label class="label">
-          <span class="label-text">启用</span>
-          <span class="label-text-alt text-xs text-opacity-60">选择是否启用下载器</span>
-        </label>
-        <input
-          type="checkbox"
-          v-model="downloader.enable"
-          :disabled="downloader.used"
-          class="toggle toggle-primary"
-        />
-      </div>
-      <div class="form-control">
-        <label class="label">
-          <span class="label-text">下载器类型</span>
-          <span class="label-text-alt text-xs text-opacity-60">下载器类型，目前完整支持 qBittorrent，Deluge 和 Transmission 不完全支持</span>
-        </label>
-        <select v-model="downloader.type" class="select select-bordered">
-          <option value="qBittorrent">qBittorrent</option>
-          <option value="Transmission">Transmission</option>
-          <option value="deluge">Deluge</option>
-        </select>
-      </div>
-      <div class="form-control">
-        <label class="label">
-          <span class="label-text">用户名</span>
-        </label>
-        <input
-          type="text"
-          v-model="downloader.username"
-          class="input input-bordered"
-          required
-        />
-      </div>
-      <div class="form-control">
-        <label class="label">
-          <span class="label-text">密码</span>
-        </label>
-        <input
-          type="password"
-          v-model="downloader.password"
-          class="input input-bordered"
-          required
-        />
-      </div>
-      <div class="form-control">
-        <label class="label">
-          <span class="label-text">URL</span>
-          <span class="label-text-alt text-xs text-opacity-60">下载器的链接，最后的 / 需要删除</span>
-        </label>
-        <input
-          type="text"
-          v-model="downloader.clientUrl"
-          class="input input-bordered"
-          required
-        />
-      </div>
-      <div class="form-control">
-        <label class="label">
-          <span class="label-text">推送通知</span>
-        </label>
-        <input
-          type="checkbox"
-          v-model="downloader.pushNotify"
-          class="toggle toggle-primary"
-        />
-      </div>
-      <div class="form-control" v-if="downloader.pushNotify">
-        <label class="label">
-          <span class="label-text">通知方式</span>
-          <span class="label-text-alt text-xs text-opacity-60">通知方式，用于推送删种等信息，在通知工具页面创建</span>
-        </label>
-        <select v-model="downloader.notify" class="select select-bordered" required>
-          <option v-for="notification in notifications" :key="notification.id" :value="notification.id">
-            {{ notification.alias }}
-          </option>
-        </select>
-      </div>
-      <div class="form-control">
-        <label class="label">
-          <span class="label-text">监控频道</span>
-        </label>
-        <input
-          type="checkbox"
-          v-model="downloader.pushMonitor"
-          class="toggle toggle-primary"
-        />
-      </div>
-      <div class="form-control" v-if="downloader.pushMonitor">
-        <label class="label">
-          <span class="label-text">监控频道</span>
-          <span class="label-text-alt text-xs text-opacity-60">下载器状态频道，仅支持 Telegram! 在推送工具页面创建</span>
-        </label>
-        <select v-model="downloader.monitor" class="select select-bordered" required>
-          <option v-for="notification in notifications" :key="notification.id" :value="notification.id" :disabled="notification.type !== 'telegram'">
-            {{ notification.alias }}
-          </option>
-        </select>
-      </div>
-      <div class="form-control">
-        <label class="label">
-          <span class="label-text">信息更新周期</span>
-          <span class="label-text-alt text-xs text-opacity-60">下载器信息更新 Cron 表达式，默认为 4s 更新一次，种子量过多请考虑 一分钟 一次甚至 五分钟 一次</span>
-        </label>
-        <input
-          type="text"
-          v-model="downloader.cron"
-          class="input input-bordered"
-          placeholder="*/4 * * * * *"
-        />
-      </div>
-      <div class="form-control">
-        <label class="label">
-          <span class="label-text">自动汇报</span>
-          <span class="label-text-alt text-xs text-opacity-60">自动在种子添加后的第 2 分钟时汇报一次，获取更多 Peers</span>
-        </label>
-        <input
-          type="checkbox"
-          v-model="downloader.autoReannounce"
-          class="toggle toggle-primary"
-        />
-      </div>
-      <div class="form-control">
-        <label class="label">
-          <span class="label-text">先下载首尾文件块</span>
-          <span class="label-text-alt text-xs text-opacity-60">先下载首尾文件块，同 qBittorrent 右键菜单 - 先下载首尾文件块</span>
-        </label>
-        <input
-          type="checkbox"
-          v-model="downloader.firstLastPiecePrio"
-          class="toggle toggle-primary"
-        />
-      </div>
-      <div class="form-control">
-        <label class="label">
-          <span class="label-text">空间警告</span>
-          <span class="label-text-alt text-xs text-opacity-60">下载器剩余空间小于一定值时推送警告通知，15 分钟一次</span>
-        </label>
-        <input
-          type="checkbox"
-          v-model="downloader.spaceAlarm"
-          class="toggle toggle-primary"
-        />
-      </div>
-      <div class="form-control" v-if="downloader.spaceAlarm">
-        <label class="label">
-          <span class="label-text">空间</span>
-        </label>
-        <div class="flex gap-2">
-          <input
-            type="number"
-            v-model="downloader.alarmSpace"
-            class="input input-bordered flex-1"
-            required
-          />
-          <select v-model="downloader.alarmSpaceUnit" class="select select-bordered w-32">
-            <option value="KiB">KiB</option>
-            <option value="MiB">MiB</option>
-            <option value="GiB">GiB</option>
-          </select>
-        </div>
-      </div>
-      <div class="form-control">
-        <label class="label">
-          <span class="label-text">上限上传速度</span>
-          <span class="label-text-alt text-xs text-opacity-60">若下载器的上传速度在此速度之上时，不再添加种子</span>
-        </label>
-        <div class="flex gap-2">
-          <input
-            type="number"
-            v-model="downloader.maxUploadSpeed"
-            class="input input-bordered flex-1"
-          />
-          <select v-model="downloader.maxUploadSpeedUnit" class="select select-bordered w-32">
-            <option value="KiB">KiB/s</option>
-            <option value="MiB">MiB/s</option>
-            <option value="GiB">GiB/s</option>
-          </select>
-        </div>
-      </div>
-      <div class="form-control">
-        <label class="label">
-          <span class="label-text">上限下载速度</span>
-          <span class="label-text-alt text-xs text-opacity-60">若下载器的下载速度在此速度之上时，不再添加种子</span>
-        </label>
-        <div class="flex gap-2">
-          <input
-            type="number"
-            v-model="downloader.maxDownloadSpeed"
-            class="input input-bordered flex-1"
-          />
-          <select v-model="downloader.maxDownloadSpeedUnit" class="select select-bordered w-32">
-            <option value="KiB">KiB/s</option>
-            <option value="MiB">MiB/s</option>
-            <option value="GiB">GiB/s</option>
-          </select>
-        </div>
-      </div>
-      <div class="form-control">
-        <label class="label">
-          <span class="label-text">最小剩余空间</span>
-          <span class="label-text-alt text-xs text-opacity-60">若下载器的剩余空间在此空间之下时，不再添加种子</span>
-        </label>
-        <div class="flex gap-2">
-          <input
-            type="number"
-            v-model="downloader.minFreeSpace"
-            class="input input-bordered flex-1"
-          />
-          <select v-model="downloader.minFreeSpaceUnit" class="select select-bordered w-32">
-            <option value="KiB">KiB</option>
-            <option value="MiB">MiB</option>
-            <option value="GiB">GiB</option>
-          </select>
-        </div>
-      </div>
-      <div class="form-control">
-        <label class="label">
-          <span class="label-text">最大下载数量</span>
-          <span class="label-text-alt text-xs text-opacity-60">最大的下载活动种子数量，在超过此数量时，将不会添加种子</span>
-        </label>
-        <input
-          type="number"
-          v-model="downloader.maxLeechNum"
-          class="input input-bordered"
-        />
-      </div>
-      <div class="form-control">
-        <label class="label">
-          <span class="label-text">自动删种</span>
-        </label>
-        <input
-          type="checkbox"
-          v-model="downloader.autoDelete"
-          class="toggle toggle-primary"
-        />
-      </div>
-      
-      <!-- 新增的删种周期字段 -->
-      <div class="form-control" v-if="downloader.autoDelete">
-        <label class="label">
-          <span class="label-text">删种周期</span>
-          <span class="label-text-alt text-xs text-opacity-60">删种周期 Cron 表达式，默认为 1 分钟更新一次</span>
-        </label>
-        <input
-          type="text"
-          v-model="downloader.autoDeleteCron"
-          class="input input-bordered"
-          placeholder="* * * * *"
-          required
-        />
-      </div>
-      
-      <!-- 新增的拒绝删种规则字段 -->
-      <div class="form-control" v-if="downloader.autoDelete">
-        <label class="label">
-          <span class="label-text">拒绝删种规则</span>
-          <span class="label-text-alt text-xs text-opacity-60">拒绝删种规则，种子状态符合其中一个时该种子不会被删除</span>
-        </label>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-2">
-          <label 
-            v-for="deleteRule in deleteRules" 
-            :key="deleteRule.id" 
-            class="flex items-center gap-2 p-2 border rounded-lg"
-          >
-            <input
-              type="checkbox"
-              v-model="downloader.rejectDeleteRules"
-              :value="deleteRule.id"
-              class="checkbox checkbox-primary"
-            />
-            <span>{{ deleteRule.alias }}</span>
-          </label>
-        </div>
-      </div>
-      
-      <!-- 新增的删种规则字段 -->
-      <div class="form-control" v-if="downloader.autoDelete">
-        <label class="label">
-          <span class="label-text">删种规则</span>
-          <span class="label-text-alt text-xs text-opacity-60">删种规则，种子状态符合其中一个时即触发删除种子操作</span>
-        </label>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-2">
-          <label 
-            v-for="deleteRule in deleteRules" 
-            :key="deleteRule.id" 
-            class="flex items-center gap-2 p-2 border rounded-lg"
-          >
-            <input
-              type="checkbox"
-              v-model="downloader.deleteRules"
-              :value="deleteRule.id"
-              class="checkbox checkbox-primary"
-            />
-            <span>{{ deleteRule.alias }}</span>
-          </label>
-        </div>
-      </div>
-      
-      <div class="form-control flex-row gap-2 pt-4">
-        <button type="submit" class="btn btn-primary flex-1">应用 | 完成</button>
-        <button type="button" class="btn btn-secondary flex-1" @click="clearDownloader">
-          清空
-        </button>
-      </div>
-    </form>
+    </div>
   </div>
 </template>
 
@@ -485,6 +574,7 @@ export default {
     async listDeleteRule() {
       try {
         const res = await this.$api().deleteRule.list();
+        // Sort rules alphabetically by alias for consistent display
         this.deleteRules = res.data.sort((a, b) => a.alias.localeCompare(b.alias));
       } catch (e) {
         this.$message().error(e.message);
@@ -492,9 +582,18 @@ export default {
     },
     async modifyDownloader() {
       try {
-        await this.$api().downloader.modify({ ...this.downloader });
+        // Ensure numeric fields are numbers or null
+        const payload = {
+          ...this.downloader,
+          maxLeechNum: this.downloader.maxLeechNum === '' ? null : Number(this.downloader.maxLeechNum),
+          maxUploadSpeed: this.downloader.maxUploadSpeed === '' ? null : Number(this.downloader.maxUploadSpeed),
+          maxDownloadSpeed: this.downloader.maxDownloadSpeed === '' ? null : Number(this.downloader.maxDownloadSpeed),
+          minFreeSpace: this.downloader.minFreeSpace === '' ? null : Number(this.downloader.minFreeSpace),
+          alarmSpace: this.downloader.alarmSpace === '' ? null : Number(this.downloader.alarmSpace),
+        };
+        await this.$api().downloader.modify(payload);
         this.$message().success((this.downloader.id ? '编辑' : '新增') + '成功, 列表正在刷新...');
-        setTimeout(() => this.listDownloader(), 1000);
+        setTimeout(() => this.listDownloader(), 1000); // Refresh list after a short delay
         this.clearDownloader();
       } catch (e) {
         this.$message().error(e.message);
@@ -502,55 +601,69 @@ export default {
     },
     async deleteDownloader(record) {
       if (record.used) {
-        this.$message().error('组件被占用, 取消占用后删除');
+        this.$message().error('下载器正在被 RSS 任务或规则使用, 请先解除占用后再删除');
         return;
       }
       try {
         await this.$api().downloader.delete(record.id);
         this.$message().success('删除成功, 列表正在刷新...');
-        await this.listDownloader();
+        await this.listDownloader(); // Refresh list immediately
+        // If the deleted downloader was being edited, clear the form
+        if (this.downloader.id === record.id) {
+          this.clearDownloader();
+        }
       } catch (e) {
         this.$message().error(e.message);
       }
     },
     async enableDownloader(record) {
+      // Directly modify the enable status without affecting the main form
+      const updatedRecord = { ...record, enable: !record.enable };
       try {
-        await this.$api().downloader.modify({ ...record });
-        this.$message().success('修改成功, 列表正在刷新...');
-        setTimeout(() => this.listDownloader(), 1000);
-        this.clearDownloader();
+        await this.$api().downloader.modify(updatedRecord);
+        this.$message().success(`下载器 "${record.alias}" 已${updatedRecord.enable ? '启用' : '禁用'}`);
+        // Update the local list directly for immediate UI feedback
+        const index = this.downloaders.findIndex(d => d.id === record.id);
+        if (index !== -1) {
+          this.downloaders[index].enable = updatedRecord.enable;
+        }
       } catch (e) {
+        // Revert UI on error
+        record.enable = !updatedRecord.enable;
         this.$message().error(e.message);
       }
     },
     modifyClick(record) {
-      this.downloader = { ...record };
+      // Deep clone to prevent accidental modification of the list item
+      this.downloader = JSON.parse(JSON.stringify(record));
+      // Scroll to the form for better UX
+      this.$el.querySelector('form').scrollIntoView({ behavior: 'smooth' });
     },
     cloneClick(record) {
-      this.downloader = { 
+      // Deep clone and prepare for cloning
+      this.downloader = JSON.parse(JSON.stringify({
         ...record, 
-        id: null, 
+        id: '', // Clear ID for new entry
         alias: `${record.alias}-克隆`,
-        deleteRules: Array.isArray(record.deleteRules) ? [...record.deleteRules] : [],
-        rejectDeleteRules: Array.isArray(record.rejectDeleteRules) ? [...record.rejectDeleteRules] : []
-      };
+        enable: true // Default cloned downloader to enabled
+      }));
+       // Scroll to the form for better UX
+      this.$el.querySelector('form').scrollIntoView({ behavior: 'smooth' });
     },
     clearDownloader() {
-      this.downloader = {
-        ...this.defaultDownloader,
-        deleteRules: [],
-        rejectDeleteRules: []
-      };
+      // Reset form to default state using deep clone
+      this.downloader = JSON.parse(JSON.stringify(this.defaultDownloader));
     },
     goto(record) {
-      window.open(`/proxy/client/${record.id}/`);
+      window.open(`/proxy/client/${record.id}/`, '_blank');
     },
     gotoLog(record) {
-      window.open(`/tool/clientLog?id=${record.id}`);
+      window.open(`/tool/clientLog?id=${record.id}`, '_blank');
     }
   },
   async mounted() {
-    this.clearDownloader();
+    this.clearDownloader(); // Initialize form with defaults
+    // Fetch initial data in parallel
     await Promise.all([
       this.listDownloader(), 
       this.listNotification(), 
@@ -561,9 +674,32 @@ export default {
 </script>
 
 <style scoped>
-.downloader {
-  width: 100%;
+/* Add Font Awesome if not globally available */
+@import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css");
+
+.container {
   max-width: 1440px;
-  margin: 0 auto;
+}
+
+/* Improve spacing for joined inputs/selects */
+.join > *:not(:first-child) {
+  margin-left: -1px; 
+}
+
+/* Consistent height for form elements */
+.select, .input {
+  min-height: 2.5rem; /* Adjust as needed */
+  height: 2.5rem;
+}
+.textarea {
+  min-height: 6rem;
+}
+.toggle {
+  height: 1.5rem; /* Adjust toggle size if needed */
+}
+
+/* Ensure dropdown content is above other elements */
+.dropdown-content {
+  z-index: 50; 
 }
 </style>
