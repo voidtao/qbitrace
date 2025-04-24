@@ -1,6 +1,6 @@
 <template>
-  <div class="p-2 md:p-4">
-    <h1 class="text-2xl font-bold">通知工具</h1>
+  <div class="container mx-auto p-4">
+    <h1 class="text-2xl font-bold mb-4">通知工具</h1>
     <div class="divider"></div>
 
     <div class="notification">

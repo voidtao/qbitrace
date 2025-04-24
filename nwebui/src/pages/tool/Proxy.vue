@@ -1,6 +1,7 @@
 <template>
   <div class="container mx-auto p-4">
-    <h1 class="text-2xl font-bold mb-4">HTTP 代理</h1>
+    <h1 class="text-2xl font-bold mb-4">http代理</h1>
+    <div class="divider"></div>
     
     <div class="card bg-base-100 shadow-xl">
       <div class="card-body">

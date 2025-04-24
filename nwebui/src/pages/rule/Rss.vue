@@ -1,9 +1,6 @@
 <template>
-  <div class="container mx-auto px-6 py-8">
-    <h1 class="text-2xl font-bold mb-4 text-base-content">
-      <i class="fas fa-rss mr-2 text-primary"></i>
-      RSS 规则管理
-    </h1>
+  <div class="container mx-auto p-4">
+    <h1 class="text-2xl font-bold mb-4">RSS 规则管理</h1>
     <div class="divider"></div>
     
     <div class="card bg-base-100 shadow-sm hover:shadow-md transition-all duration-300 mb-8">

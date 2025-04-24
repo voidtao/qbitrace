@@ -1,9 +1,6 @@
 <template>
-  <div class="container mx-auto px-6 py-8">
-    <h1 class="text-2xl font-bold mb-4 text-base-content">
-      <i class="fas fa-history mr-2 text-primary"></i>
-      RSS 历史记录
-    </h1>
+  <div class="container mx-auto p-4">
+    <h1 class="text-2xl font-bold mb-4">rss历史记录</h1>
     <div class="divider"></div>
     
     <div class="alert alert-warning bg-warning/10 text-warning-content mb-6">

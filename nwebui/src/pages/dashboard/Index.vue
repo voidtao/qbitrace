@@ -1,6 +1,7 @@
 <template>
   <div class="container mx-auto p-4">
     <h1 class="text-2xl font-bold mb-4">仪表盘</h1>
+    <div class="divider"></div>
     
     <!-- 今日统计卡片 -->
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">

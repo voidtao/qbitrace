@@ -246,6 +246,13 @@ export default {
   background-color: var(--layout-background);
 }
 
+/* 调整PC端布局容器 */
+.hidden.md\:flex {
+  display: flex;
+  width: 100%;
+  height: 100%;
+}
+
 .sidebar-container {
   width: 180px;
   height: 100vh;
@@ -267,6 +274,7 @@ export default {
   height: 100vh;
   overflow-y: auto;
   padding: 1.5rem;
+  width: calc(100% - 180px); /* 明确设置宽度为剩余空间 */
 }
 
 .sidebar-scroll {
