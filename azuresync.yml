@@ -1,0 +1,23 @@
+trigger:
+- main
+- dev
+
+pool:
+  vmImage: 'ubuntu-latest' # 使用最新的 Ubuntu 镜像
+
+variables:
+- group: GitHubSyncCredentials # 替换成你的 Variable Group 名称
+
+steps:
+- script: |
+    git config --global user.email "void@tao"
+    git config --global user.name "Azure Pipeline Sync"
+
+    git remote add github https://$(GitHubPAT)@github.com/voidtao/qbitrace.git
+
+    echo "Syncing to GitHub..."
+    git push --mirror github
+
+  displayName: 'Sync Azure Repo to GitHub'
+  env:
+    GitHubPAT: $(GitHubPAT)
