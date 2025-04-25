@@ -1,41 +1,11 @@
 :root {
-  /* 主色调：浅紫色 */
-  --primary: #c084fc;
-  --primary-focus: #a855f7;
-  --primary-content: #ffffff;
-
-  /* 次要色调：浅蓝色 */
-  --secondary: #93c5fd;
-  --secondary-focus: #60a5fa;
-  --secondary-content: #ffffff;
-
-  /* 强调色：浅粉色 */
-  --accent: #f9a8d4;
-  --accent-focus: #f472b6;
-  --accent-content: #ffffff;
-
-  /* 中性色调 */
-  --neutral: #f3f4f6;
-  --neutral-focus: #e5e7eb;
-  --neutral-content: #1f2937;
-
-  /* 背景色系 */
-  --base-100: #ffffff;
-  --base-200: #f9fafb;
-  --base-300: #f3f4f6;
-  --base-content: #4b5563;
-
-  /* 功能色 */
-  --info: #93c5fd;    /* 浅蓝 */
-  --success: #86efac; /* 浅绿 */
-  --warning: #fde047; /* 浅黄 */
-  --error: #fca5a5;   /* 浅红 */
-
+  /* 使用 DaisyUI 生成的 CSS 变量 */
+  
   /* 布局相关 */
-  --layout-background: var(--base-100);
-  --header-background: rgba(192, 132, 252, 0.6); /* 更浅的紫色，增加透明度 */
-  --header-text: #ffffff;
-  --sidebar-background: var(--base-200);
+  --layout-background: var(--b1); /* DaisyUI 的 base-100 变量 */
+  --header-background: rgba(var(--p) / 0.6); /* 添加透明度的 primary 颜色 */
+  --header-text: var(--pc); /* primary-content 颜色 */
+  --sidebar-background: var(--b2); /* DaisyUI 的 base-200 变量 */
 }
 
 /* 针对base/downloader和base/notification页面的样式 */

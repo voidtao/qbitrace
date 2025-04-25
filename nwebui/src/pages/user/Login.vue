@@ -1,7 +1,7 @@
 <template>
   <div class="min-h-screen flex bg-base-100">
     <!-- 左侧图片区 -->
-    <div class="hidden md:block w-1/3 bg-gradient-to-b from-primary to-primary-focus">
+    <div class="hidden md:block w-1/3 bg-primary"> <!-- Changed: Use bg-primary instead of gradient -->
       <div class="h-full flex flex-col items-center justify-center p-8">
         <img src="/assets/images/logo.svg" class="w-48 mb-8" alt="logo"/>
         <h2 class="text-3xl font-bold text-white mb-2">qbitrace</h2>
@@ -64,7 +64,7 @@
           <div class="form-control mt-8">
             <button 
               type="submit" 
-              class="btn btn-primary w-full transition-all duration-200 hover:shadow-lg"
+              class="btn btn-primary w-full transition-all duration-200 hover:shadow-lg" <!-- Already uses btn-primary (light purple) -->
               :disabled="loading"
             >
               <span v-if="loading" class="loading loading-spinner"></span>
@@ -78,17 +78,6 @@
           <i class="fas fa-exclamation-circle"></i>
           <span>{{ error }}</span>
         </div>
-
-        <!-- 底部链接 -->
-        <div class="mt-8 text-center space-y-2">
-          <a href="#" class="link link-primary hover:text-primary-focus transition-colors duration-200">
-            <i class="fas fa-question-circle mr-1"></i>
-            忘记密码？
-          </a>
-          <div class="text-sm text-base-content/60">
-            没有账号？<a href="#" class="link link-primary hover:text-primary-focus transition-colors duration-200">联系管理员</a>
-          </div>
-        </div>
       </div>
     </div>
   </div>
@@ -98,6 +87,7 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useToast } from 'vue-toastification'
+import userApi from '@/api/user' // Import the user API
 
 const router = useRouter()
 const toast = useToast()
@@ -106,21 +96,22 @@ const user = ref({
   password: '',
   otpPw: ''
 })
+const loading = ref(false) // Add loading state
+const error = ref(null) // Add error state
 
 const login = async () => {
+  loading.value = true // Set loading to true
+  error.value = null // Reset error
   try {
-    const response = await fetch('/api/user/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(user.value)
-    })
-    if (!response.ok) throw new Error('登录失败')
+    // Use the imported API function
+    await userApi.login(user.value.username, user.value.password, user.value.otpPw)
     toast.success('登录成功')
     router.push('/index')
-  } catch (error) {
-    toast.error(error.message)
+  } catch (e) {
+    error.value = e.message || '登录失败' // Set error message
+    toast.error(error.value)
+  } finally {
+    loading.value = false // Set loading to false
   }
 }
 </script>
