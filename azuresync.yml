@@ -16,7 +16,9 @@ steps:
     git remote add github https://$(GitHubPAT)@github.com/voidtao/qbitrace.git
 
     echo "Syncing to GitHub..."
-    git push --mirror github
+    git push --force github main
+
+    git push --force github dev
 
   displayName: 'Sync Azure Repo to GitHub'
   env:
