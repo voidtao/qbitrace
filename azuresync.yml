@@ -9,10 +9,9 @@ variables:
 - group: GitHubSyncCredentials
 
 steps:
-- checkout: self       # self 表示检出当前 Pipeline 所在的仓库
-  persistCredentials: true # 非常重要：让后续脚本能使用内置认证信息
-  fetchDepth: 0        # 推荐：获取所有历史记录和分支，可能使后续 fetch 非必需
-  fetchTags: true      # 获取标签
+- checkout: self
+  persistCredentials: true  # 保留认证信息
+  fetchDepth: 0  # 获取完整历史（所有分支）
 
 - script: |
     git config --global user.email "void@tao"
@@ -21,12 +20,50 @@ steps:
     # 添加 GitHub 远程仓库
     git remote add github https://$(GitHubPAT)@github.com/voidtao/qbitrace.git
 
-    echo "Fetching all branches and tags from origin (Azure DevOps)..."
-    git fetch origin --prune
+    # 列出所有分支（用于调试）
+    echo "当前可用分支："
+    git branch -a
+    
+    # 基于远程分支创建本地分支
+    echo "正在创建本地分支..."
+    
+    # 创建并切换到 main 分支
+    if git show-ref --verify --quiet refs/remotes/origin/main; then
+      git checkout -b main origin/main
+      echo "已创建本地 main 分支"
+    else
+      echo "警告: 远程 main 分支不存在"
+    fi
+    
+    # 切换回工作目录顶层
+    cd $(Build.SourcesDirectory)
+    
+    # 创建并切换到 dev 分支
+    if git show-ref --verify --quiet refs/remotes/origin/dev; then
+      git checkout -b dev origin/dev
+      echo "已创建本地 dev 分支"
+    else
+      echo "警告: 远程 dev 分支不存在"
+    fi
 
-    echo "Syncing specified branches to GitHub..."
-    git push --force github main
-    git push --force github dev
+    # 推送到 GitHub
+    echo "正在推送到 GitHub..."
+    
+    # 推送 main 分支
+    if git show-ref --verify --quiet refs/heads/main; then
+      echo "正在同步 main 分支到 GitHub..."
+      git push -f github main:main
+    else
+      echo "警告: 本地 main 分支不存在"
+    fi
+
+    # 推送 dev 分支
+    if git show-ref --verify --quiet refs/heads/dev; then
+      echo "正在同步 dev 分支到 GitHub..."
+      git push -f github dev:dev
+    else
+      echo "警告: 本地 dev 分支不存在"
+    fi
 
   displayName: 'Sync Azure Repo to GitHub'
   env:
