@@ -3,24 +3,42 @@ trigger:
 - dev
 
 pool:
-  vmImage: 'ubuntu-latest' # 使用最新的 Ubuntu 镜像
+  vmImage: 'ubuntu-latest'
 
 variables:
-- group: GitHubSyncCredentials # 替换成你的 Variable Group 名称
+- group: GitHubSyncCredentials
 
 steps:
+- checkout: self
+  persistCredentials: true  # 保留认证信息
+  fetchDepth: 0  # 获取完整历史（所有分支）
+
 - script: |
     git config --global user.email "void@tao"
     git config --global user.name "Azure Pipeline Sync"
 
+    # 添加 GitHub 远程仓库
     git remote add github https://$(GitHubPAT)@github.com/voidtao/qbitrace.git
 
-    echo "Fetching all branches and tags from origin (Azure DevOps)..."
-    git fetch origin --prune
-    echo "Syncing to GitHub..."
-    git push --force github main
+    # 列出所有分支（用于调试）
+    echo "当前可用分支："
+    git branch -a
 
-    git push --force github dev
+    # 确保我们有要同步的分支，尝试同步 main 分支
+    if git show-ref --verify --quiet refs/heads/main; then
+      echo "正在同步 main 分支到 GitHub..."
+      git push --force github refs/heads/main:refs/heads/main
+    else
+      echo "警告: 本地找不到 main 分支"
+    fi
+
+    # 尝试同步 dev 分支
+    if git show-ref --verify --quiet refs/heads/dev; then
+      echo "正在同步 dev 分支到 GitHub..."
+      git push --force github refs/heads/dev:refs/heads/dev
+    else
+      echo "警告: 本地找不到 dev 分支"
+    fi
 
   displayName: 'Sync Azure Repo to GitHub'
   env:
