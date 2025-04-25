@@ -15,6 +15,8 @@ steps:
 
     git remote add github https://$(GitHubPAT)@github.com/voidtao/qbitrace.git
 
+    echo "Fetching all branches and tags from origin (Azure DevOps)..."
+    git fetch origin --prune
     echo "Syncing to GitHub..."
     git push --force github main
 
