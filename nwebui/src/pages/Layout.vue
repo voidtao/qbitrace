@@ -289,6 +289,10 @@ export default {
   margin-bottom: -0.4rem; /* Reduce the gap between the top block and navigation bar */
 }
 
+.menu {
+  --menu-active-bg: rgba(var(--p), 0.4); /* Use primary color with 15% opacity */
+}
+
 .menu a {
   display: flex;
   align-items: center;
