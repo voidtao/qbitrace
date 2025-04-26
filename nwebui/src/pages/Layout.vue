@@ -361,7 +361,7 @@ export default {
   
   .drawer-side .header-bg img {
     width: 1.75rem !important;
-    height: 1.75rem !重要;
+    height: 1.75rem !important;
   }
   
   .content-container {

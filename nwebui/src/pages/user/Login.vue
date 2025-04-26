@@ -1,7 +1,7 @@
 <template>
   <div class="min-h-screen flex bg-base-100">
     <!-- 左侧图片区 -->
-    <div class="hidden md:block w-1/3 bg-primary"> <!-- Changed: Use bg-primary instead of gradient -->
+    <div class="hidden md:block w-1/4 bg-primary">
       <div class="h-full flex flex-col items-center justify-center p-8">
         <img src="/assets/images/logo.svg" class="w-48 mb-8" alt="logo"/>
         <h2 class="text-3xl font-bold text-white mb-2">qbitrace</h2>
@@ -10,7 +10,7 @@
     </div>
     
     <!-- 右侧登录区 -->
-    <div class="w-full md:w-2/3 flex flex-col items-center justify-center p-6">
+    <div class="w-full md:w-3/4 flex flex-col items-center justify-center p-6">
       <div class="w-full max-w-md">
         <div class="text-center mb-8">
           <img src="/assets/images/logo.svg" class="w-16 mx-auto mb-4 md:hidden" alt="logo"/>
@@ -64,7 +64,7 @@
           <div class="form-control mt-8">
             <button 
               type="submit" 
-              class="btn btn-primary w-full transition-all duration-200 hover:shadow-lg" <!-- Already uses btn-primary (light purple) -->
+              class="btn btn-primary w-full transition-all duration-200 hover:shadow-lg"
               :disabled="loading"
             >
               <span v-if="loading" class="loading loading-spinner"></span>
