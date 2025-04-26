@@ -8,7 +8,7 @@ export default {
     extend: {
       colors: {
         primary: {
-          DEFAULT: '#c084fc', // 浅紫
+          DEFAULT: '#D8BFD8', // 浅紫
           focus: '#a855f7', // 深紫
           content: '#ffffff'
         },
@@ -37,7 +37,7 @@ export default {
   daisyui: {
     themes: [{
       light: {
-        "primary": "#c084fc", // 浅紫
+        "primary": "#D8BFD8", // 浅紫
         "primary-focus": "#a855f7", // 深紫
         "primary-content": "#ffffff",
         "secondary": "#93c5fd", // 浅蓝

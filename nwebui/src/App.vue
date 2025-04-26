@@ -1,5 +1,5 @@
 <template>
-  <div :data-theme="theme">
+  <div>
     <router-view></router-view>
   </div>
 </template>
@@ -38,7 +38,7 @@ html, body {
 
 @font-face {
   font-family: 'consolas';
-  src: url('../public/assets/fonts/consolas.woff');
+  src: url('/assets/fonts/consolas.woff');
 }
 
 body {
