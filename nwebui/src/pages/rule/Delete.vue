@@ -28,7 +28,7 @@
                     <button class="btn btn-sm btn-primary" @click="modifyClick(rule)">编辑</button>
                     <div class="dropdown dropdown-end">
                       <button class="btn btn-sm btn-error">删除</button>
-                      <ul class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
+                      <ul class="dropdown-content menu p-2 shadow-sm bg-base-100 rounded-box w-52">
                         <li><a @click="deleteDeleteRule(rule)">确认删除</a></li>
                       </ul>
                     </div>

@@ -3,7 +3,7 @@
     <h1 class="text-2xl font-bold mb-4">备份设置</h1>
     <div class="divider"></div>
     
-    <div class="card bg-base-100 shadow-sm hover:shadow-md transition-all duration-300">
+    <div class="card bg-base-100 shadow-xs hover:shadow-md transition-all duration-300">
       <div class="card-body">
         <form @submit.prevent="modify" class="space-y-6">
           <!-- 提示信息 -->

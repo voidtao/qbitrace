@@ -32,7 +32,7 @@
                     <button class="btn btn-sm btn-primary" @click="modifyClick(script)">编辑</button>
                     <div class="dropdown dropdown-end">
                       <label tabindex="0" class="btn btn-sm btn-error">删除</label>
-                      <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
+                      <ul tabindex="0" class="dropdown-content z-1 menu p-2 shadow-sm bg-base-100 rounded-box w-52">
                         <li>
                           <button @click="deleteScript(script)" class="text-error">确认删除</button>
                         </li>

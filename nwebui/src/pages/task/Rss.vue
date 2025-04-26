@@ -3,7 +3,7 @@
     <h1 class="text-2xl font-bold mb-4">rss任务</h1>
     <div class="divider"></div>
     
-    <div class="card bg-base-100 shadow-sm hover:shadow-md transition-all duration-300 mb-8">
+    <div class="card bg-base-100 shadow-xs hover:shadow-md transition-all duration-300 mb-8">
       <div class="card-body">
         <div class="overflow-x-auto">
           <table class="table table-zebra w-full">
@@ -86,7 +86,7 @@
       </div>
     </div>
 
-    <div class="card bg-base-100 shadow-sm hover:shadow-md transition-all duration-300">
+    <div class="card bg-base-100 shadow-xs hover:shadow-md transition-all duration-300">
       <div class="card-body">
         <h2 class="card-title mb-6 text-base-content">
           <i class="fas fa-rss mr-2 text-primary"></i>
@@ -242,7 +242,7 @@
             <div class="space-y-3">
               <div v-for="(url, index) in rss.rssUrls" 
                    :key="index" 
-                   class="flex gap-2 items-start bg-base-100 rounded-lg p-2 transition-all duration-200 hover:shadow-sm">
+                   class="flex gap-2 items-start bg-base-100 rounded-lg p-2 transition-all duration-200 hover:shadow-xs">
                 <div class="flex-1">
                   <input 
                     type="text" 

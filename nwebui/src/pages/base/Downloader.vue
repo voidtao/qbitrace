@@ -4,7 +4,7 @@
     <div class="divider"></div>
 
     <!-- Downloader List Card -->
-    <div class="card bg-base-100 shadow-sm hover:shadow-md transition-all duration-300 mb-8">
+    <div class="card bg-base-100 shadow-xs hover:shadow-md transition-all duration-300 mb-8">
       <div class="card-body">
         <h2 class="card-title mb-4 text-base-content/90">下载器列表</h2>
         <div class="overflow-x-auto">
@@ -61,7 +61,7 @@
                       <label tabindex="0" class="btn btn-xs btn-outline btn-secondary">
                         <i class="fas fa-ellipsis-h mr-1"></i>操作
                       </label>
-                      <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow-lg bg-base-100 rounded-lg w-32">
+                      <ul tabindex="0" class="dropdown-content z-1 menu p-2 shadow-lg bg-base-100 rounded-lg w-32">
                         <li><a @click="modifyClick(record)"><i class="fas fa-edit w-4 mr-2"></i>编辑</a></li>
                         <li><a @click="cloneClick(record)"><i class="fas fa-copy w-4 mr-2"></i>克隆</a></li>
                         <li><a @click="gotoLog(record)"><i class="fas fa-file-alt w-4 mr-2"></i>日志</a></li>
@@ -86,7 +86,7 @@
     </div>
 
     <!-- Add/Edit Downloader Card -->
-    <div class="card bg-base-100 shadow-sm hover:shadow-md transition-all duration-300">
+    <div class="card bg-base-100 shadow-xs hover:shadow-md transition-all duration-300">
       <div class="card-body">
         <h2 class="card-title mb-6 text-base-content/90">
           <i class="fas fa-edit mr-2 text-primary"></i>
@@ -428,7 +428,7 @@
                     <label 
                       v-for="deleteRule in deleteRules" 
                       :key="deleteRule.id" 
-                      class="flex items-center gap-2 cursor-pointer p-1 rounded hover:bg-base-200/50"
+                      class="flex items-center gap-2 cursor-pointer p-1 rounded-sm hover:bg-base-200/50"
                     >
                       <input
                         type="checkbox"
@@ -450,7 +450,7 @@
                     <label 
                       v-for="deleteRule in deleteRules" 
                       :key="deleteRule.id" 
-                      class="flex items-center gap-2 cursor-pointer p-1 rounded hover:bg-base-200/50"
+                      class="flex items-center gap-2 cursor-pointer p-1 rounded-sm hover:bg-base-200/50"
                     >
                       <input
                         type="checkbox"

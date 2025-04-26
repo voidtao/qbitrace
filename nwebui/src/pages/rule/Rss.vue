@@ -3,7 +3,7 @@
     <h1 class="text-2xl font-bold mb-4">RSS 规则管理</h1>
     <div class="divider"></div>
     
-    <div class="card bg-base-100 shadow-sm hover:shadow-md transition-all duration-300 mb-8">
+    <div class="card bg-base-100 shadow-xs hover:shadow-md transition-all duration-300 mb-8">
       <div class="card-body">
         <h2 class="card-title mb-6 text-base-content">规则列表</h2>
         <div class="overflow-x-auto">
@@ -73,7 +73,7 @@
       </div>
     </div>
 
-    <div class="card bg-base-100 shadow-sm hover:shadow-md transition-all duration-300">
+    <div class="card bg-base-100 shadow-xs hover:shadow-md transition-all duration-300">
       <div class="card-body">
         <h2 class="card-title mb-6 text-base-content">
           <i class="fas fa-edit mr-2 text-primary"></i>

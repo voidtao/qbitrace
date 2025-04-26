@@ -18,7 +18,7 @@
                 <li v-if="!item.hidden && !item.sub" class="my-1">
                   <a 
                     class="rounded-lg transition-colors duration-200 hover:bg-primary hover:bg-opacity-10 text-sm"
-                    :class="{ 'bg-primary bg-opacity-20 text-primary font-medium': selectedKeys.includes(item.path) }"
+                    :class="{ 'bg-primary bg-opacity-20 text-primary-content font-medium': selectedKeys.includes(item.path) }"
                     @click="goto(item.path)"
                   >
                     <i class="w-6">
@@ -76,7 +76,7 @@
     <div class="drawer block md:hidden w-full h-full">
       <input id="drawer" type="checkbox" class="drawer-toggle" v-model="visible"/>
       <div class="drawer-content flex flex-col">
-        <div class="navbar bg-base-100 shadow-sm fixed top-0 left-0 right-0 z-10">
+        <div class="navbar bg-base-100 shadow-xs fixed top-0 left-0 right-0 z-10">
           <div class="flex-none">
             <label for="drawer" class="btn btn-square btn-ghost">
               <fa-icon :icon="['fas', 'bars']"/>
@@ -111,7 +111,7 @@
               <li v-if="!item.hidden && !item.sub" class="my-1">
                 <a 
                   class="rounded-lg transition-colors duration-200 hover:bg-primary hover:bg-opacity-10 text-sm"
-                  :class="{ 'bg-primary bg-opacity-20 text-primary font-medium': selectedKeys.includes(item.path) }"
+                  :class="{ 'bg-primary bg-opacity-20 text-primary-content font-medium': selectedKeys.includes(item.path) }"
                   @click="goto(item.path); visible = false"
                 >
                   <i class="w-6">
