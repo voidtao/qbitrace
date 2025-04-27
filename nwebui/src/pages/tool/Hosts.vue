@@ -3,27 +3,46 @@
     <h1 class="text-2xl font-bold mb-4">修改hosts</h1>
     <div class="divider"></div>
     
-    <div class="card bg-base-100 shadow-xl">
+    <div class="card bg-base-100 shadow-xs hover:shadow-md transition-all duration-300">
       <div class="card-body">
-        <div class="form-control mb-4">
-          <textarea 
-            v-model="hosts" 
-            class="textarea textarea-bordered h-48"
-            placeholder="输入 hosts 内容"
-          ></textarea>
+        <h2 class="card-title mb-6 text-base-content">
+          <i class="fas fa-network-wired mr-2 text-primary"></i>
+          修改系统 Hosts
+        </h2>
+        
+        <div class="bg-base-200/50 rounded-lg p-4 mb-6">
+          <div class="form-control mb-4">
+            <label class="label mb-2">
+              <span class="label-text text-base-content/80">Hosts 内容</span>
+            </label>
+            <textarea 
+              v-model="hosts" 
+              class="textarea textarea-bordered h-48 w-full bg-base-100 transition-all duration-200 focus:ring-2 focus:ring-primary focus:ring-opacity-50 font-mono"
+              placeholder="输入 hosts 内容"
+            ></textarea>
+          </div>
+
+          <div class="flex flex-wrap gap-2">
+            <button class="btn btn-primary" @click="save">
+              <i class="fas fa-save mr-1"></i>
+              保存
+            </button>
+            <button class="btn btn-secondary btn-outline" @click="_export">
+              <i class="fas fa-file-export mr-1"></i>
+              导出
+            </button>
+            <button class="btn btn-accent btn-outline" @click="_import">
+              <i class="fas fa-file-import mr-1"></i>
+              导入
+            </button>
+          </div>
         </div>
 
-        <div class="flex gap-2 mb-6">
-          <button class="btn btn-primary" @click="save">保存</button>
-          <button class="btn btn-secondary btn-sm" @click="_export">导出</button>
-          <button class="btn btn-accent btn-sm ml-2" @click="_import">导入</button>
-        </div>
-
-        <div class="alert alert-info">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+        <div class="alert alert-info bg-info/10 text-info-content shadow-xs">
+          <i class="fas fa-info-circle mr-2 text-info"></i>
           <div>
-            <div class="font-bold">说明:</div>
-            <ol class="list-decimal list-inside mt-2 space-y-1 text-sm">
+            <div class="font-medium">说明:</div>
+            <ol class="list-decimal list-inside mt-2 space-y-1 text-sm text-base-content/80">
               <li>输入框内容实时读取自文件 /etc/hosts</li>
               <li>保存是指将内容保存至 /etc/hosts</li>
               <li>导出是指将内容保存至 /etc/hosts 的内容复制至 qbitrace/data/hosts</li>

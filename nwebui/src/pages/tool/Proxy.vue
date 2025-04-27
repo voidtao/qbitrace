@@ -1,47 +1,61 @@
 <template>
   <div class="container mx-auto p-4">
-    <h1 class="text-2xl font-bold mb-4">http代理</h1>
+    <h1 class="text-2xl font-bold mb-4">HTTP代理</h1>
     <div class="divider"></div>
     
-    <div class="card bg-base-100 shadow-xl">
+    <div class="card bg-base-100 shadow-xs hover:shadow-md transition-all duration-300">
       <div class="card-body">
-        <div class="form-control mb-4">
-          <label class="label">
-            <span class="label-text">HTTP 代理</span>
-          </label>
-          <input 
-            type="text" 
-            v-model="proxy"
-            class="input input-bordered w-full"
-            placeholder="http://192.168.1.1:8080"
-          />
+        <h2 class="card-title mb-6 text-base-content">
+          <i class="fas fa-globe mr-2 text-primary"></i>
+          HTTP 代理设置
+        </h2>
+        
+        <div class="bg-base-200/50 rounded-lg p-4 space-y-4 mb-6">
+          <h3 class="font-medium text-base-content/80 mb-2">代理配置</h3>
+          
+          <div class="form-control">
+            <label class="label">
+              <span class="label-text text-base-content/80">HTTP 代理</span>
+            </label>
+            <input 
+              type="text" 
+              v-model="proxy"
+              class="input input-bordered w-full bg-base-100 transition-all duration-200 focus:ring-2 focus:ring-primary focus:ring-opacity-50"
+              placeholder="http://192.168.1.1:8080"
+            />
+            <span class="text-xs text-base-content/60 mt-2">格式为 http://192.168.1.1:8080</span>
+          </div>
+
+          <div class="form-control mt-4">
+            <label class="label mb-2">
+              <span class="label-text text-base-content/80">域名列表</span>
+            </label>
+            <textarea 
+              v-model="domains" 
+              class="textarea textarea-bordered h-48 w-full font-mono bg-base-100 transition-all duration-200 focus:ring-2 focus:ring-primary focus:ring-opacity-50"
+              placeholder="www.baidu.com"
+            ></textarea>
+            <span class="text-xs text-base-content/60 mt-2">需要走 HTTP 代理的域名，一行一个，域名需完全匹配</span>
+          </div>
+          
+          <div class="form-control mt-6">
+            <button class="btn btn-primary w-full md:w-auto" @click="save">
+              <i class="fas fa-save mr-2"></i>
+              保存
+            </button>
+          </div>
         </div>
 
-        <div class="form-control mb-4">
-          <label class="label">
-            <span class="label-text">域名列表</span>
-          </label>
-          <textarea 
-            v-model="domains" 
-            class="textarea textarea-bordered h-48"
-            placeholder="www.baidu.com"
-          ></textarea>
-        </div>
-
-        <div class="form-control mb-6">
-          <button class="btn btn-primary w-full md:w-auto" @click="save">保存</button>
-        </div>
-
-        <div class="alert alert-info">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+        <div class="alert alert-info bg-info/10 text-info-content shadow-xs">
+          <i class="fas fa-info-circle mr-2 text-info"></i>
           <div>
-            <div class="font-bold">说明:</div>
-            <ol class="list-decimal list-inside mt-2 space-y-1 text-sm">
-              <li>http proxy 格式为 http://192.168.1.1:8080</li>
-              <li>domains 指走 http proxy 的域名列表, 一行一个</li>
-              <li>域名需完全匹配, 例: www.baidu.com</li>
+            <div class="font-medium">说明:</div>
+            <ul class="list-disc list-inside mt-2 space-y-1 text-sm text-base-content/80">
+              <li>HTTP proxy 格式为 http://192.168.1.1:8080</li>
+              <li>domains 指走 HTTP proxy 的域名列表，一行一个</li>
+              <li>域名需完全匹配，例: www.baidu.com</li>
               <li>代理设置不支持绕过 Cloudflare 时使用</li>
-            </ol>
+            </ul>
           </div>
         </div>
       </div>

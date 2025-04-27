@@ -13,31 +13,20 @@
         <!-- 筛选表单 -->
         <div class="bg-base-200/50 rounded-lg p-4 mb-6">
           <h3 class="font-medium text-base-content/80 mb-4">筛选条件</h3>
-          <div class="flex flex-col md:flex-row gap-4">
+          <div class="flex items-end gap-4">
             <div class="form-control flex-1">
               <label class="label">
                 <span class="label-text text-base-content/80">关键词</span>
               </label>
-              <div class="input-group">
-                <input 
-                  type="text" 
-                  placeholder="输入关键词筛选" 
-                  class="input input-bordered w-full bg-base-100 transition-all duration-200 focus:ring-2 focus:ring-primary focus:ring-opacity-50" 
-                  v-model="qs.key"
-                />
-                <button 
-                  class="btn btn-primary transition-all duration-200"
-                  @click="() => { qs.page = 1; listHistory(); }"
-                  :disabled="loading"
-                >
-                  <span v-if="loading" class="loading loading-spinner loading-sm mr-1"></span>
-                  <i v-else class="fas fa-search mr-1"></i>
-                  筛选
-                </button>
-              </div>
+              <input 
+                type="text" 
+                placeholder="输入关键词筛选" 
+                class="input input-bordered w-full bg-base-100 transition-all duration-200 focus:ring-2 focus:ring-primary focus:ring-opacity-50" 
+                v-model="qs.key"
+              />
             </div>
             
-            <div class="form-control">
+            <div class="form-control w-64">
               <label class="label">
                 <span class="label-text text-base-content/80">RSS 来源</span>
               </label>
@@ -59,10 +48,23 @@
                 <option value="deleted" class="text-base-content/80">已删除</option>
               </select>
             </div>
+
+            <button 
+              class="btn btn-primary h-12 transition-all duration-200 px-6"
+              @click="() => { qs.page = 1; listHistory(); }"
+              :disabled="loading"
+            >
+              <span v-if="loading" class="loading loading-spinner loading-sm mr-1"></span>
+              <i v-else class="fas fa-search mr-1"></i>
+              筛选
+            </button>
           </div>
         </div>
 
-        <h2 class="card-title mb-6 text-base-content">历史记录</h2>
+        <h2 class="card-title mb-6 text-base-content">
+          <i class="fas fa-history mr-2 text-primary"></i>
+          历史记录
+        </h2>
         <div class="overflow-x-auto">
           <table class="table table-zebra w-full">
             <thead>
@@ -101,7 +103,7 @@
                 <td>
                   <div class="flex gap-2">
                     <button 
-                      class="btn btn-sm btn-primary btn-outline" 
+                      class="btn btn-sm btn-secondary btn-outline" 
                       @click="gotoDetail(record)"
                     >
                       <i class="fas fa-external-link-alt mr-1"></i>

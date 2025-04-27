@@ -39,10 +39,10 @@
           </div>
           
           <div class="form-control md:col-span-4">
-            <label class="label">
+            <label class="label mb-2">
               <span class="label-text">日志内容</span>
             </label>
-            <textarea class="textarea textarea-bordered h-96 font-mono" v-model="log" readonly></textarea>
+            <textarea class="textarea textarea-bordered h-96 w-full font-mono" v-model="log" readonly></textarea>
           </div>
         </form>
       </div>

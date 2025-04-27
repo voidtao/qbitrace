@@ -1,149 +1,177 @@
 <template>
   <div class="container mx-auto p-4">
-    <h1 class="text-2xl font-bold mb-4">备份设置</h1>
+    <h1 class="text-2xl font-bold mb-4">备份还原</h1>
     <div class="divider"></div>
     
     <div class="card bg-base-100 shadow-xs hover:shadow-md transition-all duration-300">
       <div class="card-body">
-        <form @submit.prevent="modify" class="space-y-6">
-          <!-- 提示信息 -->
-          <div class="alert alert-info bg-info/10 text-info-content mb-6">
-            <i class="fas fa-info-circle"></i>
-            <span>定期备份可以帮助您保护重要数据，建议开启自动备份功能</span>
-          </div>
-          <!-- 备份路径设置 -->
-          <div class="form-control bg-base-200/50 rounded-lg p-4">
-            <label class="label">
-              <span class="label-text text-base-content/80 font-medium">备份路径</span>
-            </label>
-            <input 
-              type="text" 
-              v-model="setting.backupPath"
-              class="input input-bordered w-full bg-base-100 transition-all duration-200 focus:ring-2 focus:ring-primary focus:ring-opacity-50"
-              placeholder="备份文件保存路径"
-            />
-            <span class="text-xs text-base-content/60 mt-2">
-              <i class="fas fa-folder-open mr-1"></i>
-              备份文件保存路径，留空则使用默认路径
-            </span>
-          </div>
-
-          <!-- 备份间隔设置 -->
-          <div class="form-control bg-base-200/50 rounded-lg p-4">
-            <label class="label">
-              <span class="label-text text-base-content/80 font-medium">备份间隔</span>
-            </label>
-            <input 
-              type="number" 
-              v-model="setting.backupInterval"
-              class="input input-bordered w-full bg-base-100 transition-all duration-200 focus:ring-2 focus:ring-primary focus:ring-opacity-50"
-              placeholder="备份间隔（小时）"
-              min="0"
-            />
-            <span class="text-xs text-base-content/60 mt-2">
-              <i class="fas fa-clock mr-1"></i>
-              自动备份的时间间隔，单位为小时，设置为0表示禁用自动备份
-            </span>
-          </div>
-
-          <!-- 备份数量设置 -->
-          <div class="form-control bg-base-200/50 rounded-lg p-4">
-            <label class="label">
-              <span class="label-text text-base-content/80 font-medium">保留备份数量</span>
-            </label>
-            <input 
-              type="number" 
-              v-model="setting.backupCount"
-              class="input input-bordered w-full bg-base-100 transition-all duration-200 focus:ring-2 focus:ring-primary focus:ring-opacity-50"
-              placeholder="保留的备份文件数量"
-              min="1"
-            />
-            <span class="text-xs text-base-content/60 mt-2">
-              <i class="fas fa-archive mr-1"></i>
-              保留的备份文件数量，超过此数量将自动删除最旧的备份
-            </span>
-          </div>
-
-          <!-- 自动备份开关 -->
+        <div class="space-y-6">
+          <!-- 备份种子文件选项 -->
           <div class="form-control bg-base-200/50 rounded-lg p-4">
             <div class="flex items-center justify-between mb-2">
-              <span class="label-text text-base-content/80 font-medium">启用自动备份</span>
+              <span class="label-text text-base-content/80 font-medium">种子文件</span>
               <input 
                 type="checkbox" 
-                v-model="setting.autoBackup"
+                v-model="setting.backupTorrent"
                 class="checkbox checkbox-primary"
               />
             </div>
             <span class="text-xs text-base-content/60">
-              <i class="fas fa-sync-alt mr-1"></i>
-              开启后将按照设定的时间间隔自动进行备份
+              <i class="fas fa-file-archive mr-1"></i>
+              备份时是否备份种子文件，如不备份，恢复时将清空所有已有种子
             </span>
           </div>
 
-          <!-- 保存按钮 -->
-          <div class="form-control mt-8">
-            <button type="submit" class="btn btn-primary w-full md:w-auto">
-              <i class="fas fa-save mr-2"></i>
-              保存设置
-            </button>
+          <!-- 备份 -->
+          <div class="form-control bg-base-200/50 rounded-lg p-4">
+            <label class="label">
+              <span class="label-text text-base-content/80 font-medium">备份</span>
+            </label>
+            
+            <div class="mt-2">
+              <button type="button" class="btn btn-primary" @click="backupqbitrace">
+                <i class="fas fa-download mr-2"></i>
+                下载备份
+              </button>
+            </div>
           </div>
-        </form>
+          
+          <!-- 恢复 -->
+          <div class="form-control bg-base-200/50 rounded-lg p-4">
+            <label class="label">
+              <span class="label-text text-base-content/80 font-medium">恢复</span>
+            </label>
+            
+            <div class="relative">
+              <input 
+                type="file" 
+                id="backup-file" 
+                class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" 
+                @change="handleFileUpload"
+              />
+              <button type="button" class="btn btn-primary btn-danger">
+                <i class="fas fa-upload mr-2"></i>
+                点击选择文件
+              </button>
+            </div>
+            
+            <!-- 显示上传状态 -->
+            <div v-if="fileList.length > 0" class="mt-4">
+              <div class="text-left">
+                <div v-for="file in fileList" :key="file.uid" class="flex items-center mb-2">
+                  <span class="mr-2">{{ file.name }}</span>
+                  <span v-if="file.status === 'uploading'" class="text-primary">上传中...</span>
+                  <span v-else-if="file.status === 'done'" class="text-success">上传完成</span>
+                  <span v-else-if="file.status === 'error'" class="text-error">上传失败</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
-<script setup>
-import { ref, onMounted } from 'vue'
-import { useToast } from 'vue-toastification'
-
-const toast = useToast()
-const setting = ref({
-  backupPath: '',
-  backupInterval: 24,
-  backupCount: 7,
-  autoBackup: true
-})
-
-const get = async () => {
-  try {
-    const response = await fetch('/api/setting/backup')
-    const data = await response.json()
-    setting.value = {
-      backupPath: data.backupPath,
-      backupInterval: data.backupInterval,
-      backupCount: data.backupCount,
-      autoBackup: data.autoBackup
-    }
-  } catch (error) {
-    toast.error(error.message)
-  }
-}
-
-const modify = async () => {
-  try {
-    const response = await fetch('/api/setting/backup', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
+<script>
+export default {
+  data() {
+    return {
+      setting: {
+        backupTorrent: false
       },
-      body: JSON.stringify(setting.value)
-    })
-    if (!response.ok) throw new Error('保存失败')
-    toast.success('修改成功')
-    await get()
-  } catch (error) {
-    toast.error(error.message)
+      fileList: []
+    }
+  },
+  methods: {
+    isMobile() {
+      return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+    },
+    async backupqbitrace() {
+      if (this.setting.backupTorrent) {
+        window.open('/api/setting/backupqbitrace?bt=true')
+      } else {
+        window.open('/api/setting/backupqbitrace')
+      }
+    },
+    async handleFileUpload(event) {
+      const file = event.target.files[0]
+      if (!file) return
+      
+      // 创建文件对象，模拟 ant design 的文件列表结构
+      const fileObj = {
+        uid: Date.now().toString(),
+        name: file.name,
+        status: 'uploading',
+        size: file.size,
+        type: file.type
+      }
+      
+      this.fileList = [fileObj]
+      
+      const formData = new FormData()
+      formData.append('file', file)
+      
+      try {
+        const response = await fetch('/api/setting/restoreqbitrace', {
+          method: 'POST',
+          body: formData
+        })
+        
+        if (response.ok) {
+          fileObj.status = 'done'
+          this.fileList = [fileObj]
+          
+          // 使用 $notification 如同 webui
+          if (window.$notification) {
+            await window.$notification().open({
+              message: '恢复备份成功',
+              description: '恢复备份成功, 重启后生效',
+              duration: 0
+            })
+          } else {
+            // 降级到 toast
+            window.$toast.success('恢复备份成功, 重启后生效')
+          }
+        } else {
+          fileObj.status = 'error'
+          this.fileList = [fileObj]
+          
+          if (window.$notification) {
+            await window.$notification().open({
+              message: '恢复备份失败',
+              description: '恢复备份失败',
+              duration: 0
+            })
+          } else {
+            window.$toast.error('恢复备份失败')
+          }
+        }
+      } catch (error) {
+        fileObj.status = 'error'
+        this.fileList = [fileObj]
+        
+        if (window.$notification) {
+          await window.$notification().open({
+            message: '恢复备份失败',
+            description: error.message,
+            duration: 0
+          })
+        } else {
+          window.$toast.error(`恢复备份失败: ${error.message}`)
+        }
+      }
+      
+      // 清除文件选择，允许再次选择同一文件
+      event.target.value = ''
+    }
   }
 }
-
-onMounted(() => {
-  get()
-})
 </script>
 
 <style scoped>
 .container {
   max-width: 1440px;
 }
+
 </style>
