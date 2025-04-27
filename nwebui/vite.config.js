@@ -3,6 +3,9 @@ import vue from '@vitejs/plugin-vue';
 import { fileURLToPath, URL } from 'url';
 import { VitePWA } from 'vite-plugin-pwa';
 import tailwindcss from '@tailwindcss/vite'
+import { execSync } from 'child_process'; // 新增：导入 execSync
+import moment from 'moment'; // 新增：导入 moment
+import packageJson from '../package.json'; // 修改：修正 package.json 的路径
 
 export default defineConfig({
   plugins: [
@@ -91,10 +94,10 @@ export default defineConfig({
   define: {
     'process.env': {
       version: JSON.stringify({
-        updateTime: new Date().toISOString(),
-        head: 'HEAD',
-        commitInfo: 'Initial Commit',
-        version: '1.0.0'
+        updateTime: moment(execSync('git log --pretty=format:%at -1').toString().trim() * 1000).utcOffset(8).format('YYYY-MM-DD HH:mm:ss'),
+        head: execSync('git rev-parse HEAD').toString().trim().substring(0, 12),
+        commitInfo: execSync('git log --pretty=format:%s -1').toString().trim(),
+        version: packageJson.version
       })
     }
   }

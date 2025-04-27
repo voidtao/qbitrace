@@ -80,22 +80,26 @@ export default {
         cookie: ''
       },
       result: ''
-    }
+    };
   },
   methods: {
     isMobile() {
-      return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+      if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+        return true;
+      } else {
+        return false;
+      }
     },
     async doTest() {
       try {
-        const res = await window.$api.setting.networkTest(this.info)
-        this.result = res.data
+        const res = await this.$api().setting.networkTest(this.info);
+        this.result = res.data;
       } catch (e) {
-        window.$toast.error(e.message)
+        await this.$message().error(e.message);
       }
     }
   }
-}
+};
 </script>
 
 <style scoped>

@@ -369,58 +369,92 @@
 </template>
 
 <script>
-// ... existing script ...
 export default {
   data() {
+    const columns = [
+      {
+        title: 'ID',
+        dataIndex: 'id',
+        width: 18,
+        sorter: (a, b) => a.id.localeCompare(b.id),
+        fixed: true
+      }, {
+        title: '别名',
+        dataIndex: 'alias',
+        sorter: (a, b) => a.alias.localeCompare(b.alias),
+        defaultSortOrder: 'ascend',
+        width: 30
+      }, {
+        title: '推送类型',
+        dataIndex: 'type',
+        width: 30
+      }, {
+        title: '操作',
+        width: 20
+      }
+    ];
     return {
+      columns,
       notifications: [],
-      notification: {
-        id: '',
-        alias: '',
-        maxErrorCount: '',
-        clearCountCron: '',
-        type: '',
-        pushType: [],
-        enable: true,
-        // Telegram
-        telegramBotToken: '',
-        telegramChannel: '',
-        // WeChat
-        corpid: '',
-        agentid: '',
-        corpsecret: '',
-        proxyKey: '',
-        // Ntfy
-        ntfyUrl: '',
-        ntfyUsername: '',
-        ntfyPassword: '',
-        ntfyToken: '',
-        ntfyPriority: '',
-        // Slack
-        slackWebhook: '',
-        slackToken: '',
-        // Webhook
-        webhookurl: '',
-        token: ''
-      },
+      notification: [],
       pushType: [
-        { key: 'rssError', value: 'Rss 失败' },
-        { key: 'scrapeError', value: '抓取免费或 HR 失败' },
-        { key: 'addTorrent', value: '添加种子' },
-        { key: 'addTorrentError', value: '添加种子失败' },
-        { key: 'rejectTorrent', value: '拒绝种子' },
-        { key: 'deleteTorrent', value: '删除种子' },
-        { key: 'deleteTorrentError', value: '删除种子失败' },
-        { key: 'reannounceTorrent', value: '重新汇报种子' },
-        { key: 'reannounceTorrentError', value: '重新汇报种子失败' },
-        { key: 'connectClient', value: '下载器已连接' },
-        { key: 'clientLoginError', value: '下载器登陆失败' },
-        { key: 'getMaindataError', value: '获取下载器信息失败' },
-        { key: 'spaceAlarm', value: '空间警告' }
-      ]
+        {
+          key: 'rssError',
+          value: 'Rss 失败'
+        }, {
+          key: 'scrapeError',
+          value: '抓取免费或 HR 失败'
+        }, {
+          key: 'addTorrent',
+          value: '添加种子'
+        }, {
+          key: 'addTorrentError',
+          value: '添加种子失败'
+        }, {
+          key: 'rejectTorrent',
+          value: '拒绝种子'
+        }, {
+          key: 'deleteTorrent',
+          value: '删除种子'
+        }, {
+          key: 'deleteTorrentError',
+          value: '删除种子失败'
+        }, {
+          key: 'reannounceTorrent',
+          value: '重新汇报种子'
+        }, {
+          key: 'reannounceTorrentError',
+          value: '重新汇报种子失败'
+        }, {
+          key: 'connectClient',
+          value: '下载器已连接'
+        }, {
+          key: 'clientLoginError',
+          value: '下载器登陆失败'
+        }, {
+          key: 'getMaindataError',
+          value: '获取下载器信息失败'
+        }, {
+          key: 'spaceAlarm',
+          value: '空间警告'
+        }
+      ],
+      defaultNotification: {
+        id: '',
+        pushType: []
+      },
+      loading: true,
+      registCode: []
     };
   },
   methods: {
+    isMobile() {
+      if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+        return true;
+      } else {
+        return false;
+      }
+    },
     async listNotification() {
       try {
         const res = await this.$api().notification.list();
@@ -432,70 +466,36 @@ export default {
     async modifyNotification() {
       try {
         await this.$api().notification.modify({ ...this.notification });
-        this.$message().success(
-          (this.notification.id ? '编辑' : '新增') + '成功, 列表正在刷新...'
-        );
-        this.listNotification();
+        this.$message().success((this.notification.id ? '编辑' : '新增') + '成功, 列表正在刷新...');
+        setTimeout(() => this.listNotification(), 1000);
         this.clearNotification();
       } catch (e) {
         this.$message().error(e.message);
       }
     },
-    async enableNotification(record) {
-      try {
-        await this.$api().notification.modify({ ...record, enable: !record.enable });
-        this.$message().success('状态更新成功');
-        this.listNotification();
-      } catch (e) {
-        this.$message().error(e.message);
-      }
-    },
-    modifyClick(record) {
-      this.notification = { ...record };
+    modifyClick(row) {
+      this.notification = { ...row, pushType: this.pushType.map(item => item.key).filter(item => row.pushType.indexOf(item) !== -1) };
     },
     clearNotification() {
-      this.notification = {
-        id: '',
-        alias: '',
-        maxErrorCount: '',
-        clearCountCron: '',
-        type: '',
-        pushType: [],
-        enable: true,
-        // Telegram
-        telegramBotToken: '',
-        telegramChannel: '',
-        // WeChat
-        corpid: '',
-        agentid: '',
-        corpsecret: '',
-        proxyKey: '',
-        // Ntfy
-        ntfyUrl: '',
-        ntfyUsername: '',
-        ntfyPassword: '',
-        ntfyToken: '',
-        ntfyPriority: '',
-        // Slack
-        slackWebhook: '',
-        slackToken: '',
-        // Webhook
-        webhookurl: '',
-        token: ''
-      };
+      this.notification = { ...this.defaultNotification, pushType: [] };
     },
-    async deleteNotification(record) {
+    async deleteNotification(row) {
+      if (row.used) {
+        this.$message().error('组件被占用, 取消占用后删除');
+        return;
+      }
       try {
-        await this.$api().notification.delete(record.id);
+        await this.$api().notification.delete(row.id);
         this.$message().success('删除成功, 列表正在刷新...');
-        this.listNotification();
+        await this.listNotification();
       } catch (e) {
         this.$message().error(e.message);
       }
     }
   },
   async mounted() {
-    this.listNotification();
+    this.clearNotification();
+    await this.listNotification();
   }
 };
 </script>

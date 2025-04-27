@@ -329,106 +329,211 @@
 </template>
 
 <script>
-import { onMounted, ref } from 'vue'
-
 export default {
-  setup() {
-    const deleteRuleList = ref([])
-    const deleteRule = ref({
-      alias: '',
-      fitTime: '',
-      priority: 0,
-      deleteNum: '',
-      pause: false,
-      onlyDeleteTorrent: false,
-      limitSpeed: '',
-      type: 'normal',
-      conditions: [],
-      code: ''
-    })
-
-    const condition = {
-      key: '',
-      compareType: 'equals',
-      value: ''
-    }
-
-    const conditionKeys = [
-      { key: 'ratio1', name: '分享率一' },
-      { key: 'ratio2', name: '分享率二' },
-      { key: 'ratio3', name: '分享率三' },
-      { key: 'domain', name: '站点域名' },
-      { key: 'time', name: '各类时间' },
-      { key: 'size', name: '各类大小' },
-      { key: 'speed', name: '各类速度' },
-      { key: 'status', name: '种子状态' }
-    ]
-
-    const listDeleteRule = async () => {
-      try {
-        const res = await window.$api.rule.listDeleteRule()
-        deleteRuleList.value = res.data
-      } catch (e) {
-        window.$toast.error(e.message)
+  data() {
+    const columns = [
+      {
+        title: 'ID',
+        dataIndex: 'id',
+        width: 18,
+        sorter: (a, b) => a.id.localeCompare(b.id),
+        fixed: true
+      }, {
+        title: '别名',
+        dataIndex: 'alias',
+        sorter: (a, b) => a.alias.localeCompare(b.alias),
+        width: 30
+      }, {
+        title: '持续时间',
+        dataIndex: 'fitTime',
+        width: 30
+      }, {
+        title: '优先级',
+        dataIndex: 'priority',
+        width: 10
+      }, {
+        title: '类型',
+        dataIndex: 'type',
+        width: 15
+      }, {
+        title: '操作',
+        width: 20
       }
-    }
-
-    const modifyDeleteRule = async () => {
-      try {
-        await window.$api.rule.modifyDeleteRule(deleteRule.value)
-        window.$toast.success('规则保存成功')
-        listDeleteRule()
-        clearDeleteRule()
-      } catch (e) {
-        window.$toast.error(e.message)
+    ];
+    const conditionColumns = [
+      {
+        title: '选项',
+        dataIndex: 'key',
+        width: 18
+      }, {
+        title: '比较类型',
+        dataIndex: 'compareType',
+        width: 18
+      }, {
+        title: '值',
+        dataIndex: 'value',
+        width: 90
+      }, {
+        title: '操作',
+        dataIndex: 'option',
+        width: 30
       }
-    }
-
-    const deleteDeleteRule = async (rule) => {
-      try {
-        await window.$api.rule.deleteDeleteRule(rule.id)
-        window.$toast.success('规则删除成功')
-        listDeleteRule()
-      } catch (e) {
-        window.$toast.error(e.message)
-      }
-    }
-
-    const modifyClick = (rule) => {
-      deleteRule.value = { ...rule }
-    }
-
-    const clearDeleteRule = () => {
-      deleteRule.value = {
-        alias: '',
-        fitTime: '',
-        priority: 0,
-        deleteNum: '',
-        pause: false,
-        onlyDeleteTorrent: false,
-        limitSpeed: '',
-        type: 'normal',
-        conditions: [],
-        code: ''
-      }
-    }
-
-    onMounted(() => {
-      listDeleteRule()
-    })
-
+    ];
     return {
-      deleteRuleList,
-      deleteRule,
-      condition,
-      conditionKeys,
-      modifyDeleteRule,
-      deleteDeleteRule,
-      modifyClick,
-      clearDeleteRule
+      columns,
+      conditionColumns,
+      conditionKeys: [{
+        name: '种子名称',
+        key: 'name'
+      }, {
+        name: '种子进度',
+        key: 'progress'
+      }, {
+        name: '上传速度',
+        key: 'uploadSpeed'
+      }, {
+        name: '下载速度',
+        key: 'downloadSpeed'
+      }, {
+        name: '种子分类',
+        key: 'category'
+      }, {
+        name: '种子标签',
+        key: 'tags'
+      }, {
+        name: '选择大小',
+        key: 'size'
+      }, {
+        name: '种子大小',
+        key: 'totalSize'
+      }, {
+        name: '种子状态',
+        key: 'state'
+      }, {
+        name: '站点域名',
+        key: 'tracker'
+      }, {
+        name: '已完成量',
+        key: 'completed'
+      }, {
+        name: '已下载量',
+        key: 'downloaded'
+      }, {
+        name: '已上传量',
+        key: 'uploaded'
+      }, {
+        name: '分享率一',
+        key: 'ratio'
+      }, {
+        name: '分享率二',
+        key: 'trueRatio'
+      }, {
+        name: '分享率三',
+        key: 'ratio3'
+      }, {
+        name: '添加时间',
+        key: 'addedTime'
+      }, {
+        name: '完成时间',
+        key: 'completedTime'
+      }, {
+        name: '保存路径',
+        key: 'savePath'
+      }, {
+        name: '做种连接',
+        key: 'seeder'
+      }, {
+        name: '下载连接',
+        key: 'leecher'
+      }, {
+        name: '剩余空间',
+        key: 'freeSpace'
+      }, {
+        name: '下载任务',
+        key: 'leechingCount'
+      }, {
+        name: '做种任务',
+        key: 'seedingCount'
+      }, {
+        name: '全局上传',
+        key: 'globalUploadSpeed'
+      }, {
+        name: '全局下载',
+        key: 'globalDownloadSpeed'
+      }, {
+        name: '当前时间',
+        key: 'secondFromZero'
+      }],
+      deleteRuleList: [],
+      deleteRule: {},
+      defaultDeleteRule: {
+        conditions: [],
+        alias: '',
+        type: '',
+        priority: 0,
+        code: '(maindata, torrent) => {\n' +
+              '  return false;\n' +
+              '}'
+      },
+      condition: {
+        key: '',
+        compareType: '',
+        value: ''
+      },
+      loading: true
+    };
+  },
+  methods: {
+    isMobile() {
+      if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+        return true;
+      } else {
+        return false;
+      }
+    },
+    async listDeleteRule() {
+      try {
+        const res = await this.$api().deleteRule.list();
+        this.deleteRuleList = res.data;
+      } catch (e) {
+        this.$message().error(e.message);
+      }
+    },
+    async modifyDeleteRule() {
+      try {
+        await this.$api().deleteRule.modify({ ...this.deleteRule });
+        this.$message().success((this.deleteRule.id ? '编辑' : '新增') + '成功, 列表正在刷新...');
+        setTimeout(() => this.listDeleteRule(), 1000);
+        this.clearDeleteRule();
+      } catch (e) {
+        this.$message().error(e.message);
+      }
+    },
+    modifyClick(row) {
+      this.deleteRule = { ...row };
+    },
+    async deleteDeleteRule(rule) {
+      if (rule.used) {
+        this.$message().error('组件被占用, 取消占用后删除');
+        return;
+      }
+      try {
+        await this.$api().deleteRule.delete(rule.id);
+        this.$message().success('删除成功, 列表正在刷新...');
+        await this.listDeleteRule();
+      } catch (e) {
+        this.$message().error(e.message);
+      }
+    },
+    clearDeleteRule() {
+      this.deleteRule = { ...this.defaultDeleteRule, conditions: [{ ...this.condition }] };
     }
+  },
+  async mounted() {
+    this.clearDeleteRule();
+    await this.listDeleteRule();
   }
-}
+};
 </script>
 
 <style scoped>

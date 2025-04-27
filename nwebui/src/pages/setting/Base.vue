@@ -100,57 +100,50 @@
   </div>
 </template>
 
-<script setup>
-import { ref, onMounted } from 'vue'
-import { useToast } from 'vue-toastification'
-
-const toast = useToast()
-const setting = ref({
-  userAgent: '',
-  loggerLevel: 'info',
-  telegramProxy: '',
-  wechatProxy: '',
-  ignoreError: false,
-  ignoreDependCheck: false
-})
-
-const get = async () => {
-  try {
-    const response = await fetch('/api/setting')
-    const data = await response.json()
-    setting.value = {
-      userAgent: data.userAgent,
-      loggerLevel: data.loggerLevel,
-      telegramProxy: data.telegramProxy,
-      wechatProxy: data.wechatProxy,
-      ignoreError: data.ignoreError,
-      ignoreDependCheck: data.ignoreDependCheck
+<script>
+export default {
+  data() {
+    return {
+      setting: {}
+    };
+  },
+  methods: {
+    isMobile() {
+      if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+        return true;
+      } else {
+        return false;
+      }
+    },
+    async get() {
+      try {
+        const s = (await this.$api().setting.get()).data;
+        this.setting = {
+          userAgent: s.userAgent,
+          loggerLevel: s.loggerLevel,
+          telegramProxy: s.telegramProxy,
+          wechatProxy: s.wechatProxy,
+          ignoreError: s.ignoreError,
+          ignoreDependCheck: s.ignoreDependCheck
+        };
+      } catch (e) {
+        await this.$message().error(e.message);
+      }
+    },
+    async modify() {
+      try {
+        await this.$api().setting.modify(this.setting);
+        await this.$message().success('修改成功, 部分设置可能需要刷新页面生效.');
+        this.get();
+      } catch (e) {
+        await this.$message().error(e.message);
+      }
     }
-  } catch (error) {
-    toast.error(error.message)
+  },
+  async mounted() {
+    await this.get();
   }
-}
-
-const modify = async () => {
-  try {
-    const response = await fetch('/api/setting', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(setting.value)
-    })
-    if (!response.ok) throw new Error('保存失败')
-    toast.success('修改成功, 部分设置可能需要刷新页面生效.')
-    await get()
-  } catch (error) {
-    toast.error(error.message)
-  }
-}
-
-onMounted(() => {
-  get()
-})
+};
 </script>
 
 <style scoped>

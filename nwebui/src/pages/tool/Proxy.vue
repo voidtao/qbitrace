@@ -69,34 +69,38 @@ export default {
     return {
       proxy: '',
       domains: ''
-    }
+    };
   },
   methods: {
     isMobile() {
-      return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+      if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+        return true;
+      } else {
+        return false;
+      }
     },
     async getProxy() {
       try {
-        const res = await window.$api.setting.getProxy()
-        this.domains = res.data.domains
-        this.proxy = res.data.proxy
+        const res = await this.$api().setting.getProxy();
+        this.domains = res.data.domains;
+        this.proxy = res.data.proxy;
       } catch (e) {
-        window.$toast.error(e.message)
+        await this.$message().error(e.message);
       }
     },
     async save() {
       try {
-        await window.$api.setting.saveProxy({ proxy: this.proxy, domains: this.domains })
-        window.$toast.success('保存成功')
+        await this.$api().setting.saveProxy({ proxy: this.proxy, domains: this.domains });
+        await this.$message().success('保存成功');
       } catch (e) {
-        window.$toast.error(e.message)
+        await this.$message().error(e.message);
       }
     }
   },
-  mounted() {
-    this.getProxy()
+  async mounted() {
+    this.getProxy();
   }
-}
+};
 </script>
 
 <style scoped>

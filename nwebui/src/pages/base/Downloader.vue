@@ -492,36 +492,7 @@ export default {
       downloaders: [],
       notifications: [],
       deleteRules: [],
-      downloader: {
-        id: '',
-        alias: '',
-        username: '',
-        password: '',
-        clientUrl: '',
-        enable: true,
-        autoDelete: false,
-        autoDeleteCron: '* * * * *',
-        rejectDeleteRules: [],
-        deleteRules: [],
-        type: 'qBittorrent',
-        pushNotify: false,
-        notify: '',
-        pushMonitor: false,
-        monitor: '',
-        cron: '*/4 * * * * *',
-        autoReannounce: true,
-        firstLastPiecePrio: true,
-        spaceAlarm: false,
-        alarmSpace: '',
-        alarmSpaceUnit: 'GiB',
-        maxUploadSpeed: '',
-        maxUploadSpeedUnit: 'MiB',
-        maxDownloadSpeed: '',
-        maxDownloadSpeedUnit: 'MiB',
-        minFreeSpace: '',
-        minFreeSpaceUnit: 'GiB',
-        maxLeechNum: ''
-      },
+      downloader: {},
       defaultDownloader: {
         id: '',
         alias: '',
@@ -555,6 +526,13 @@ export default {
     };
   },
   methods: {
+    isMobile() {
+      if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+        return true;
+      } else {
+        return false;
+      }
+    },
     async listDownloader() {
       try {
         const res = await this.$api().downloader.list();
@@ -574,7 +552,7 @@ export default {
     async listDeleteRule() {
       try {
         const res = await this.$api().deleteRule.list();
-        // Sort rules alphabetically by alias for consistent display
+        // 排序保持一致
         this.deleteRules = res.data.sort((a, b) => a.alias.localeCompare(b.alias));
       } catch (e) {
         this.$message().error(e.message);
@@ -582,18 +560,10 @@ export default {
     },
     async modifyDownloader() {
       try {
-        // Ensure numeric fields are numbers or null
-        const payload = {
-          ...this.downloader,
-          maxLeechNum: this.downloader.maxLeechNum === '' ? null : Number(this.downloader.maxLeechNum),
-          maxUploadSpeed: this.downloader.maxUploadSpeed === '' ? null : Number(this.downloader.maxUploadSpeed),
-          maxDownloadSpeed: this.downloader.maxDownloadSpeed === '' ? null : Number(this.downloader.maxDownloadSpeed),
-          minFreeSpace: this.downloader.minFreeSpace === '' ? null : Number(this.downloader.minFreeSpace),
-          alarmSpace: this.downloader.alarmSpace === '' ? null : Number(this.downloader.alarmSpace),
-        };
-        await this.$api().downloader.modify(payload);
+        // 与webui保持一致，直接传递对象
+        await this.$api().downloader.modify({ ...this.downloader });
         this.$message().success((this.downloader.id ? '编辑' : '新增') + '成功, 列表正在刷新...');
-        setTimeout(() => this.listDownloader(), 1000); // Refresh list after a short delay
+        setTimeout(() => this.listDownloader(), 1000);
         this.clearDownloader();
       } catch (e) {
         this.$message().error(e.message);
@@ -601,14 +571,14 @@ export default {
     },
     async deleteDownloader(record) {
       if (record.used) {
-        this.$message().error('下载器正在被 RSS 任务或规则使用, 请先解除占用后再删除');
+        this.$message().error('组件被占用, 取消占用后删除');
         return;
       }
       try {
         await this.$api().downloader.delete(record.id);
         this.$message().success('删除成功, 列表正在刷新...');
-        await this.listDownloader(); // Refresh list immediately
-        // If the deleted downloader was being edited, clear the form
+        await this.listDownloader();
+        // 如果当前正在编辑的是被删除的下载器，清空表单
         if (this.downloader.id === record.id) {
           this.clearDownloader();
         }
@@ -617,42 +587,36 @@ export default {
       }
     },
     async enableDownloader(record) {
-      // Directly modify the enable status without affecting the main form
-      const updatedRecord = { ...record, enable: !record.enable };
       try {
-        await this.$api().downloader.modify(updatedRecord);
-        this.$message().success(`下载器 "${record.alias}" 已${updatedRecord.enable ? '启用' : '禁用'}`);
-        // Update the local list directly for immediate UI feedback
-        const index = this.downloaders.findIndex(d => d.id === record.id);
-        if (index !== -1) {
-          this.downloaders[index].enable = updatedRecord.enable;
-        }
+        // 与webui保持一致，传递整个记录
+        await this.$api().downloader.modify({ ...record });
+        this.$message().success('修改成功, 列表正在刷新...');
+        setTimeout(() => this.listDownloader(), 1000);
+        this.clearDownloader();
       } catch (e) {
-        // Revert UI on error
-        record.enable = !updatedRecord.enable;
         this.$message().error(e.message);
       }
     },
     modifyClick(record) {
-      // Deep clone to prevent accidental modification of the list item
-      this.downloader = JSON.parse(JSON.stringify(record));
-      // Scroll to the form for better UX
+      // 与webui保持一致的浅拷贝
+      this.downloader = { ...record };
+      // 滚动到表单
       this.$el.querySelector('form').scrollIntoView({ behavior: 'smooth' });
     },
     cloneClick(record) {
-      // Deep clone and prepare for cloning
-      this.downloader = JSON.parse(JSON.stringify({
-        ...record, 
-        id: '', // Clear ID for new entry
-        alias: `${record.alias}-克隆`,
-        enable: true // Default cloned downloader to enabled
-      }));
-       // Scroll to the form for better UX
+      // 与webui保持一致的克隆方式
+      this.downloader = { ...record, deleteRules: [...record.deleteRules] };
+      this.downloader.id = null;
+      this.downloader.alias = this.downloader.alias + '-克隆';
+      // 滚动到表单
       this.$el.querySelector('form').scrollIntoView({ behavior: 'smooth' });
     },
     clearDownloader() {
-      // Reset form to default state using deep clone
-      this.downloader = JSON.parse(JSON.stringify(this.defaultDownloader));
+      // 重置为默认状态
+      this.downloader = {
+        ...this.defaultDownloader,
+        deleteRules: []
+      };
     },
     goto(record) {
       window.open(`/proxy/client/${record.id}/`, '_blank');
@@ -662,11 +626,11 @@ export default {
     }
   },
   async mounted() {
-    this.clearDownloader(); // Initialize form with defaults
-    // Fetch initial data in parallel
+    this.clearDownloader();
+    // 并行加载初始数据
     await Promise.all([
-      this.listDownloader(), 
-      this.listNotification(), 
+      this.listDownloader(),
+      this.listNotification(),
       this.listDeleteRule()
     ]);
   }

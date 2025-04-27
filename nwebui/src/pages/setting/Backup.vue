@@ -47,7 +47,7 @@
                 type="file" 
                 id="backup-file" 
                 class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" 
-                @change="handleFileUpload"
+                @change="handleUpload"
               />
               <button type="button" class="btn btn-primary btn-danger">
                 <i class="fas fa-upload mr-2"></i>
@@ -81,22 +81,26 @@ export default {
         backupTorrent: false
       },
       fileList: []
-    }
+    };
   },
   methods: {
     isMobile() {
-      return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+      if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+        return true;
+      } else {
+        return false;
+      }
     },
     async backupqbitrace() {
       if (this.setting.backupTorrent) {
-        window.open('/api/setting/backupqbitrace?bt=true')
+        window.open('/api/setting/backupqbitrace?bt=true');
       } else {
-        window.open('/api/setting/backupqbitrace')
+        window.open('/api/setting/backupqbitrace');
       }
     },
-    async handleFileUpload(event) {
-      const file = event.target.files[0]
-      if (!file) return
+    async handleUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
       
       // 创建文件对象，模拟 ant design 的文件列表结构
       const fileObj = {
@@ -105,73 +109,59 @@ export default {
         status: 'uploading',
         size: file.size,
         type: file.type
-      }
+      };
       
-      this.fileList = [fileObj]
+      this.fileList = [fileObj];
       
-      const formData = new FormData()
-      formData.append('file', file)
+      const formData = new FormData();
+      formData.append('file', file);
       
       try {
         const response = await fetch('/api/setting/restoreqbitrace', {
           method: 'POST',
           body: formData
-        })
+        });
         
         if (response.ok) {
-          fileObj.status = 'done'
-          this.fileList = [fileObj]
-          
-          // 使用 $notification 如同 webui
-          if (window.$notification) {
-            await window.$notification().open({
-              message: '恢复备份成功',
-              description: '恢复备份成功, 重启后生效',
-              duration: 0
-            })
-          } else {
-            // 降级到 toast
-            window.$toast.success('恢复备份成功, 重启后生效')
-          }
+          fileObj.status = 'done';
+          this.fileList = [fileObj];
+          this.handleChange({ file: { status: 'done' } });
         } else {
-          fileObj.status = 'error'
-          this.fileList = [fileObj]
-          
-          if (window.$notification) {
-            await window.$notification().open({
-              message: '恢复备份失败',
-              description: '恢复备份失败',
-              duration: 0
-            })
-          } else {
-            window.$toast.error('恢复备份失败')
-          }
+          fileObj.status = 'error';
+          this.fileList = [fileObj];
+          this.handleChange({ file: { status: 'error' } });
         }
       } catch (error) {
-        fileObj.status = 'error'
-        this.fileList = [fileObj]
-        
-        if (window.$notification) {
-          await window.$notification().open({
-            message: '恢复备份失败',
-            description: error.message,
-            duration: 0
-          })
-        } else {
-          window.$toast.error(`恢复备份失败: ${error.message}`)
-        }
+        fileObj.status = 'error';
+        this.fileList = [fileObj];
+        this.handleChange({ file: { status: 'error' } });
       }
       
       // 清除文件选择，允许再次选择同一文件
-      event.target.value = ''
+      event.target.value = '';
+    },
+    async handleChange({ file }) {
+      if (file.status === 'done') {
+        await this.$notification().open({
+          message: '恢复备份成功',
+          description: '恢复备份成功, 重启后生效',
+          duration: 0
+        });
+      }
+      if (file.status === 'error') {
+        await this.$notification().open({
+          message: '恢复备份失败',
+          description: '恢复备份失败',
+          duration: 0
+        });
+      }
     }
   }
-}
+};
 </script>
 
 <style scoped>
 .container {
   max-width: 1440px;
 }
-
 </style>

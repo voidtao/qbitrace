@@ -90,19 +90,7 @@
 </template>
 
 <script>
-import { useToast } from 'vue-toastification'
-import { useRoute } from 'vue-router'
-
 export default {
-  setup() {
-    const toast = useToast()
-    const route = useRoute()
-    
-    return {
-      toast,
-      route
-    }
-  },
   data() {
     return {
       logs: [],
@@ -122,26 +110,30 @@ export default {
   },
   methods: {
     formatTimestamp(timestamp) {
-      return window.$moment(timestamp > 1e11 ? timestamp : timestamp * 1e3).format('YYYY-MM-DD HH:mm:ss')
+      return this.$moment(timestamp > 1e11 ? timestamp : timestamp * 1e3).format('YYYY-MM-DD HH:mm:ss')
     },
     isMobile() {
-      return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+      if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+        return true;
+      } else {
+        return false;
+      }
     },
     async getLog() {
       try {
-        const res = await window.$api.downloader.getLogs(this.route.query.id)
-        this.logs = res.data.reverse()
+        const res = await this.$api().downloader.getLogs(this.$route.query.id);
+        this.logs = res.data.reverse();
       } catch (e) {
-        this.toast.error(e.message)
+        await this.$message().error(e.message);
       }
     }
   },
   async mounted() {
-    if (!this.route.query.id) {
-      this.toast.error('当前页面需要从下载器页面进入!')
-      return
+    if (!this.$route.query.id) {
+      await this.$message().error('当前页面需要从下载器页面进入!');
+      return;
     }
-    await this.getLog()
+    await this.getLog();
   }
 }
 </script>

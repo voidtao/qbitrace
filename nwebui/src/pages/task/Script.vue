@@ -152,7 +152,31 @@
 <script>
 export default {
   data() {
+    const columns = [
+      {
+        title: 'ID',
+        dataIndex: 'id',
+        width: 18,
+        fixed: true
+      }, {
+        title: '别名',
+        dataIndex: 'alias',
+        width: 20
+      }, {
+        title: '启用',
+        dataIndex: 'enable',
+        width: 15
+      }, {
+        title: '周期',
+        dataIndex: 'cron',
+        width: 24
+      }, {
+        title: '操作',
+        width: 24
+      }
+    ];
     return {
+      columns,
       scripts: [],
       script: {},
       defaultScript: {
@@ -160,65 +184,69 @@ export default {
         cron: '* * * * *',
         script: 'logger.info(\'qbitrace IS THE BEST!\')'
       },
-      loading: false
-    }
+      loading: true
+    };
   },
   methods: {
     isMobile() {
-      return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+      if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+        return true;
+      } else {
+        return false;
+      }
     },
     async listScript() {
-      this.loading = true
+      this.loading = true;
       try {
-        const res = await this.$api().script.list()
-        this.scripts = res.data
+        const res = await this.$api().script.list();
+        this.scripts = res.data;
       } catch (e) {
-        await this.$message().error(e.message)
+        this.$message().error(e.message);
       }
-      this.loading = false
+      this.loading = false;
     },
     async modifyScript() {
       try {
-        await this.$api().script.modify({ ...this.script })
-        await this.$message().success((this.script.id ? '编辑' : '新增') + '成功, 列表正在刷新...')
-        setTimeout(() => this.listScript(), 1000)
-        this.clearScript()
+        await this.$api().script.modify({ ...this.script });
+        this.$message().success((this.script.id ? '编辑' : '新增') + '成功, 列表正在刷新...');
+        setTimeout(() => this.listScript(), 1000);
+        this.clearScript();
       } catch (e) {
-        await this.$message().error(e.message)
+        this.$message().error(e.message);
       }
     },
     async run() {
       try {
-        await this.$api().script.run({ ...this.script })
-        await this.$message().success('执行成功, 执行结果或报错请查看日志')
-        setTimeout(() => this.listScript(), 1000)
+        await this.$api().script.run({ ...this.script });
+        this.$message().success('执行成功, 执行结果或报错请查看日志');
+        setTimeout(() => this.listScript(), 1000);
       } catch (e) {
-        await this.$message().error(e.message)
+        this.$message().error(e.message);
       }
     },
     modifyClick(row) {
-      this.script = { ...row }
+      this.script = { ...row };
     },
     async deleteScript(row) {
       try {
-        await this.$api().script.delete(row.id)
-        await this.$message().success('删除成功, 列表正在刷新...')
-        await this.listScript()
+        await this.$api().script.delete(row.id);
+        this.$message().success('删除成功, 列表正在刷新...');
+        await this.listScript();
       } catch (e) {
-        await this.$message().error(e.message)
+        this.$message().error(e.message);
       }
     },
     clearScript() {
       this.script = {
         ...this.defaultScript
-      }
+      };
     }
   },
   async mounted() {
-    this.clearScript()
-    this.listScript()
+    this.clearScript();
+    this.listScript();
   }
-}
+};
 </script>
 
 <style scoped>

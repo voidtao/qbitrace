@@ -130,77 +130,81 @@ export default {
       },
       downloaders: [],
       loading: true
-    }
+    };
   },
   methods: {
     isMobile() {
-      return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+      if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+        return true;
+      } else {
+        return false;
+      }
     },
     async getRunInfo() {
       try {
-        const res = await this.$api().setting.getRunInfo()
-        this.runInfo = res.data
-        for (const error of this.runInfo.errors?.reverse() || []) {
+        const res = await this.$api().setting.getRunInfo();
+        this.runInfo = res.data;
+        for (const error of this.runInfo.errors.reverse()) {
           await this.$notification().error({
             message: '存在错误信息, 请检查日志',
             description: error.map(item => {
               if (typeof item === 'object') {
-                return item.message || item.code || item.description
+                return item.message || item.code || item.description;
               }
-              return item
+              return item;
             }).join(', '),
             duration: 0
-          })
+          });
         }
       } catch (e) {
-        await this.$message().error(e.message)
+        await this.$message().error(e.message);
       }
     },
     async listDownloader() {
       try {
-        const res = await this.$api().downloader.listMainInfo()
+        const res = await this.$api().downloader.listMainInfo();
         this.downloaders = res.data
           .sort((a, b) => a.alias.localeCompare(b.alias))
           .map(item => ({
             ...item,
             speedChart: JSON.parse(JSON.stringify(this.speedChart))
-          }))
+          }));
       } catch (e) {
-        await this.$message().error(e.message)
+        await this.$message().error(e.message);
       }
     },
     async listDownloaderInfo() {
       try {
-        const res = await this.$api().downloader.listMainInfo()
+        const res = await this.$api().downloader.listMainInfo();
         for (const downloader of this.downloaders) {
-          const upload = res.data.filter(item => item.id === downloader.id)[0]?.uploadSpeed || 0
-          const download = res.data.filter(item => item.id === downloader.id)[0]?.downloadSpeed || 0
-          downloader.uploadSpeed = upload
-          downloader.downloadSpeed = download
+          const upload = res.data.filter(item => item.id === downloader.id)[0]?.uploadSpeed || 0;
+          const download = res.data.filter(item => item.id === downloader.id)[0]?.downloadSpeed || 0;
+          downloader.uploadSpeed = upload;
+          downloader.downloadSpeed = download;
         }
       } catch (e) {
-        await this.$message().error(e.message)
+        await this.$message().error(e.message);
       }
     },
-    gotoClient(url) {
-      window.open(url)
+    async gotoClient(url) {
+      window.open(url);
     }
   },
   async mounted() {
-    await this.getRunInfo()
-    const downloader = !!this.runInfo.dashboardContent.filter(item => item === 'downloader')[0]
+    await this.getRunInfo();
+    const downloader = !!this.runInfo.dashboardContent.filter(item => item === 'downloader')[0];
     if (downloader) {
-      this.listDownloader()
-      this.listDownloaderInfo()
+      this.listDownloader();
+      this.listDownloaderInfo();
     }
     this.interval = setInterval(() => {
       if (downloader) {
-        this.listDownloaderInfo()
+        this.listDownloaderInfo();
       }
-    }, 3000)
+    }, 3000);
   },
   beforeUnmount() {
-    clearInterval(this.interval)
+    clearInterval(this.interval);
   }
 }
 </script>

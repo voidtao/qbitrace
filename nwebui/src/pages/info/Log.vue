@@ -51,51 +51,38 @@
 </template>
 
 <script>
-import { onMounted, ref } from 'vue'
-
 export default {
-  setup() {
-    const type = ref('error')
-    const log = ref('')
-    const version = ref({})
-
-    const getLog = async () => {
+  data() {
+    return {
+      type: 'error',
+      log: '',
+      version: {}
+    };
+  },
+  methods: {
+    isMobile() {
+      if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+        return true;
+      } else {
+        return false;
+      }
+    },
+    async getLog() {
       try {
-        const res = await window.$api.log.get(type.value)
-        if (res.data) {
-          // 处理日志格式
-          let processedLog = '[202' + res.data.split('[202').reverse().join('[202')
-          processedLog = processedLog
-            .replace(new RegExp(`\\[${window.$moment().format('YYYY')}-`, 'g'), '[')
-            .replace(/\[[^\d]*? console\] \d*/g, '')
-            .replace(/\[202/g, '')
-          log.value = processedLog
-        } else {
-          log.value = ''
-        }
+        const res = await this.$api().log.get(this.type);
+        this.log = res.data;
+        this.log = res ? '[202' + res.data.split('[202').reverse().join('[202') : '';
+        this.log = this.log.replace(new RegExp(`\\[${this.$moment().format('YYYY')}-`, 'g'), '[').replace(/\[[^\d]*? console\] \d*/g, '').replace(/\[202/g, '');
       } catch (e) {
-        window.$toast.error(e.message)
+        await this.$message().error(e.message);
       }
     }
-
-    const isMobile = () => {
-      return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
-    }
-
-    onMounted(() => {
-      version.value = process.env.version
-      getLog()
-    })
-
-    return {
-      type,
-      log,
-      version,
-      getLog,
-      isMobile
-    }
+  },
+  async mounted() {
+    this.version = process.env.version;
+    this.getLog();
   }
-}
+};
 </script>
 
 <style scoped>

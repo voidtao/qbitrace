@@ -305,29 +305,66 @@
 <script>
 export default {
   data() {
+    const columns = [
+      {
+        title: 'ID',
+        dataIndex: 'id',
+        width: 18,
+        sorter: (a, b) => a.id.localeCompare(b.id),
+        fixed: true
+      }, {
+        title: '别名',
+        dataIndex: 'alias',
+        sorter: (a, b) => a.alias.localeCompare(b.alias),
+        defaultSortOrder: 'ascend',
+        width: 30
+      }, {
+        title: '下载器',
+        dataIndex: 'downloader',
+        width: 20
+      }, {
+        title: '操作',
+        width: 20
+      }
+    ];
+    const conditionColumns = [
+      {
+        title: '选项',
+        dataIndex: 'key',
+        width: 18
+      }, {
+        title: '比较类型',
+        dataIndex: 'compareType',
+        width: 18
+      }, {
+        title: '值',
+        dataIndex: 'value',
+        width: 90
+      }, {
+        title: '操作',
+        dataIndex: 'option',
+        width: 30
+      }
+    ];
     return {
-      rssRuleList: [],
-      downloaders: [],
-      rssRule: {
-        alias: '',
-        category: '',
-        savePath: '',
-        client: '',
-        priority: 0,
-        type: 'normal',
-        conditions: [],
-        code: '(torrent) => {\n  return false;\n}'
-      },
+      columns,
+      conditionColumns,
+      conditionKeys: [{
+        name: '种子名称',
+        key: 'name'
+      }, {
+        name: '种子大小',
+        key: 'size'
+      }, {
+        name: '种子简介',
+        key: 'description'
+      }],
       condition: {
         key: '',
-        compareType: 'equals',
+        compareType: '',
         value: ''
       },
-      conditionKeys: [
-        { key: 'name', name: '种子名称' },
-        { key: 'size', name: '种子大小' },
-        { key: 'description', name: '种子简介' }
-      ],
+      rssRule: {},
       defaultRssRule: {
         conditions: [{
           key: '',
@@ -336,80 +373,88 @@ export default {
         }],
         alias: '',
         type: '',
-        code: '(torrent) => {\n  return false;\n}'
+        code: '(torrent) => {\n' +
+              '  return false;\n' +
+              '}'
       },
-      loading: false
-    }
+      loading: true,
+      downloaders: [],
+      rssRuleList: []
+    };
   },
   methods: {
     isMobile() {
-      return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+      if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+        return true;
+      } else {
+        return false;
+      }
     },
     async listRssRule() {
       try {
-        const res = await this.$api().rssRule.list()
-        this.rssRuleList = res.data
+        const res = await this.$api().rssRule.list();
+        this.rssRuleList = res.data;
       } catch (e) {
-        await this.$message().error(e.message)
+        this.$message().error(e.message);
       }
     },
     async modifyRssRuleDownloader(rssRule) {
       try {
-        await this.$api().rssRule.modify({ ...rssRule })
-        await this.$message().success((rssRule.id ? '编辑' : '新增') + '成功, 列表正在刷新...')
-        setTimeout(() => this.listRssRule(), 1000)
-        this.clearRssRule()
+        await this.$api().rssRule.modify({ ...rssRule });
+        this.$message().success((rssRule.id ? '编辑' : '新增') + '成功, 列表正在刷新...');
+        setTimeout(() => this.listRssRule(), 1000);
+        this.clearRssRule();
       } catch (e) {
-        await this.$message().error(e.message)
+        this.$message().error(e.message);
       }
     },
     async modifyRssRule() {
       try {
-        await this.$api().rssRule.modify({ ...this.rssRule })
-        await this.$message().success((this.rssRule.id ? '编辑' : '新增') + '成功, 列表正在刷新...')
-        setTimeout(() => this.listRssRule(), 1000)
-        this.clearRssRule()
+        await this.$api().rssRule.modify({ ...this.rssRule });
+        this.$message().success((this.rssRule.id ? '编辑' : '新增') + '成功, 列表正在刷新...');
+        setTimeout(() => this.listRssRule(), 1000);
+        this.clearRssRule();
       } catch (e) {
-        await this.$message().error(e.message)
+        this.$message().error(e.message);
       }
     },
     modifyClick(row) {
-      this.rssRule = { ...row }
+      this.rssRule = { ...row };
     },
     cloneClick(row) {
-      this.rssRule = { ...row, id: undefined }
+      this.rssRule = { ...row, id: undefined };
     },
     async deleteRssRule(row) {
       if (row.used) {
-        await this.$message().error('组件被占用, 取消占用后删除')
-        return
+        this.$message().error('组件被占用, 取消占用后删除');
+        return;
       }
       try {
-        await this.$api().rssRule.delete(row.id)
-        await this.$message().success('删除成功, 列表正在刷新...')
-        await this.listRssRule()
+        await this.$api().rssRule.delete(row.id);
+        this.$message().success('删除成功, 列表正在刷新...');
+        await this.listRssRule();
       } catch (e) {
-        await this.$message().error(e.message)
+        this.$message().error(e.message);
       }
     },
     async listDownloader() {
       try {
-        const res = await this.$api().downloader.list()
-        this.downloaders = res.data.sort((a, b) => a.alias.localeCompare(b.alias))
+        const res = await this.$api().downloader.list();
+        this.downloaders = res.data.sort((a, b) => a.alias.localeCompare(b.alias));
       } catch (e) {
-        await this.$message().error(e.message)
+        this.$message().error(e.message);
       }
     },
     clearRssRule() {
-      this.rssRule = { ...this.defaultRssRule, conditions: [{ ...this.condition }] }
+      this.rssRule = { ...this.defaultRssRule, conditions: [{ ...this.condition }] };
     }
   },
   async mounted() {
-    this.clearRssRule()
-    this.listDownloader()
-    await this.listRssRule()
+    this.clearRssRule();
+    this.listDownloader();
+    await this.listRssRule();
   }
-}
+};
 </script>
 
 <style scoped>

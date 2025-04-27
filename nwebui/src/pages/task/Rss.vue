@@ -735,6 +735,35 @@
 <script>
 export default {
   data() {
+    const columns = [
+      {
+        title: 'ID',
+        dataIndex: 'id',
+        width: 18,
+        fixed: true
+      }, {
+        title: '别名',
+        dataIndex: 'alias',
+        sorter: (a, b) => a.alias.localeCompare(b.alias),
+        defaultSortOrder: 'ascend',
+        width: 20
+      }, {
+        title: '启用',
+        dataIndex: 'enable',
+        width: 15
+      }, {
+        title: '下载器',
+        dataIndex: 'clientArr',
+        width: 40
+      }, {
+        title: '推送消息',
+        dataIndex: 'pushNotify',
+        width: 20
+      }, {
+        title: '操作',
+        width: 28
+      }
+    ];
     const dryrunColumns = [
       {
         title: '种子标题',
@@ -750,11 +779,10 @@ export default {
         width: 28
       }
     ];
-    
     return {
-      modalVisible: false,
+      columns,
       dryrunColumns,
-      dryrunResult: [],
+      modalVisible: false,
       rssList: [],
       downloaders: [],
       notifications: [],
@@ -797,89 +825,94 @@ export default {
         reseedClients: [],
         rssUrls: ['']
       },
-      loading: false
-    }
+      loading: true,
+      dryrunResult: []
+    };
   },
   methods: {
     isMobile() {
-      return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+      if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+        return true;
+      } else {
+        return false;
+      }
     },
     async listRss() {
       try {
-        const res = await this.$api().rss.list()
-        this.rssList = res.data
+        const res = await this.$api().rss.list();
+        this.rssList = res.data;
       } catch (e) {
-        await this.$message().error(e.message)
+        this.$message().error(e.message);
       }
     },
     async listNotification() {
       try {
-        const res = await this.$api().notification.list()
-        this.notifications = res.data.sort((a, b) => a.alias.localeCompare(b.alias))
+        const res = await this.$api().notification.list();
+        this.notifications = res.data.sort((a, b) => a.alias.localeCompare(b.alias));
       } catch (e) {
-        await this.$message().error(e.message)
+        this.$message().error(e.message);
       }
     },
     async listRssRule() {
       try {
-        const res = await this.$api().rssRule.list()
-        this.rssRules = res.data.sort((a, b) => a.alias.localeCompare(b.alias))
+        const res = await this.$api().rssRule.list();
+        this.rssRules = res.data.sort((a, b) => a.alias.localeCompare(b.alias));
       } catch (e) {
-        await this.$message().error(e.message)
+        this.$message().error(e.message);
       }
     },
     async listDownloader() {
       try {
-        const res = await this.$api().downloader.list()
-        this.downloaders = res.data.sort((a, b) => a.alias.localeCompare(b.alias))
+        const res = await this.$api().downloader.list();
+        this.downloaders = res.data.sort((a, b) => a.alias.localeCompare(b.alias));
       } catch (e) {
-        await this.$message().error(e.message)
+        this.$message().error(e.message);
       }
     },
     async modifyRss() {
       try {
-        await this.$api().rss.modify({ ...this.rss })
-        await this.$message().success((this.rss.id ? '编辑' : '新增') + '成功, 列表正在刷新...')
-        setTimeout(() => this.listRss(), 1000)
-        this.clearRss()
+        await this.$api().rss.modify({ ...this.rss });
+        this.$message().success((this.rss.id ? '编辑' : '新增') + '成功, 列表正在刷新...');
+        setTimeout(() => this.listRss(), 1000);
+        this.clearRss();
       } catch (e) {
-        await this.$message().error(e.message)
+        this.$message().error(e.message);
       }
     },
     async dryrun() {
       try {
-        const res = await this.$api().rss.dryrun({ ...this.rss })
-        this.dryrunResult = res.data
-        this.modalVisible = true
+        const res = await this.$api().rss.dryrun({ ...this.rss });
+        this.dryrunResult = res.data;
+        this.modalVisible = true;
       } catch (e) {
-        await this.$message().error(e.message)
+        this.$message().error(e.message);
       }
     },
     async enableTask(record) {
       try {
-        await this.$api().rss.modify({ ...record })
-        await this.$message().success('修改成功, 列表正在刷新...')
-        setTimeout(() => this.listRss(), 1000)
-        this.clearRss()
+        await this.$api().rss.modify({ ...record });
+        this.$message().success('修改成功, 列表正在刷新...');
+        setTimeout(() => this.listRss(), 1000);
+        this.clearRss();
       } catch (e) {
-        await this.$message().error(e.message)
+        this.$message().error(e.message);
       }
     },
     modifyClick(row) {
-      this.rss = { ...row }
+      this.rss = { ...row };
     },
     cloneClick(row) {
-      this.rss = JSON.parse(JSON.stringify(row))
-      this.rss.id = null
-      this.rss.alias = this.rss.alias + '-克隆'
+      this.rss = JSON.parse(JSON.stringify(row));
+      this.rss.id = null;
+      this.rss.alias = this.rss.alias + '-克隆';
     },
     async deleteRss(row) {
       try {
-        await this.$api().rss.delete(row.id)
-        await this.$message().success('删除成功, 列表正在刷新...')
-        await this.listRss()
+        await this.$api().rss.delete(row.id);
+        this.$message().success('删除成功, 列表正在刷新...');
+        await this.listRss();
       } catch (e) {
-        await this.$message().error(e.message)
+        this.$message().error(e.message);
       }
     },
     clearRss() {
@@ -890,30 +923,27 @@ export default {
         rejectRules: [],
         reseedClients: [],
         rssUrls: ['']
-      }
+      };
     },
     showDryrunModal() {
-      this.dryrunResult = []
-      this.dryrun()
+      this.dryrunResult = [];
+      this.dryrun();
     },
     closeDryrunModal() {
-      this.modalVisible = false
+      this.modalVisible = false;
     },
-    addRssUrl() {
-      this.rss.rssUrls.push('')
-    },
-    removeRssUrl(index) {
-      this.rss.rssUrls.splice(index, 1)
+    clearForm() {
+      this.clearRss();
     }
   },
   async mounted() {
-    this.clearRss()
-    this.listNotification()
-    this.listDownloader()
-    this.listRssRule()
-    await this.listRss()
+    this.clearRss();
+    this.listNotification();
+    this.listDownloader();
+    this.listRssRule();
+    await this.listRss();
   }
-}
+};
 </script>
 
 <style scoped>

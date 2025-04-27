@@ -160,75 +160,69 @@
 </template>
 
 <script>
-import { onMounted, ref } from 'vue'
-
 export default {
-  setup() {
-    const loading = ref(false)
-    const torrents = ref([])
-    const rssList = ref([])
-    const qs = ref({
-      page: 1,
-      length: 20,
-      type: 'rss',
-      rss: '',
-      key: ''
-    })
-
-    const listHistory = async () => {
-      loading.value = true
-      try {
-        const res = await window.$api.torrent.listHistory(qs.value)
-        torrents.value = res.data.torrents
-      } catch (e) {
-        window.$toast.error(e.message)
-      }
-      loading.value = false
-    }
-
-    const listRss = async () => {
-      try {
-        const res = await window.$api.rss.list()
-        rssList.value = res.data
-      } catch (e) {
-        window.$toast.error(e.message)
-      }
-    }
-
-    const gotoDetail = async (record) => {
-      if (!record.link) {
-        window.$toast.error('链接不存在')
-        return
-      }
-      window.open(record.link)
-    }
-
-    const delRecord = async (record) => {
-      try {
-        await window.$api.rss.delRecord({ id: record.id })
-        window.$toast.success('删除成功, 列表刷新中....')
-        listHistory()
-      } catch (e) {
-        window.$toast.error(e.message)
-      }
-    }
-
-    onMounted(() => {
-      listHistory()
-      listRss()
-    })
-
+  data() {
     return {
-      loading,
-      torrents,
-      rssList,
-      qs,
-      listHistory,
-      gotoDetail,
-      delRecord
+      loading: false,
+      torrents: [],
+      rssList: [],
+      qs: {
+        page: 1,
+        length: 20,
+        type: 'rss',
+        rss: '',
+        key: ''
+      }
+    };
+  },
+  methods: {
+    isMobile() {
+      if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+        return true;
+      } else {
+        return false;
+      }
+    },
+    async listHistory() {
+      this.loading = true;
+      try {
+        const res = await this.$api().torrent.listHistory(this.qs);
+        this.torrents = res.data.torrents;
+      } catch (e) {
+        await this.$message().error(e.message);
+      }
+      this.loading = false;
+    },
+    async listRss() {
+      try {
+        const res = await this.$api().rss.list();
+        this.rssList = res.data;
+      } catch (e) {
+        await this.$message().error(e.message);
+      }
+    },
+    async gotoDetail(record) {
+      if (!record.link) {
+        await this.$message().error('链接不存在');
+        return;
+      }
+      window.open(record.link);
+    },
+    async delRecord(record) {
+      try {
+        await this.$api().rss.delRecord({ id: record.id });
+        await this.$message().success('删除成功, 列表刷新中....');
+        this.listHistory();
+      } catch (e) {
+        await this.$message().error(e.message);
+      }
     }
+  },
+  async mounted() {
+    await this.listHistory();
+    await this.listRss();
   }
-}
+};
 </script>
 
 <style scoped>

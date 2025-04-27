@@ -63,50 +63,54 @@ export default {
   data() {
     return {
       hosts: ''
-    }
+    };
   },
   methods: {
     isMobile() {
-      return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+      if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+        return true;
+      } else {
+        return false;
+      }
     },
     async getHosts() {
       try {
-        const res = await this.$api().setting.getHosts()
-        this.hosts = res.data
+        const res = await this.$api().setting.getHosts();
+        this.hosts = res.data;
       } catch (e) {
-        await this.$message().error(e.message)
+        await this.$message().error(e.message);
       }
     },
     async save() {
       try {
-        await this.$api().setting.save({ hosts: this.hosts })
-        await this.$message().success('保存成功')
+        await this.$api().setting.save({ hosts: this.hosts });
+        await this.$message().success('保存成功');
       } catch (e) {
-        await this.$message().error(e.message)
+        await this.$message().error(e.message);
       }
     },
     async _export() {
       try {
-        await this.$api().setting.export()
-        await this.$message().success('导出成功')
+        await this.$api().setting.export();
+        await this.$message().success('导出成功');
       } catch (e) {
-        await this.$message().error(e.message)
+        await this.$message().error(e.message);
       }
     },
     async _import() {
       try {
-        await this.$api().setting.import()
-        await this.$message().success('导入成功')
-        this.getHosts()
+        await this.$api().setting.import();
+        await this.$message().success('导入成功');
+        this.getHosts();
       } catch (e) {
-        await this.$message().error(e.message)
+        await this.$message().error(e.message);
       }
     }
   },
   async mounted() {
-    this.getHosts()
+    this.getHosts();
   }
-}
+};
 </script>
 
 <style scoped>

@@ -59,21 +59,35 @@
 export default {
   data() {
     return {
-      version: {}
-    }
+      version: {},
+      runInfo: {}
+    };
   },
   methods: {
     isMobile() {
-      return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+      if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+        return true;
+      } else {
+        return false;
+      }
     },
     gotoVersion() {
-      window.open('https://github.com/vertex-app/vertex')
+      window.open('https://github.com/vertex-app/vertex');
+    },
+    async getRunInfo() {
+      try {
+        const res = await this.$api().setting.getRunInfo();
+        this.runInfo = res.data;
+      } catch (e) {
+        await this.$message().error(e.message);
+      }
     }
   },
-  mounted() {
-    this.version = process.env.version
+  async mounted() {
+    this.getRunInfo();
+    this.version = process.env.version;
   }
-}
+};
 </script>
 
 <style scoped>

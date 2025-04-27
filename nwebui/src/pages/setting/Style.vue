@@ -16,6 +16,10 @@
                 <span class="label-text">亮色</span>
               </label>
               <label class="label cursor-pointer">
+                <input type="radio" name="theme" value="dark" v-model="setting.theme" class="radio radio-primary mr-2" />
+                <span class="label-text">暗色</span>
+              </label>
+              <label class="label cursor-pointer">
                 <input type="radio" name="theme" value="follow" v-model="setting.theme" class="radio radio-primary mr-2" />
                 <span class="label-text">跟随系统</span>
               </label>
@@ -107,35 +111,39 @@ export default {
   },
   methods: {
     isMobile() {
-      return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+      if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+        return true;
+      } else {
+        return false;
+      }
     },
     async get() {
       try {
-        const s = (await this.$api().setting.get()).data
+        const s = (await this.$api().setting.get()).data;
         this.setting = {
           theme: s.theme || 'follow',
           background: s.background,
           wechatCover: s.wechatCover,
           dashboardContent: s.dashboardContent || []
-        }
+        };
       } catch (e) {
-        this.$message().error(e.message)
+        await this.$message().error(e.message);
       }
     },
     async modify() {
       try {
-        await this.$api().setting.modify(this.setting)
-        this.$message().success('修改成功, 部分设置可能需要刷新页面生效.')
-        this.get()
+        await this.$api().setting.modify(this.setting);
+        await this.$message().success('修改成功, 部分设置可能需要刷新页面生效.');
+        this.get();
       } catch (e) {
-        this.$message().error(e.message)
+        await this.$message().error(e.message);
       }
     }
   },
-  mounted() {
-    this.get()
+  async mounted() {
+    await this.get();
   }
-}
+};
 </script>
 
 <style scoped>
