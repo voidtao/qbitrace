@@ -2,9 +2,11 @@
   <div class="container mx-auto p-4">
     <h1 class="text-2xl font-bold mb-4">rss任务</h1>
     <div class="divider"></div>
-    
+
+    <!-- RSS任务列表 Card -->
     <div class="card bg-base-100 shadow-xs hover:shadow-md transition-all duration-300 mb-8">
       <div class="card-body">
+        <h2 class="card-title mb-6 text-base-content">RSS任务列表</h2>
         <div class="overflow-x-auto">
           <table class="table table-zebra w-full">
             <thead>
@@ -18,7 +20,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="rss in rssList" 
+              <tr v-for="rss in rssList"
                   :key="rss.id"
                   class="hover:bg-base-200/30 transition-colors duration-200">
                 <td class="text-base-content/80">{{ rss.id }}</td>
@@ -26,9 +28,9 @@
                 <td>
                   <div class="form-control">
                     <label class="label cursor-pointer justify-start">
-                      <input 
-                        type="checkbox" 
-                        class="toggle toggle-primary toggle-sm" 
+                      <input
+                        type="checkbox"
+                        class="toggle toggle-primary toggle-sm"
                         :checked="rss.enable"
                         @change="enableTask(rss)"
                       />
@@ -45,33 +47,33 @@
                   </div>
                 </td>
                 <td>
-                  <span class="badge badge-sm" 
+                  <span class="badge badge-sm"
                         :class="rss.pushNotify ? 'badge-success bg-success/20 text-success-content' : 'badge-error bg-error/20 text-error-content'">
                     {{ rss.pushNotify ? '启用' : '禁用' }}
                   </span>
                 </td>
                 <td>
                   <div class="flex gap-2">
-                    <button class="btn btn-sm btn-primary btn-outline" 
+                    <button class="btn btn-sm btn-primary btn-outline"
                             @click="modifyClick(rss)">
                       <i class="fas fa-edit mr-1"></i>
                       编辑
                     </button>
-                    <button class="btn btn-sm btn-secondary btn-outline" 
+                    <button class="btn btn-sm btn-secondary btn-outline"
                             @click="cloneClick(rss)">
                       <i class="fas fa-copy mr-1"></i>
                       克隆
                     </button>
                     <div class="dropdown dropdown-end">
-                      <label tabindex="0" 
+                      <label tabindex="0"
                              class="btn btn-sm btn-error btn-outline">
                         <i class="fas fa-trash-alt mr-1"></i>
                         删除
                       </label>
-                      <div tabindex="0" 
+                      <div tabindex="0"
                            class="dropdown-content menu p-2 shadow-lg bg-base-100 rounded-lg w-52">
                         <div class="p-2 text-sm text-base-content/70 text-center">确认删除此任务？</div>
-                        <button class="btn btn-sm btn-error w-full" 
+                        <button class="btn btn-sm btn-error w-full"
                                 @click="deleteRss(rss)">
                           确认删除
                         </button>
@@ -86,6 +88,7 @@
       </div>
     </div>
 
+    <!-- 新增 | 编辑 RSS 任务 Card -->
     <div class="card bg-base-100 shadow-xs hover:shadow-md transition-all duration-300">
       <div class="card-body">
         <h2 class="card-title mb-6 text-base-content">
@@ -100,8 +103,8 @@
               <label class="label">
                 <span class="label-text text-base-content/80">任务别名</span>
               </label>
-              <input 
-                type="text" 
+              <input
+                type="text"
                 v-model="rss.alias"
                 class="input input-bordered w-full bg-base-100 transition-all duration-200 focus:ring-2 focus:ring-primary focus:ring-opacity-50"
                 placeholder="给 RSS 任务取一个好记的名字"
@@ -116,8 +119,8 @@
                   <span class="text-base-content/80 font-medium">启用任务</span>
                   <p class="text-xs text-base-content/60 mt-1">开启后将按照设定的规则自动执行RSS任务</p>
                 </div>
-                <input 
-                  type="checkbox" 
+                <input
+                  type="checkbox"
                   v-model="rss.enable"
                   class="toggle toggle-primary"
                 />
@@ -129,14 +132,14 @@
           <div class="bg-base-200/50 rounded-lg p-4">
             <h3 class="font-medium text-base-content/80 mb-4">下载器选择</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              <label 
-                v-for="downloader in downloaders" 
+              <label
+                v-for="downloader in downloaders"
                 :key="downloader.id"
                 class="flex items-center p-3 bg-base-100 rounded-lg cursor-pointer hover:bg-primary hover:bg-opacity-5 transition-colors duration-200"
                 :class="{ 'opacity-50': !downloader.enable && !rss.clientArr.includes(downloader.id) }"
               >
-                <input 
-                  type="checkbox" 
+                <input
+                  type="checkbox"
                   :disabled="!downloader.enable && !rss.clientArr.includes(downloader.id)"
                   :value="downloader.id"
                   v-model="rss.clientArr"
@@ -153,83 +156,91 @@
             <span class="text-xs text-base-content/60 mt-4 block">选择用于此RSS任务的下载器</span>
           </div>
 
-          <div class="form-control">
-            <label class="label">
-              <span class="label-text">排序规则</span>
-            </label>
-            <select 
-              v-model="rss.clientSortBy"
-              class="select select-bordered"
-              required
-            >
-              <option value="leechingCount">下载种子数量</option>
-              <option value="uploadSpeed">当前上传速度</option>
-              <option value="downloadSpeed">当前下载速度</option>
-              <option value="freeSpaceOnDisk">当前剩余空间</option>
-            </select>
-          </div>
+          <!-- 下载器设置 -->
+          <div class="bg-base-200/50 rounded-lg p-4 space-y-4">
+            <h3 class="font-medium text-base-content/80 mb-2">下载器设置</h3>
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text text-base-content/80">排序规则</span>
+              </label>
+              <select
+                v-model="rss.clientSortBy"
+                class="select select-bordered w-full bg-base-100 transition-all duration-200 focus:ring-2 focus:ring-primary focus:ring-opacity-50"
+                required
+              >
+                <option value="leechingCount">下载种子数量</option>
+                <option value="uploadSpeed">当前上传速度</option>
+                <option value="downloadSpeed">当前下载速度</option>
+                <option value="freeSpaceOnDisk">当前剩余空间</option>
+              </select>
+              <span class="text-xs text-base-content/60 mt-2">选择下载器排序的优先级方式</span>
+            </div>
 
-          <div class="form-control">
-            <label class="label">
-              <span class="label-text">下载器最高上传速度</span>
-            </label>
-            <div class="flex gap-2">
-              <input 
-                type="number" 
-                v-model="rss.maxClientUploadSpeed"
-                class="input input-bordered flex-1"
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text text-base-content/80">下载器最高上传速度</span>
+              </label>
+              <div class="flex gap-2">
+                <input
+                  type="number"
+                  v-model="rss.maxClientUploadSpeed"
+                  class="input input-bordered flex-1 bg-base-100 transition-all duration-200 focus:ring-2 focus:ring-primary focus:ring-opacity-50"
+                  placeholder="留空或 0 不启用"
+                />
+                <select
+                  v-model="rss.maxClientUploadSpeedUnit"
+                  class="select select-bordered w-32"
+                >
+                  <option value="KiB">KiB/s</option>
+                  <option value="MiB">MiB/s</option>
+                  <option value="GiB">GiB/s</option>
+                </select>
+              </div>
+              <span class="text-xs text-base-content/60 mt-2">设置下载器的最高上传速度限制</span>
+            </div>
+
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text text-base-content/80">下载器最高下载速度</span>
+              </label>
+              <div class="flex gap-2">
+                <input
+                  type="number"
+                  v-model="rss.maxClientDownloadSpeed"
+                  class="input input-bordered flex-1 bg-base-100 transition-all duration-200 focus:ring-2 focus:ring-primary focus:ring-opacity-50"
+                  placeholder="留空或 0 不启用"
+                />
+                <select
+                  v-model="rss.maxClientDownloadSpeedUnit"
+                  class="select select-bordered w-32"
+                >
+                  <option value="KiB">KiB/s</option>
+                  <option value="MiB">MiB/s</option>
+                  <option value="GiB">GiB/s</option>
+                </select>
+              </div>
+              <span class="text-xs text-base-content/60 mt-2">设置下载器的最高下载速度限制</span>
+            </div>
+
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text text-base-content/80">下载器下载任务上限</span>
+              </label>
+              <input
+                type="number"
+                v-model="rss.maxClientDownloadCount"
+                class="input input-bordered w-full bg-base-100 transition-all duration-200 focus:ring-2 focus:ring-primary focus:ring-opacity-50"
                 placeholder="留空或 0 不启用"
               />
-              <select 
-                v-model="rss.maxClientUploadSpeedUnit"
-                class="select select-bordered w-32"
-              >
-                <option value="KiB">KiB/s</option>
-                <option value="MiB">MiB/s</option>
-                <option value="GiB">GiB/s</option>
-              </select>
+              <span class="text-xs text-base-content/60 mt-2">设置下载器可同时进行的最大下载任务数</span>
             </div>
-          </div>
-
-          <div class="form-control">
-            <label class="label">
-              <span class="label-text">下载器最高下载速度</span>
-            </label>
-            <div class="flex gap-2">
-              <input 
-                type="number" 
-                v-model="rss.maxClientDownloadSpeed"
-                class="input input-bordered flex-1"
-                placeholder="留空或 0 不启用"
-              />
-              <select 
-                v-model="rss.maxClientDownloadSpeedUnit"
-                class="select select-bordered w-32"
-              >
-                <option value="KiB">KiB/s</option>
-                <option value="MiB">MiB/s</option>
-                <option value="GiB">GiB/s</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="form-control">
-            <label class="label">
-              <span class="label-text">下载器下载任务上限</span>
-            </label>
-            <input 
-              type="number" 
-              v-model="rss.maxClientDownloadCount"
-              class="input input-bordered"
-              placeholder="留空或 0 不启用"
-            />
           </div>
 
           <!-- RSS URL列表 -->
           <div class="bg-base-200/50 rounded-lg p-4">
             <div class="flex items-center justify-between mb-4">
               <h3 class="font-medium text-base-content/80">RSS URL列表</h3>
-              <button 
+              <button
                 type="button"
                 class="btn btn-primary btn-sm btn-outline"
                 @click="rss.rssUrls.push('')"
@@ -238,14 +249,14 @@
                 添加URL
               </button>
             </div>
-            
+
             <div class="space-y-3">
-              <div v-for="(url, index) in rss.rssUrls" 
-                   :key="index" 
-                   class="flex gap-2 items-start bg-base-100 rounded-lg p-2 transition-all duration-200 hover:shadow-xs">
+              <div v-for="(url, index) in rss.rssUrls"
+                   :key="index"
+                   class="flex gap-2 items-start bg-base-100 rounded-lg p-2 transition-all duration-200 hover:shadow-md">
                 <div class="flex-1">
-                  <input 
-                    type="text" 
+                  <input
+                    type="text"
                     v-model="rss.rssUrls[index]"
                     class="input input-bordered w-full bg-base-100 transition-all duration-200 focus:ring-2 focus:ring-primary focus:ring-opacity-50"
                     placeholder="输入RSS订阅链接"
@@ -255,7 +266,7 @@
                     URL {{ index + 1 }}
                   </span>
                 </div>
-                <button 
+                <button
                   type="button"
                   class="btn btn-error btn-sm btn-outline"
                   @click="rss.rssUrls = rss.rssUrls.filter((_, i) => i !== index)"
@@ -264,73 +275,256 @@
                 </button>
               </div>
             </div>
-            
+
             <span class="text-xs text-base-content/60 mt-4 block">
               <i class="fas fa-info-circle mr-1"></i>
               添加多个RSS订阅源，系统将自动合并处理
             </span>
           </div>
 
-          <div class="form-control">
-            <label class="label cursor-pointer">
-              <span class="label-text">抓取免费</span>
-              <input 
-                type="checkbox" 
-                v-model="rss.scrapeFree"
-                class="checkbox checkbox-primary"
+          <!-- 抓取设置 -->
+          <div class="bg-base-200/50 rounded-lg p-4 space-y-4">
+            <h3 class="font-medium text-base-content/80 mb-2">抓取设置</h3>
+            <div class="form-control bg-base-100 rounded-lg p-3">
+              <div class="flex items-center justify-between">
+                <div>
+                  <span class="text-base-content/80 font-medium">抓取免费</span>
+                  <p class="text-xs text-base-content/60 mt-1">启用后将抓取免费种子</p>
+                </div>
+                <input
+                  type="checkbox"
+                  v-model="rss.scrapeFree"
+                  class="toggle toggle-primary"
+                />
+              </div>
+            </div>
+
+            <div class="form-control bg-base-100 rounded-lg p-3">
+              <div class="flex items-center justify-between">
+                <div>
+                  <span class="text-base-content/80 font-medium">排除 HR</span>
+                  <p class="text-xs text-base-content/60 mt-1">启用后将排除 HR 种子</p>
+                </div>
+                <input
+                  type="checkbox"
+                  v-model="rss.scrapeHr"
+                  class="toggle toggle-primary"
+                />
+              </div>
+            </div>
+
+            <div class="form-control" v-if="rss.scrapeHr || rss.scrapeFree">
+              <label class="label">
+                <span class="label-text text-base-content/80">Cookie</span>
+              </label>
+              <input
+                type="text"
+                v-model="rss.cookie"
+                class="input input-bordered w-full bg-base-100 transition-all duration-200 focus:ring-2 focus:ring-primary focus:ring-opacity-50"
+                placeholder="Cookie, M-Team 为 api key"
+                required
               />
-            </label>
-          </div>
+              <span class="text-xs text-base-content/60 mt-2">用于抓取网站内容的身份验证</span>
+            </div>
 
-          <div class="form-control">
-            <label class="label cursor-pointer">
-              <span class="label-text">排除 HR</span>
-              <input 
-                type="checkbox" 
-                v-model="rss.scrapeHr"
-                class="checkbox checkbox-primary"
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text text-base-content/80">Rss 周期</span>
+              </label>
+              <input
+                type="text"
+                v-model="rss.cron"
+                class="input input-bordered w-full bg-base-100 transition-all duration-200 focus:ring-2 focus:ring-primary focus:ring-opacity-50"
+                placeholder="Rss Cron 表达式, 默认为 1 分钟更新一次"
+                required
               />
-            </label>
+              <span class="text-xs text-base-content/60 mt-2">使用 Cron 表达式定义 RSS 刷新周期</span>
+            </div>
           </div>
 
-          <div class="form-control" v-if="rss.scrapeHr || rss.scrapeFree">
-            <label class="label">
-              <span class="label-text">Cookie</span>
-            </label>
-            <input 
-              type="text" 
-              v-model="rss.cookie"
-              class="input input-bordered"
-              placeholder="Cookie, M-Team 为 api key"
-              required
-            />
+          <!-- 种子添加选项 -->
+          <div class="bg-base-200/50 rounded-lg p-4 space-y-4">
+            <h3 class="font-medium text-base-content/80 mb-2">种子添加选项</h3>
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text text-base-content/80">保存路径</span>
+              </label>
+              <input
+                type="text"
+                v-model="rss.savePath"
+                class="input input-bordered w-full bg-base-100 transition-all duration-200 focus:ring-2 focus:ring-primary focus:ring-opacity-50"
+                placeholder="推送种子至下载器时的保存路径"
+              />
+              <span class="text-xs text-base-content/60 mt-2">留空则使用下载器默认路径</span>
+            </div>
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text text-base-content/80">分类</span>
+              </label>
+              <input
+                type="text"
+                v-model="rss.category"
+                class="input input-bordered w-full bg-base-100 transition-all duration-200 focus:ring-2 focus:ring-primary focus:ring-opacity-50"
+                placeholder="推送种子至下载器时的分类"
+              />
+              <span class="text-xs text-base-content/60 mt-2">留空则使用下载器默认分类</span>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div class="form-control bg-base-100 rounded-lg p-3">
+                <div class="flex items-center justify-between">
+                  <div>
+                    <span class="text-base-content/80 font-medium">添加时暂停</span>
+                    <p class="text-xs text-base-content/60 mt-1">向下载器添加种子时暂停</p>
+                  </div>
+                  <input
+                    type="checkbox"
+                    v-model="rss.paused"
+                    class="toggle toggle-primary"
+                  />
+                </div>
+              </div>
+              <div class="form-control bg-base-100 rounded-lg p-3">
+                <div class="flex items-center justify-between">
+                  <div>
+                    <span class="text-base-content/80 font-medium">自动管理</span>
+                    <p class="text-xs text-base-content/60 mt-1">启用种子的自动管理功能</p>
+                  </div>
+                  <input
+                    type="checkbox"
+                    v-model="rss.autoTMM"
+                    class="toggle toggle-primary"
+                  />
+                </div>
+              </div>
+              <div class="form-control bg-base-100 rounded-lg p-3">
+                <div class="flex items-center justify-between">
+                  <div>
+                    <span class="text-base-content/80 font-medium">跳过大小相同种子</span>
+                    <p class="text-xs text-base-content/60 mt-1">跳过已存在相同大小的种子</p>
+                  </div>
+                  <input
+                    type="checkbox"
+                    v-model="rss.skipSameTorrent"
+                    class="toggle toggle-primary"
+                  />
+                </div>
+              </div>
+              <div class="form-control bg-base-100 rounded-lg p-3">
+                <div class="flex items-center justify-between">
+                  <div>
+                    <span class="text-base-content/80 font-medium">推送种子文件</span>
+                    <p class="text-xs text-base-content/60 mt-1">默认推送下载链接</p>
+                  </div>
+                  <input
+                    type="checkbox"
+                    v-model="rss.pushTorrentFile"
+                    class="toggle toggle-primary"
+                  />
+                </div>
+              </div>
+            </div>
           </div>
 
-          <div class="form-control">
-            <label class="label">
-              <span class="label-text">Rss 周期</span>
-            </label>
-            <input 
-              type="text" 
-              v-model="rss.cron"
-              class="input input-bordered"
-              placeholder="Rss Cron 表达式, 默认为 1 分钟更新一次"
-              required
-            />
+          <!-- 自定义正则 -->
+          <div class="bg-base-200/50 rounded-lg p-4 space-y-4" v-if="!rss.pushTorrentFile">
+            <h3 class="font-medium text-base-content/80 mb-2">自定义正则替换 (推送链接时生效)</h3>
+             <div class="form-control bg-base-100 rounded-lg p-3">
+                <div class="flex items-center justify-between">
+                  <div>
+                    <span class="text-base-content/80 font-medium">启用自定义正则</span>
+                    <p class="text-xs text-base-content/60 mt-1">对种子下载链接进行正则替换</p>
+                  </div>
+                  <input
+                    type="checkbox"
+                    v-model="rss.useCustomRegex"
+                    class="toggle toggle-primary"
+                  />
+                </div>
+              </div>
+            <template v-if="rss.useCustomRegex">
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text text-base-content/80">正则表达式</span>
+                </label>
+                <input
+                  type="text"
+                  v-model="rss.regexStr"
+                  class="input input-bordered w-full bg-base-100 transition-all duration-200 focus:ring-2 focus:ring-primary focus:ring-opacity-50"
+                  placeholder="格式: /pattern/flags"
+                  required
+                />
+                <span class="text-xs text-base-content/60 mt-2">用于匹配种子下载链接的正则表达式</span>
+              </div>
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text text-base-content/80">替换为</span>
+                </label>
+                <input
+                  type="text"
+                  v-model="rss.replaceStr"
+                  class="input input-bordered w-full bg-base-100 transition-all duration-200 focus:ring-2 focus:ring-primary focus:ring-opacity-50"
+                  placeholder="替换匹配到的内容"
+                  required
+                />
+                <span class="text-xs text-base-content/60 mt-2">用于替换匹配内容的字符串</span>
+              </div>
+            </template>
+          </div>
+
+          <!-- 高级设置 -->
+          <div class="bg-base-200/50 rounded-lg p-4 space-y-4">
+            <h3 class="font-medium text-base-content/80 mb-2">高级设置</h3>
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text text-base-content/80">每小时添加上限</span>
+              </label>
+              <input
+                type="number"
+                v-model="rss.addCountPerHour"
+                class="input input-bordered w-full bg-base-100 transition-all duration-200 focus:ring-2 focus:ring-primary focus:ring-opacity-50"
+                placeholder="留空为 20, 编辑或重启后重置"
+              />
+              <span class="text-xs text-base-content/60 mt-2">每小时向客户端推送种子数量上限</span>
+            </div>
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text text-base-content/80">等待时间 (秒)</span>
+              </label>
+              <input
+                type="number"
+                v-model="rss.sleepTime"
+                class="input input-bordered w-full bg-base-100 transition-all duration-200 focus:ring-2 focus:ring-primary focus:ring-opacity-50"
+                placeholder="建议略小于 Rss 周期"
+              />
+              <span class="text-xs text-base-content/60 mt-2">若种子非免费, 将在发布后的一段时间内重复抓取免费状态</span>
+            </div>
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text text-base-content/80">最长休眠时间 (秒)</span>
+              </label>
+              <input
+                type="number"
+                v-model="rss.maxSleepTime"
+                class="input input-bordered w-full bg-base-100 transition-all duration-200 focus:ring-2 focus:ring-primary focus:ring-opacity-50"
+                placeholder="建议为 3-5 倍 Rss 周期"
+                required
+              />
+              <span class="text-xs text-base-content/60 mt-2">若上次成功 RSS 在 N 秒以前, 则本次拒绝所有种子</span>
+            </div>
           </div>
 
           <!-- 通知设置 -->
           <div class="bg-base-200/50 rounded-lg p-4">
             <h3 class="font-medium text-base-content/80 mb-4">通知设置</h3>
-            
+
             <div class="form-control bg-base-100 rounded-lg p-3 mb-4">
               <div class="flex items-center justify-between">
                 <div>
                   <span class="text-base-content/80 font-medium">推送通知</span>
                   <p class="text-xs text-base-content/60 mt-1">接收RSS任务执行的通知消息</p>
                 </div>
-                <input 
-                  type="checkbox" 
+                <input
+                  type="checkbox"
                   v-model="rss.pushNotify"
                   class="toggle toggle-primary"
                 />
@@ -341,14 +535,14 @@
               <label class="label">
                 <span class="label-text text-base-content/80">通知方式</span>
               </label>
-              <select 
+              <select
                 v-model="rss.notify"
                 class="select select-bordered w-full bg-base-100 transition-all duration-200 focus:ring-2 focus:ring-primary focus:ring-opacity-50"
                 required
               >
-                <option 
-                  v-for="notification in notifications" 
-                  :key="notification.id" 
+                <option
+                  v-for="notification in notifications"
+                  :key="notification.id"
                   :value="notification.id"
                   class="text-base-content/80"
                 >
@@ -360,23 +554,45 @@
           </div>
 
           <!-- 速度限制 -->
-          <div class="bg-base-200/50 rounded-lg p-4">
-            <h3 class="font-medium text-base-content/80 mb-4">速度限制</h3>
-            
+          <div class="bg-base-200/50 rounded-lg p-4 space-y-4">
+            <h3 class="font-medium text-base-content/80 mb-2">速度限制 (添加种子时)</h3>
             <div class="form-control">
               <label class="label">
                 <span class="label-text text-base-content/80">上传速度限制</span>
               </label>
               <div class="flex gap-2 items-center">
-                <input 
-                  type="number" 
+                <input
+                  type="number"
                   v-model="rss.uploadLimit"
                   class="input input-bordered w-full bg-base-100 transition-all duration-200 focus:ring-2 focus:ring-primary focus:ring-opacity-50"
                   placeholder="输入速度限制值"
                   min="0"
                 />
-                <select 
+                <select
                   v-model="rss.uploadLimitUnit"
+                  class="select select-bordered w-32"
+                >
+                  <option value="KiB">KiB/s</option>
+                  <option value="MiB">MiB/s</option>
+                  <option value="GiB">GiB/s</option>
+                </select>
+              </div>
+              <span class="text-xs text-base-content/60 mt-2">设置为0表示不限速</span>
+            </div>
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text text-base-content/80">下载速度限制</span>
+              </label>
+              <div class="flex gap-2 items-center">
+                <input
+                  type="number"
+                  v-model="rss.downloadLimit"
+                  class="input input-bordered w-full bg-base-100 transition-all duration-200 focus:ring-2 focus:ring-primary focus:ring-opacity-50"
+                  placeholder="输入速度限制值"
+                  min="0"
+                />
+                <select
+                  v-model="rss.downloadLimitUnit"
                   class="select select-bordered w-32"
                 >
                   <option value="KiB">KiB/s</option>
@@ -388,23 +604,79 @@
             </div>
           </div>
 
+          <!-- 规则设置 -->
+          <div class="bg-base-200/50 rounded-lg p-4 space-y-4">
+            <h3 class="font-medium text-base-content/80 mb-2">规则设置</h3>
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text text-base-content/80">拒绝规则</span>
+              </label>
+              <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-2">
+                <label
+                  v-for="rule in rssRules"
+                  :key="rule.id"
+                  class="flex items-center gap-2 cursor-pointer p-2 bg-base-100 rounded hover:bg-opacity-5 transition-colors duration-200"
+                >
+                  <input
+                    type="checkbox"
+                    v-model="rss.rejectRules"
+                    :value="rule.id"
+                    class="checkbox checkbox-primary checkbox-sm"
+                  />
+                  <span class="text-sm text-base-content/80">{{ rule.alias }}</span>
+                </label>
+              </div>
+              <span class="text-xs text-base-content/60 mt-2">种子状态符合其中一个时即触发拒绝种子操作</span>
+            </div>
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text text-base-content/80">选择规则</span>
+              </label>
+              <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-2">
+                <label
+                  v-for="rule in rssRules"
+                  :key="rule.id"
+                  class="flex items-center gap-2 cursor-pointer p-2 bg-base-100 rounded hover:bg-opacity-5 transition-colors duration-200"
+                >
+                  <input
+                    type="checkbox"
+                    v-model="rss.acceptRules"
+                    :value="rule.id"
+                    class="checkbox checkbox-primary checkbox-sm"
+                  />
+                  <span class="text-sm text-base-content/80">{{ rule.alias }}</span>
+                </label>
+              </div>
+              <span class="text-xs text-base-content/60 mt-2">种子状态符合其中一个时即触发添加种子操作</span>
+            </div>
+          </div>
+
           <!-- 操作按钮 -->
           <div class="form-control mt-8">
             <div class="flex flex-col md:flex-row gap-4">
-              <button 
-                type="submit" 
+              <button
+                type="submit"
                 class="btn btn-primary flex-1"
               >
                 <i class="fas fa-save mr-2"></i>
                 保存设置
               </button>
-              <button 
-                type="button" 
+              <button
+                type="button"
+                class="btn btn-secondary flex-1"
+                @click="showDryrunModal"
+                :disabled="!rss.rssUrls || rss.rssUrls.length === 0 || !rss.rssUrls[0]"
+              >
+                <i class="fas fa-vial mr-2"></i>
+                试运行
+              </button>
+              <button
+                type="button"
                 class="btn btn-ghost flex-1"
-                @click="closeDialog"
+                @click="clearForm"
               >
                 <i class="fas fa-times mr-2"></i>
-                取消
+                清空表单
               </button>
             </div>
           </div>
@@ -412,17 +684,69 @@
       </div>
     </div>
   </div>
+
+  <!-- 试运行 Modal -->
+  <dialog id="dryrun_modal" class="modal" :class="{ 'modal-open': modalVisible }">
+    <div class="modal-box w-11/12 max-w-5xl">
+      <h3 class="font-bold text-lg mb-4">RSS 试运行结果</h3>
+      <div class="alert alert-info mb-4">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+        <span>
+          注意事项: 试运行仅判断是否符合 RSS 规则，不检测种子免费或 HR 状态。
+          <br>
+          RSS 链接: {{ rss.rssUrls && rss.rssUrls.length > 0 ? rss.rssUrls[0] : '未设置' }}
+        </span>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="table table-zebra w-full">
+          <thead>
+            <tr>
+              <th>种子标题</th>
+              <th>种子大小</th>
+              <th>结果</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(result, index) in dryrunResult" :key="index">
+              <td>{{ result.name }}</td>
+              <td>{{ $formatSize(result.size) }}</td>
+              <td>
+                <span class="badge" :class="result.status === 'accept' ? 'badge-success' : (result.status === 'reject' ? 'badge-error' : 'badge-warning')">
+                  {{ result.status === 'accept' ? '接受' : (result.status === 'reject' ? '拒绝' : '跳过') }}
+                </span>
+              </td>
+            </tr>
+            <tr v-if="dryrunResult.length === 0">
+              <td colspan="3" class="text-center text-base-content/60">没有获取到种子或没有符合条件的种子</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-action">
+        <button class="btn" @click="closeDryrunModal">关闭</button>
+      </div>
+    </div>
+    <form method="dialog" class="modal-backdrop">
+      <button @click="closeDryrunModal">close</button>
+    </form>
+  </dialog>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue' // Import computed
 import { useToast } from 'vue-toastification'
 
 const toast = useToast()
 const rssList = ref([])
 const downloaders = ref([])
 const notifications = ref([])
-const rss = ref({
+const rssRules = ref([]) // Add ref for rss rules
+const dryrunResult = ref([]) // Add ref for dry run results
+const modalVisible = ref(false) // Add ref for modal visibility
+
+// Define the initial state including new fields
+const initialRssState = {
+  id: undefined,
   alias: '',
   enable: true,
   clientArr: [],
@@ -440,8 +764,41 @@ const rss = ref({
   pushNotify: false,
   notify: '',
   uploadLimit: 0,
-  uploadLimitUnit: 'MiB'
-})
+  uploadLimitUnit: 'MiB',
+  downloadLimit: 0, // Added
+  downloadLimitUnit: 'MiB', // Added
+  savePath: '', // Added
+  category: '', // Added
+  addCountPerHour: '', // Added
+  paused: false, // Added
+  autoTMM: false, // Added
+  sleepTime: '', // Added
+  maxSleepTime: 600, // Added, default from webui
+  skipSameTorrent: true, // Added, default from webui
+  pushTorrentFile: true, // Added, default from webui
+  useCustomRegex: false, // Added
+  regexStr: '', // Added
+  replaceStr: '', // Added
+  rejectRules: [], // Added
+  acceptRules: [] // Added
+}
+
+const rss = ref({ ...initialRssState })
+
+// Fetch RSS Rules
+const getRssRules = async () => {
+  try {
+    // Assuming the API endpoint is /api/task/rssrule
+    const response = await fetch('/api/task/rssrule')
+    if (!response.ok) throw new Error('获取 RSS 规则失败')
+    const data = await response.json()
+    rssRules.value = data.sort((a, b) => a.alias.localeCompare(b.alias))
+  } catch (error) {
+    toast.error(`获取 RSS 规则失败: ${error.message}`)
+  }
+}
+
+// ... existing getRssList, getDownloaders, getNotifications ...
 
 const getRssList = async () => {
   try {
@@ -490,11 +847,12 @@ const enableTask = async (record) => {
 }
 
 const modifyClick = (record) => {
-  rss.value = { ...record }
+  // Ensure all fields are copied, including potentially missing ones from older records
+  rss.value = { ...initialRssState, ...record };
 }
 
 const cloneClick = (record) => {
-  rss.value = { ...record, id: undefined }
+  rss.value = { ...initialRssState, ...record, id: undefined, alias: `${record.alias}-克隆` };
 }
 
 const deleteRss = async (record) => {
@@ -512,50 +870,89 @@ const deleteRss = async (record) => {
 
 const modifyRss = async () => {
   try {
+    // Ensure numeric fields are numbers or null/undefined if empty
+    const payload = {
+      ...rss.value,
+      maxClientUploadSpeed: rss.value.maxClientUploadSpeed === '' ? null : Number(rss.value.maxClientUploadSpeed),
+      maxClientDownloadSpeed: rss.value.maxClientDownloadSpeed === '' ? null : Number(rss.value.maxClientDownloadSpeed),
+      maxClientDownloadCount: rss.value.maxClientDownloadCount === '' ? null : Number(rss.value.maxClientDownloadCount),
+      uploadLimit: Number(rss.value.uploadLimit) || 0,
+      downloadLimit: Number(rss.value.downloadLimit) || 0,
+      addCountPerHour: rss.value.addCountPerHour === '' ? null : Number(rss.value.addCountPerHour),
+      sleepTime: rss.value.sleepTime === '' ? null : Number(rss.value.sleepTime),
+      maxSleepTime: Number(rss.value.maxSleepTime) || 600
+    };
+
     const response = await fetch('/api/task/rss', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(rss.value)
+      body: JSON.stringify(payload)
     })
-    if (!response.ok) throw new Error('保存失败')
+    if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ message: '保存失败' }));
+        throw new Error(errorData.message || '保存失败');
+    }
     toast.success('保存成功')
     await getRssList()
-    rss.value = {
-      alias: '',
-      enable: true,
-      clientArr: [],
-      clientSortBy: 'leechingCount',
-      maxClientUploadSpeed: '',
-      maxClientUploadSpeedUnit: 'MiB',
-      maxClientDownloadSpeed: '',
-      maxClientDownloadSpeedUnit: 'MiB',
-      maxClientDownloadCount: '',
-      rssUrls: [''],
-      scrapeFree: false,
-      scrapeHr: false,
-      cookie: '',
-      cron: '* * * * *',
-      pushNotify: false,
-      notify: '',
-      uploadLimit: 0,
-      uploadLimitUnit: 'MiB'
-    }
+    clearForm() // Use clearForm to reset
   } catch (error) {
-    toast.error(error.message)
+    toast.error(`保存失败: ${error.message}`)
   }
+}
+
+// Renamed from closeDialog and updated logic
+const clearForm = () => {
+  rss.value = { ...initialRssState, rssUrls: [''] }; // Reset to initial state
+}
+
+// Dry run function
+const dryrun = async () => {
+  try {
+    const response = await fetch('/api/task/rss/dryrun', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(rss.value)
+    });
+    if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ message: '试运行失败' }));
+        throw new Error(errorData.message || '试运行失败');
+    }
+    const data = await response.json();
+    dryrunResult.value = data;
+    modalVisible.value = true; // Show modal
+  } catch (error) {
+    toast.error(`试运行失败: ${error.message}`);
+    dryrunResult.value = []; // Clear results on error
+  }
+};
+
+const showDryrunModal = () => {
+  dryrunResult.value = []; // Clear previous results
+  dryrun(); // Call dryrun API
+}
+
+const closeDryrunModal = () => {
+  modalVisible.value = false;
 }
 
 onMounted(() => {
   getRssList()
   getDownloaders()
   getNotifications()
+  getRssRules() // Fetch RSS rules on mount
 })
 </script>
 
 <style scoped>
 .container {
   max-width: 1440px;
+}
+/* Ensure modal background click closes it */
+.modal-backdrop {
+  background-color: rgba(0, 0, 0, 0.5);
 }
 </style>

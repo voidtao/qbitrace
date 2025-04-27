@@ -3,40 +3,50 @@
     <h1 class="text-2xl font-bold mb-4">定时脚本</h1>
     <div class="divider"></div>
     
-    <div class="card bg-base-100 shadow-xl mb-6">
+    <div class="card bg-base-100 shadow-xs hover:shadow-md transition-all duration-300 mb-8">
       <div class="card-body">
-        <h2 class="text-xl font-bold mb-4">定时脚本列表</h2>
+        <h2 class="card-title mb-6 text-base-content">定时脚本列表</h2>
         <div class="overflow-x-auto">
           <table class="table table-zebra w-full">
             <thead>
-              <tr>
-                <th>ID</th>
-                <th>别名</th>
-                <th>启用</th>
-                <th>周期</th>
-                <th>操作</th>
+              <tr class="bg-base-200/50">
+                <th class="text-base-content/70">ID</th>
+                <th class="text-base-content/70">别名</th>
+                <th class="text-base-content/70">启用</th>
+                <th class="text-base-content/70">周期</th>
+                <th class="text-base-content/70">操作</th>
               </tr>
             </thead>
             <tbody>
-              <tr v-for="script in scripts" :key="script.id">
-                <td>{{ script.id }}</td>
-                <td>{{ script.alias }}</td>
+              <tr v-for="script in scripts" :key="script.id" class="hover:bg-base-200/30 transition-colors duration-200">
+                <td class="text-base-content/80">{{ script.id }}</td>
+                <td class="text-base-content/80 font-medium">{{ script.alias }}</td>
                 <td>
-                  <div class="badge" :class="script.enable ? 'badge-success' : 'badge-error'">
+                  <span
+                    class="badge badge-sm"
+                    :class="script.enable ? 'badge-success' : 'badge-error'"
+                  >
                     {{ script.enable ? '启用' : '禁用' }}
-                  </div>
+                  </span>
                 </td>
-                <td class="font-mono">{{ script.cron }}</td>
+                <td class="font-mono text-base-content/80">{{ script.cron }}</td>
                 <td>
                   <div class="flex gap-2">
-                    <button class="btn btn-sm btn-primary" @click="modifyClick(script)">编辑</button>
+                    <button class="btn btn-sm btn-secondary btn-outline" @click="modifyClick(script)">
+                      <i class="fas fa-edit mr-1"></i>
+                      编辑
+                    </button>
                     <div class="dropdown dropdown-end">
-                      <label tabindex="0" class="btn btn-sm btn-error">删除</label>
-                      <ul tabindex="0" class="dropdown-content z-1 menu p-2 shadow-sm bg-base-100 rounded-box w-52">
-                        <li>
-                          <button @click="deleteScript(script)" class="text-error">确认删除</button>
-                        </li>
-                      </ul>
+                      <label tabindex="0" class="btn btn-sm btn-error btn-outline">
+                        <i class="fas fa-trash-alt mr-1"></i>
+                        删除
+                      </label>
+                      <div tabindex="0" class="dropdown-content menu p-2 shadow-lg bg-base-100 rounded-lg w-52">
+                        <div class="p-2 text-sm text-base-content/70 text-center">确认删除此脚本？</div>
+                        <button class="btn btn-sm btn-error w-full" @click="deleteScript(script)">
+                          确认删除
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </td>
@@ -47,69 +57,91 @@
       </div>
     </div>
 
-    <div class="card bg-base-100 shadow-xl">
+    <div class="card bg-base-100 shadow-xs hover:shadow-md transition-all duration-300">
       <div class="card-body">
-        <h2 class="card-title mb-4">新增 | 编辑定时脚本</h2>
-        
-        <form @submit.prevent="modifyScript" class="space-y-4">
-          <div class="form-control">
-            <label class="label">
-              <span class="label-text">别名</span>
-            </label>
-            <input 
-              type="text" 
-              v-model="script.alias"
-              class="input input-bordered w-full"
-              placeholder="给定时脚本取一个好记的名字"
-              required
-            />
-            <label class="label">
-              <span class="label-text-alt">给定时脚本取一个好记的名字</span>
-            </label>
+        <h2 class="card-title mb-6 text-base-content">
+          <i class="fas fa-edit mr-2 text-primary"></i>
+          新增 | 编辑定时脚本
+        </h2>
+        <form @submit.prevent="modifyScript" class="space-y-6">
+          <div class="bg-base-200/50 rounded-lg p-4 space-y-4">
+            <h3 class="font-medium text-base-content/80 mb-2">基本信息</h3>
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text text-base-content/80">别名</span>
+              </label>
+              <input 
+                type="text" 
+                v-model="script.alias"
+                class="input input-bordered w-full bg-base-100 transition-all duration-200 focus:ring-2 focus:ring-primary focus:ring-opacity-50"
+                placeholder="给定时脚本取一个好记的名字"
+                required
+              />
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+              <div class="form-control bg-base-100 rounded-lg p-3">
+                <div class="flex items-center justify-between">
+                  <div>
+                    <span class="text-base-content/80 font-medium">启用脚本</span>
+                    <p class="text-xs text-base-content/60 mt-1">选择是否启用定时脚本</p>
+                  </div>
+                  <input
+                    type="checkbox"
+                    v-model="script.enable"
+                    class="toggle toggle-primary"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text text-base-content/80">执行周期</span>
+              </label>
+              <input 
+                type="text" 
+                v-model="script.cron"
+                class="input input-bordered w-full bg-base-100 transition-all duration-200 focus:ring-2 focus:ring-primary focus:ring-opacity-50"
+                placeholder="* * * * *"
+                required
+              />
+              <span class="text-xs text-base-content/60 mt-2">脚本的执行周期，默认 * * * * * 一分钟执行一次</span>
+            </div>
           </div>
 
-          <div class="form-control">
-            <label class="label cursor-pointer">
-              <span class="label-text">启用</span>
-              <input type="checkbox" v-model="script.enable" class="checkbox checkbox-primary" />
-            </label>
-            <label class="label">
-              <span class="label-text-alt">选择是否启用定时脚本</span>
-            </label>
+          <div class="bg-base-200/50 rounded-lg p-4">
+            <h3 class="font-medium text-base-content/80 mb-4">脚本代码</h3>
+            <div class="form-control">
+              <textarea 
+                v-model="script.script"
+                class="textarea textarea-bordered w-full h-64 font-mono bg-base-100 transition-all duration-200 focus:ring-2 focus:ring-primary focus:ring-opacity-50"
+                placeholder="logger.info('qbitrace IS THE BEST!')"
+                required
+              ></textarea>
+              <span class="text-xs text-base-content/60 mt-2">
+                <i class="fas fa-info-circle mr-1"></i>
+                自定义JavaScript代码，可使用内置API如logger.info()等
+              </span>
+            </div>
           </div>
 
-          <div class="form-control">
-            <label class="label">
-              <span class="label-text">执行周期</span>
-            </label>
-            <input 
-              type="text" 
-              v-model="script.cron"
-              class="input input-bordered w-full"
-              placeholder="* * * * *"
-              required
-            />
-            <label class="label">
-              <span class="label-text-alt">脚本的执行周期, 默认 * * * * * 一分钟执行一次</span>
-            </label>
-          </div>
-
-          <div class="form-control">
-            <label class="label">
-              <span class="label-text">Code</span>
-            </label>
-            <textarea 
-              v-model="script.script"
-              class="textarea textarea-bordered w-full h-48 font-mono"
-              placeholder="logger.info('qbitrace IS THE BEST!')"
-              required
-            ></textarea>
-          </div>
-
-          <div class="flex flex-wrap gap-2 mt-6">
-            <button type="submit" class="btn btn-primary">应用 | 完成</button>
-            <button type="button" class="btn btn-secondary" @click="run">立即执行一次</button>
-            <button type="button" class="btn" @click="clearScript">清空</button>
+          <!-- 操作按钮 -->
+          <div class="form-control mt-8">
+            <div class="flex flex-col md:flex-row gap-4">
+              <button type="submit" class="btn btn-primary flex-1">
+                <i class="fas fa-save mr-2"></i>
+                保存脚本
+              </button>
+              <button type="button" class="btn btn-secondary flex-1" @click="run">
+                <i class="fas fa-play mr-2"></i>
+                立即执行
+              </button>
+              <button type="button" class="btn btn-ghost flex-1" @click="clearScript">
+                <i class="fas fa-trash-alt mr-2"></i>
+                清空表单
+              </button>
+            </div>
           </div>
         </form>
       </div>

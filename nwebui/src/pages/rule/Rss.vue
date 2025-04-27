@@ -13,6 +13,7 @@
                 <th class="text-base-content/70">ID</th>
                 <th class="text-base-content/70">别名</th>
                 <th class="text-base-content/70">下载器</th>
+                <th class="text-base-content/70">优先级</th>
                 <th class="text-base-content/70">操作</th>
               </tr>
             </thead>
@@ -37,6 +38,7 @@
                     </option>
                   </select>
                 </td>
+                <td class="text-base-content/80">{{ rule.priority || 0 }}</td>
                 <td>
                   <div class="flex gap-2">
                     <button class="btn btn-sm btn-primary btn-outline" 
@@ -179,6 +181,7 @@
             <div class="flex items-center justify-between mb-4">
               <h3 class="font-medium text-base-content/80">匹配条件</h3>
               <button 
+                type="button"
                 class="btn btn-primary btn-sm btn-outline"
                 @click="rssRule.conditions.push({ ...condition })"
               >
@@ -241,6 +244,7 @@
                     </td>
                     <td>
                       <button 
+                        type="button"
                         class="btn btn-sm btn-error btn-outline"
                         @click="rssRule.conditions.splice(index, 1)"
                       >
@@ -300,9 +304,11 @@
 
 <script>
 import { onMounted, ref } from 'vue'
+import { useToast } from 'vue-toastification'
 
 export default {
   setup() {
+    const toast = useToast()
     const rssRuleList = ref([])
     const downloaders = ref([])
     const rssRule = ref({
@@ -310,7 +316,7 @@ export default {
       category: '',
       savePath: '',
       client: '',
-      priority: '',
+      priority: 0,
       type: 'normal',
       conditions: [],
       code: ''
@@ -336,7 +342,7 @@ export default {
         const res = await window.$api.rule.listRssRule()
         rssRuleList.value = res.data
       } catch (e) {
-        window.$toast.error(e.message)
+        toast.error(e.message)
       }
     }
 
@@ -345,47 +351,50 @@ export default {
         const res = await window.$api.downloader.list()
         downloaders.value = res.data
       } catch (e) {
-        window.$toast.error(e.message)
+        toast.error(e.message)
       }
     }
 
     const modifyRssRule = async () => {
       try {
         await window.$api.rule.modifyRssRule(rssRule.value)
-        window.$toast.success('规则保存成功')
+        toast.success('规则保存成功')
         listRssRule()
         clearRssRule()
       } catch (e) {
-        window.$toast.error(e.message)
+        toast.error(e.message)
       }
     }
 
     const modifyRssRuleDownloader = async (rule) => {
       try {
         await window.$api.rule.modifyRssRule(rule)
-        window.$toast.success('下载器更新成功')
+        toast.success('下载器更新成功')
         listRssRule()
       } catch (e) {
-        window.$toast.error(e.message)
+        toast.error(e.message)
       }
     }
 
     const deleteRssRule = async (rule) => {
       try {
         await window.$api.rule.deleteRssRule(rule.id)
-        window.$toast.success('规则删除成功')
+        toast.success('规则删除成功')
         listRssRule()
       } catch (e) {
-        window.$toast.error(e.message)
+        toast.error(e.message)
       }
     }
 
     const modifyClick = (rule) => {
-      rssRule.value = { ...rule }
+      rssRule.value = JSON.parse(JSON.stringify(rule))
     }
 
     const cloneClick = (rule) => {
-      rssRule.value = { ...rule, id: undefined }
+      const clonedRule = JSON.parse(JSON.stringify(rule))
+      clonedRule.id = undefined
+      clonedRule.alias = `${clonedRule.alias}-克隆`
+      rssRule.value = clonedRule
     }
 
     const clearRssRule = () => {
@@ -394,7 +403,7 @@ export default {
         category: '',
         savePath: '',
         client: '',
-        priority: '',
+        priority: 0,
         type: 'normal',
         conditions: [],
         code: ''
