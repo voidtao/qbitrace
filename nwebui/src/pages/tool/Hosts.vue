@@ -71,39 +71,39 @@ export default {
     },
     async getHosts() {
       try {
-        const res = await window.$api.setting.getHosts()
+        const res = await this.$api().setting.getHosts()
         this.hosts = res.data
       } catch (e) {
-        window.$toast.error(e.message)
+        await this.$message().error(e.message)
       }
     },
     async save() {
       try {
-        await window.$api.setting.save({ hosts: this.hosts })
-        window.$toast.success('保存成功')
+        await this.$api().setting.save({ hosts: this.hosts })
+        await this.$message().success('保存成功')
       } catch (e) {
-        window.$toast.error(e.message)
+        await this.$message().error(e.message)
       }
     },
     async _export() {
       try {
-        await window.$api.setting.export()
-        window.$toast.success('导出成功')
+        await this.$api().setting.export()
+        await this.$message().success('导出成功')
       } catch (e) {
-        window.$toast.error(e.message)
+        await this.$message().error(e.message)
       }
     },
     async _import() {
       try {
-        await window.$api.setting.import()
-        window.$toast.success('导入成功')
+        await this.$api().setting.import()
+        await this.$message().success('导入成功')
         this.getHosts()
       } catch (e) {
-        window.$toast.error(e.message)
+        await this.$message().error(e.message)
       }
     }
   },
-  mounted() {
+  async mounted() {
     this.getHosts()
   }
 }

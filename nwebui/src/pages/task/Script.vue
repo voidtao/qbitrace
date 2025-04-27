@@ -170,30 +170,30 @@ export default {
     async listScript() {
       this.loading = true
       try {
-        const res = await window.$api.script.list()
+        const res = await this.$api().script.list()
         this.scripts = res.data
       } catch (e) {
-        window.$toast.error(e.message)
+        await this.$message().error(e.message)
       }
       this.loading = false
     },
     async modifyScript() {
       try {
-        await window.$api.script.modify({ ...this.script })
-        window.$toast.success((this.script.id ? '编辑' : '新增') + '成功, 列表正在刷新...')
+        await this.$api().script.modify({ ...this.script })
+        await this.$message().success((this.script.id ? '编辑' : '新增') + '成功, 列表正在刷新...')
         setTimeout(() => this.listScript(), 1000)
         this.clearScript()
       } catch (e) {
-        window.$toast.error(e.message)
+        await this.$message().error(e.message)
       }
     },
     async run() {
       try {
-        await window.$api.script.run({ ...this.script })
-        window.$toast.success('执行成功, 执行结果或报错请查看日志')
+        await this.$api().script.run({ ...this.script })
+        await this.$message().success('执行成功, 执行结果或报错请查看日志')
         setTimeout(() => this.listScript(), 1000)
       } catch (e) {
-        window.$toast.error(e.message)
+        await this.$message().error(e.message)
       }
     },
     modifyClick(row) {
@@ -201,11 +201,11 @@ export default {
     },
     async deleteScript(row) {
       try {
-        await window.$api.script.delete(row.id)
-        window.$toast.success('删除成功, 列表正在刷新...')
+        await this.$api().script.delete(row.id)
+        await this.$message().success('删除成功, 列表正在刷新...')
         await this.listScript()
       } catch (e) {
-        window.$toast.error(e.message)
+        await this.$message().error(e.message)
       }
     },
     clearScript() {
@@ -214,7 +214,7 @@ export default {
       }
     }
   },
-  mounted() {
+  async mounted() {
     this.clearScript()
     this.listScript()
   }

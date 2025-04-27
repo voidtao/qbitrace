@@ -732,219 +732,188 @@
   </dialog>
 </template>
 
-<script setup>
-import { ref, onMounted, computed } from 'vue' // Import computed
-import { useToast } from 'vue-toastification'
-
-const toast = useToast()
-const rssList = ref([])
-const downloaders = ref([])
-const notifications = ref([])
-const rssRules = ref([]) // Add ref for rss rules
-const dryrunResult = ref([]) // Add ref for dry run results
-const modalVisible = ref(false) // Add ref for modal visibility
-
-// Define the initial state including new fields
-const initialRssState = {
-  id: undefined,
-  alias: '',
-  enable: true,
-  clientArr: [],
-  clientSortBy: 'leechingCount',
-  maxClientUploadSpeed: '',
-  maxClientUploadSpeedUnit: 'MiB',
-  maxClientDownloadSpeed: '',
-  maxClientDownloadSpeedUnit: 'MiB',
-  maxClientDownloadCount: '',
-  rssUrls: [''],
-  scrapeFree: false,
-  scrapeHr: false,
-  cookie: '',
-  cron: '* * * * *',
-  pushNotify: false,
-  notify: '',
-  uploadLimit: 0,
-  uploadLimitUnit: 'MiB',
-  downloadLimit: 0, // Added
-  downloadLimitUnit: 'MiB', // Added
-  savePath: '', // Added
-  category: '', // Added
-  addCountPerHour: '', // Added
-  paused: false, // Added
-  autoTMM: false, // Added
-  sleepTime: '', // Added
-  maxSleepTime: 600, // Added, default from webui
-  skipSameTorrent: true, // Added, default from webui
-  pushTorrentFile: true, // Added, default from webui
-  useCustomRegex: false, // Added
-  regexStr: '', // Added
-  replaceStr: '', // Added
-  rejectRules: [], // Added
-  acceptRules: [] // Added
-}
-
-const rss = ref({ ...initialRssState })
-
-// Fetch RSS Rules
-const getRssRules = async () => {
-  try {
-    // Assuming the API endpoint is /api/task/rssrule
-    const response = await fetch('/api/task/rssrule')
-    if (!response.ok) throw new Error('获取 RSS 规则失败')
-    const data = await response.json()
-    rssRules.value = data.sort((a, b) => a.alias.localeCompare(b.alias))
-  } catch (error) {
-    toast.error(`获取 RSS 规则失败: ${error.message}`)
-  }
-}
-
-// ... existing getRssList, getDownloaders, getNotifications ...
-
-const getRssList = async () => {
-  try {
-    const response = await fetch('/api/task/rss')
-    const data = await response.json()
-    rssList.value = data
-  } catch (error) {
-    toast.error(error.message)
-  }
-}
-
-const getDownloaders = async () => {
-  try {
-    const response = await fetch('/api/downloader')
-    const data = await response.json()
-    downloaders.value = data
-  } catch (error) {
-    toast.error(error.message)
-  }
-}
-
-const getNotifications = async () => {
-  try {
-    const response = await fetch('/api/notification')
-    const data = await response.json()
-    notifications.value = data
-  } catch (error) {
-    toast.error(error.message)
-  }
-}
-
-const enableTask = async (record) => {
-  try {
-    const response = await fetch(`/api/task/rss/${record.id}/enable`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
+<script>
+export default {
+  data() {
+    const dryrunColumns = [
+      {
+        title: '种子标题',
+        dataIndex: 'name',
+        width: 144
+      }, {
+        title: '种子大小',
+        dataIndex: 'size',
+        width: 14
+      }, {
+        title: '结果',
+        dataIndex: 'status',
+        width: 28
+      }
+    ];
+    
+    return {
+      modalVisible: false,
+      dryrunColumns,
+      dryrunResult: [],
+      rssList: [],
+      downloaders: [],
+      notifications: [],
+      rssRules: [],
+      rss: {},
+      defaultRss: {
+        clientArr: [],
+        enable: false,
+        clientSortBy: 'leechingCount',
+        maxClientUploadSpeed: '',
+        maxClientUploadSpeedUnit: 'MiB',
+        maxClientDownloadSpeed: '',
+        maxClientDownloadSpeedUnit: 'MiB',
+        maxClientDownloadCount: '',
+        scrapeFree: false,
+        scrapeHr: false,
+        cookie: '',
+        onlyReseed: false,
+        maxSleepTime: 600,
+        skipSameTorrent: true,
+        pushTorrentFile: true,
+        cron: '* * * * *',
+        addCountPerHour: '',
+        pushNotify: false,
+        notify: '',
+        uploadLimit: 0,
+        uploadLimitUnit: 'MiB',
+        downloadLimit: 0,
+        downloadLimitUnit: 'MiB',
+        savePath: '',
+        category: '',
+        paused: false,
+        autoTMM: false,
+        sleepTime: '',
+        useCustomRegex: false,
+        regexStr: '',
+        replaceStr: '',
+        acceptRules: [],
+        rejectRules: [],
+        reseedClients: [],
+        rssUrls: ['']
       },
-      body: JSON.stringify({ enable: !record.enable })
-    })
-    if (!response.ok) throw new Error('操作失败')
-    await getRssList()
-  } catch (error) {
-    toast.error(error.message)
-  }
-}
-
-const modifyClick = (record) => {
-  // Ensure all fields are copied, including potentially missing ones from older records
-  rss.value = { ...initialRssState, ...record };
-}
-
-const cloneClick = (record) => {
-  rss.value = { ...initialRssState, ...record, id: undefined, alias: `${record.alias}-克隆` };
-}
-
-const deleteRss = async (record) => {
-  try {
-    const response = await fetch(`/api/task/rss/${record.id}`, {
-      method: 'DELETE'
-    })
-    if (!response.ok) throw new Error('删除失败')
-    toast.success('删除成功')
-    await getRssList()
-  } catch (error) {
-    toast.error(error.message)
-  }
-}
-
-const modifyRss = async () => {
-  try {
-    // Ensure numeric fields are numbers or null/undefined if empty
-    const payload = {
-      ...rss.value,
-      maxClientUploadSpeed: rss.value.maxClientUploadSpeed === '' ? null : Number(rss.value.maxClientUploadSpeed),
-      maxClientDownloadSpeed: rss.value.maxClientDownloadSpeed === '' ? null : Number(rss.value.maxClientDownloadSpeed),
-      maxClientDownloadCount: rss.value.maxClientDownloadCount === '' ? null : Number(rss.value.maxClientDownloadCount),
-      uploadLimit: Number(rss.value.uploadLimit) || 0,
-      downloadLimit: Number(rss.value.downloadLimit) || 0,
-      addCountPerHour: rss.value.addCountPerHour === '' ? null : Number(rss.value.addCountPerHour),
-      sleepTime: rss.value.sleepTime === '' ? null : Number(rss.value.sleepTime),
-      maxSleepTime: Number(rss.value.maxSleepTime) || 600
-    };
-
-    const response = await fetch('/api/task/rss', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(payload)
-    })
-    if (!response.ok) {
-        const errorData = await response.json().catch(() => ({ message: '保存失败' }));
-        throw new Error(errorData.message || '保存失败');
+      loading: false
     }
-    toast.success('保存成功')
-    await getRssList()
-    clearForm() // Use clearForm to reset
-  } catch (error) {
-    toast.error(`保存失败: ${error.message}`)
-  }
-}
-
-// Renamed from closeDialog and updated logic
-const clearForm = () => {
-  rss.value = { ...initialRssState, rssUrls: [''] }; // Reset to initial state
-}
-
-// Dry run function
-const dryrun = async () => {
-  try {
-    const response = await fetch('/api/task/rss/dryrun', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(rss.value)
-    });
-    if (!response.ok) {
-        const errorData = await response.json().catch(() => ({ message: '试运行失败' }));
-        throw new Error(errorData.message || '试运行失败');
+  },
+  methods: {
+    isMobile() {
+      return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+    },
+    async listRss() {
+      try {
+        const res = await this.$api().rss.list()
+        this.rssList = res.data
+      } catch (e) {
+        await this.$message().error(e.message)
+      }
+    },
+    async listNotification() {
+      try {
+        const res = await this.$api().notification.list()
+        this.notifications = res.data.sort((a, b) => a.alias.localeCompare(b.alias))
+      } catch (e) {
+        await this.$message().error(e.message)
+      }
+    },
+    async listRssRule() {
+      try {
+        const res = await this.$api().rssRule.list()
+        this.rssRules = res.data.sort((a, b) => a.alias.localeCompare(b.alias))
+      } catch (e) {
+        await this.$message().error(e.message)
+      }
+    },
+    async listDownloader() {
+      try {
+        const res = await this.$api().downloader.list()
+        this.downloaders = res.data.sort((a, b) => a.alias.localeCompare(b.alias))
+      } catch (e) {
+        await this.$message().error(e.message)
+      }
+    },
+    async modifyRss() {
+      try {
+        await this.$api().rss.modify({ ...this.rss })
+        await this.$message().success((this.rss.id ? '编辑' : '新增') + '成功, 列表正在刷新...')
+        setTimeout(() => this.listRss(), 1000)
+        this.clearRss()
+      } catch (e) {
+        await this.$message().error(e.message)
+      }
+    },
+    async dryrun() {
+      try {
+        const res = await this.$api().rss.dryrun({ ...this.rss })
+        this.dryrunResult = res.data
+        this.modalVisible = true
+      } catch (e) {
+        await this.$message().error(e.message)
+      }
+    },
+    async enableTask(record) {
+      try {
+        await this.$api().rss.modify({ ...record })
+        await this.$message().success('修改成功, 列表正在刷新...')
+        setTimeout(() => this.listRss(), 1000)
+        this.clearRss()
+      } catch (e) {
+        await this.$message().error(e.message)
+      }
+    },
+    modifyClick(row) {
+      this.rss = { ...row }
+    },
+    cloneClick(row) {
+      this.rss = JSON.parse(JSON.stringify(row))
+      this.rss.id = null
+      this.rss.alias = this.rss.alias + '-克隆'
+    },
+    async deleteRss(row) {
+      try {
+        await this.$api().rss.delete(row.id)
+        await this.$message().success('删除成功, 列表正在刷新...')
+        await this.listRss()
+      } catch (e) {
+        await this.$message().error(e.message)
+      }
+    },
+    clearRss() {
+      this.rss = {
+        ...this.defaultRss,
+        acceptRules: [],
+        clientArr: [],
+        rejectRules: [],
+        reseedClients: [],
+        rssUrls: ['']
+      }
+    },
+    showDryrunModal() {
+      this.dryrunResult = []
+      this.dryrun()
+    },
+    closeDryrunModal() {
+      this.modalVisible = false
+    },
+    addRssUrl() {
+      this.rss.rssUrls.push('')
+    },
+    removeRssUrl(index) {
+      this.rss.rssUrls.splice(index, 1)
     }
-    const data = await response.json();
-    dryrunResult.value = data;
-    modalVisible.value = true; // Show modal
-  } catch (error) {
-    toast.error(`试运行失败: ${error.message}`);
-    dryrunResult.value = []; // Clear results on error
+  },
+  async mounted() {
+    this.clearRss()
+    this.listNotification()
+    this.listDownloader()
+    this.listRssRule()
+    await this.listRss()
   }
-};
-
-const showDryrunModal = () => {
-  dryrunResult.value = []; // Clear previous results
-  dryrun(); // Call dryrun API
 }
-
-const closeDryrunModal = () => {
-  modalVisible.value = false;
-}
-
-onMounted(() => {
-  getRssList()
-  getDownloaders()
-  getNotifications()
-  getRssRules() // Fetch RSS rules on mount
-})
 </script>
 
 <style scoped>

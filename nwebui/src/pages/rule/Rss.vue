@@ -303,102 +303,12 @@
 </template>
 
 <script>
-import { onMounted, ref } from 'vue'
-import { useToast } from 'vue-toastification'
-
 export default {
-  setup() {
-    const toast = useToast()
-    const rssRuleList = ref([])
-    const downloaders = ref([])
-    const rssRule = ref({
-      alias: '',
-      category: '',
-      savePath: '',
-      client: '',
-      priority: 0,
-      type: 'normal',
-      conditions: [],
-      code: ''
-    })
-
-    const condition = {
-      key: '',
-      compareType: 'equals',
-      value: ''
-    }
-
-    const conditionKeys = [
-      { key: 'title', name: '标题' },
-      { key: 'size', name: '大小' },
-      { key: 'category', name: '分类' },
-      { key: 'link', name: '链接' },
-      { key: 'description', name: '描述' },
-      { key: 'pubDate', name: '发布时间' }
-    ]
-
-    const listRssRule = async () => {
-      try {
-        const res = await window.$api.rule.listRssRule()
-        rssRuleList.value = res.data
-      } catch (e) {
-        toast.error(e.message)
-      }
-    }
-
-    const listDownloader = async () => {
-      try {
-        const res = await window.$api.downloader.list()
-        downloaders.value = res.data
-      } catch (e) {
-        toast.error(e.message)
-      }
-    }
-
-    const modifyRssRule = async () => {
-      try {
-        await window.$api.rule.modifyRssRule(rssRule.value)
-        toast.success('规则保存成功')
-        listRssRule()
-        clearRssRule()
-      } catch (e) {
-        toast.error(e.message)
-      }
-    }
-
-    const modifyRssRuleDownloader = async (rule) => {
-      try {
-        await window.$api.rule.modifyRssRule(rule)
-        toast.success('下载器更新成功')
-        listRssRule()
-      } catch (e) {
-        toast.error(e.message)
-      }
-    }
-
-    const deleteRssRule = async (rule) => {
-      try {
-        await window.$api.rule.deleteRssRule(rule.id)
-        toast.success('规则删除成功')
-        listRssRule()
-      } catch (e) {
-        toast.error(e.message)
-      }
-    }
-
-    const modifyClick = (rule) => {
-      rssRule.value = JSON.parse(JSON.stringify(rule))
-    }
-
-    const cloneClick = (rule) => {
-      const clonedRule = JSON.parse(JSON.stringify(rule))
-      clonedRule.id = undefined
-      clonedRule.alias = `${clonedRule.alias}-克隆`
-      rssRule.value = clonedRule
-    }
-
-    const clearRssRule = () => {
-      rssRule.value = {
+  data() {
+    return {
+      rssRuleList: [],
+      downloaders: [],
+      rssRule: {
         alias: '',
         category: '',
         savePath: '',
@@ -406,28 +316,98 @@ export default {
         priority: 0,
         type: 'normal',
         conditions: [],
-        code: ''
+        code: '(torrent) => {\n  return false;\n}'
+      },
+      condition: {
+        key: '',
+        compareType: 'equals',
+        value: ''
+      },
+      conditionKeys: [
+        { key: 'name', name: '种子名称' },
+        { key: 'size', name: '种子大小' },
+        { key: 'description', name: '种子简介' }
+      ],
+      defaultRssRule: {
+        conditions: [{
+          key: '',
+          compareType: '',
+          value: ''
+        }],
+        alias: '',
+        type: '',
+        code: '(torrent) => {\n  return false;\n}'
+      },
+      loading: false
+    }
+  },
+  methods: {
+    isMobile() {
+      return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+    },
+    async listRssRule() {
+      try {
+        const res = await this.$api().rssRule.list()
+        this.rssRuleList = res.data
+      } catch (e) {
+        await this.$message().error(e.message)
       }
+    },
+    async modifyRssRuleDownloader(rssRule) {
+      try {
+        await this.$api().rssRule.modify({ ...rssRule })
+        await this.$message().success((rssRule.id ? '编辑' : '新增') + '成功, 列表正在刷新...')
+        setTimeout(() => this.listRssRule(), 1000)
+        this.clearRssRule()
+      } catch (e) {
+        await this.$message().error(e.message)
+      }
+    },
+    async modifyRssRule() {
+      try {
+        await this.$api().rssRule.modify({ ...this.rssRule })
+        await this.$message().success((this.rssRule.id ? '编辑' : '新增') + '成功, 列表正在刷新...')
+        setTimeout(() => this.listRssRule(), 1000)
+        this.clearRssRule()
+      } catch (e) {
+        await this.$message().error(e.message)
+      }
+    },
+    modifyClick(row) {
+      this.rssRule = { ...row }
+    },
+    cloneClick(row) {
+      this.rssRule = { ...row, id: undefined }
+    },
+    async deleteRssRule(row) {
+      if (row.used) {
+        await this.$message().error('组件被占用, 取消占用后删除')
+        return
+      }
+      try {
+        await this.$api().rssRule.delete(row.id)
+        await this.$message().success('删除成功, 列表正在刷新...')
+        await this.listRssRule()
+      } catch (e) {
+        await this.$message().error(e.message)
+      }
+    },
+    async listDownloader() {
+      try {
+        const res = await this.$api().downloader.list()
+        this.downloaders = res.data.sort((a, b) => a.alias.localeCompare(b.alias))
+      } catch (e) {
+        await this.$message().error(e.message)
+      }
+    },
+    clearRssRule() {
+      this.rssRule = { ...this.defaultRssRule, conditions: [{ ...this.condition }] }
     }
-
-    onMounted(() => {
-      listRssRule()
-      listDownloader()
-    })
-
-    return {
-      rssRuleList,
-      downloaders,
-      rssRule,
-      condition,
-      conditionKeys,
-      modifyRssRule,
-      modifyRssRuleDownloader,
-      deleteRssRule,
-      modifyClick,
-      cloneClick,
-      clearRssRule
-    }
+  },
+  async mounted() {
+    this.clearRssRule()
+    this.listDownloader()
+    await this.listRssRule()
   }
 }
 </script>

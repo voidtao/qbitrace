@@ -42,32 +42,9 @@ cp app/config_backup/setting.json storage/data/
 cp app/config_backup/proxy.json storage/data/setting/
 
 # 前端构建
-cd webui
-npm i --save --legacy-peer-deps
+cd nwebui
 
-node light.js
-node dark.js
-node cyber.js
-
-# 生成 cyber.less 文件
-cat << EOF >> ./public/assets/styles/cyber.less
-
-@import url(/api/setting/getBackground.less);
-
-.body-bg {
-  background:@vt-bg-image;
-  background-position-x:center;
-  background-position-y:center;
-  background-size:cover;
-}
-
-.login-layout {
-  background:@body-background;
-}
-EOF
-
-# 创建 follow.less 文件
-touch ./public/assets/styles/follow.less
+npm i --legacy-peer-deps
 
 npm run build
 

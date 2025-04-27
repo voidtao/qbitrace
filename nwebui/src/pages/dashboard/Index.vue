@@ -58,7 +58,7 @@
     </div>
 
     <!-- 下载器卡片 -->
-    <div v-if="runInfo.dashboardContent?.includes('downloader')" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div v-if="runInfo.dashboardContent?.filter(item => item === 'downloader')[0]" class="grid grid-cols-1 md:grid-cols-2 gap-4">
       <div v-for="(downloader, index) in downloaders" :key="downloader.id" 
            class="card bg-base-100 shadow-xs hover:shadow-md border cursor-pointer transition-all duration-300"
            :class="{ 'bg-primary/10 border-primary/20': index === 0, 'border-base-200': index !== 0 }"
@@ -77,6 +77,54 @@
 export default {
   data() {
     return {
+      speedChart: {
+        grid: {
+          left: 0,
+          right: 0,
+          top: 0,
+          bottom: 0,
+          z: 0
+        },
+        xAxis: {
+          type: 'category',
+          show: false,
+          boundaryGap: false,
+          data: []
+        },
+        yAxis: {
+          type: 'value',
+          show: false
+        },
+        series: [
+          {
+            data: [],
+            type: 'line',
+            symbol: 'none',
+            smooth: true,
+            areaStyle: {
+              opacity: 0.2,
+              color: '#BEC23F'
+            },
+            lineStyle: {
+              opacity: 0,
+              color: '#BEC23F'
+            }
+          }, {
+            data: [],
+            type: 'line',
+            symbol: 'none',
+            smooth: true,
+            areaStyle: {
+              opacity: 0,
+              color: '#C46243'
+            },
+            lineStyle: {
+              opacity: 0,
+              color: '#C46243'
+            }
+          }
+        ]
+      },
       runInfo: {
         dashboardContent: []
       },
@@ -90,65 +138,66 @@ export default {
     },
     async getRunInfo() {
       try {
-        const res = await window.$api.setting.getRunInfo()
+        const res = await this.$api().setting.getRunInfo()
         this.runInfo = res.data
         for (const error of this.runInfo.errors?.reverse() || []) {
-          window.$toast.error(error.map(item => {
-            if (typeof item === 'object') {
-              return item.message || item.code || item.description
-            }
-            return item
-          }).join(', '))
+          await this.$notification().error({
+            message: '存在错误信息, 请检查日志',
+            description: error.map(item => {
+              if (typeof item === 'object') {
+                return item.message || item.code || item.description
+              }
+              return item
+            }).join(', '),
+            duration: 0
+          })
         }
       } catch (e) {
-        window.$toast.error(e.message)
+        await this.$message().error(e.message)
       }
     },
     async listDownloader() {
       try {
-        const res = await window.$api.downloader.listMainInfo()
-        this.downloaders = res.data.sort((a, b) => a.alias.localeCompare(b.alias))
+        const res = await this.$api().downloader.listMainInfo()
+        this.downloaders = res.data
+          .sort((a, b) => a.alias.localeCompare(b.alias))
+          .map(item => ({
+            ...item,
+            speedChart: JSON.parse(JSON.stringify(this.speedChart))
+          }))
       } catch (e) {
-        window.$toast.error(e.message)
+        await this.$message().error(e.message)
       }
     },
     async listDownloaderInfo() {
       try {
-        const res = await window.$api.downloader.listMainInfo()
+        const res = await this.$api().downloader.listMainInfo()
         for (const downloader of this.downloaders) {
-          const info = res.data.find(item => item.id === downloader.id)
-          if (info) {
-            downloader.uploadSpeed = info.uploadSpeed
-            downloader.downloadSpeed = info.downloadSpeed
-          }
+          const upload = res.data.filter(item => item.id === downloader.id)[0]?.uploadSpeed || 0
+          const download = res.data.filter(item => item.id === downloader.id)[0]?.downloadSpeed || 0
+          downloader.uploadSpeed = upload
+          downloader.downloadSpeed = download
         }
       } catch (e) {
-        window.$toast.error(e.message)
+        await this.$message().error(e.message)
       }
     },
     gotoClient(url) {
       window.open(url)
     }
   },
-  mounted() {
-    this.getRunInfo()
-    
-    // 设置定时器
+  async mounted() {
+    await this.getRunInfo()
+    const downloader = !!this.runInfo.dashboardContent.filter(item => item === 'downloader')[0]
+    if (downloader) {
+      this.listDownloader()
+      this.listDownloaderInfo()
+    }
     this.interval = setInterval(() => {
-      const hasDownloader = !!this.runInfo.dashboardContent?.includes('downloader')
-      if (hasDownloader) {
+      if (downloader) {
         this.listDownloaderInfo()
       }
     }, 3000)
-    
-    // 初始化下载器列表
-    setTimeout(() => {
-      const hasDownloader = !!this.runInfo.dashboardContent?.includes('downloader')
-      if (hasDownloader) {
-        this.listDownloader()
-        this.listDownloaderInfo()
-      }
-    }, 300)
   },
   beforeUnmount() {
     clearInterval(this.interval)
