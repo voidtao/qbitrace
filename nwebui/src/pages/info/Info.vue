@@ -30,7 +30,7 @@
           
           <div class="stat bg-base-200/50 rounded-lg p-4">
             <div class="stat-title text-base-content/80">更新信息</div>
-            <div class="stat-desc">{{ version.commitInfo }}</div>
+            <div class="stat-value text-base">{{ version.commitInfo }}</div>
           </div>
         </div>
 
@@ -72,7 +72,7 @@ export default {
       }
     },
     gotoVersion() {
-      window.open('https://github.com/vertex-app/vertex');
+      window.open('https://github.com/voidtao/qbitrace');
     },
     async getRunInfo() {
       try {
@@ -85,7 +85,7 @@ export default {
   },
   async mounted() {
     this.getRunInfo();
-    this.version = process.env.version;
+    this.version = import.meta.env.VERSION;
   }
 };
 </script>

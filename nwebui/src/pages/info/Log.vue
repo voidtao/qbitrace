@@ -79,7 +79,7 @@ export default {
     }
   },
   async mounted() {
-    this.version = process.env.version;
+    this.version = import.meta.env.VERSION;
     this.getLog();
   }
 };
