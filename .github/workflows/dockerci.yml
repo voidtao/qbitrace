@@ -2,7 +2,7 @@ name: Docker Image CI
 
 on:
   push:
-    branches: [ main ]
+    branches: [ dev ]
   workflow_dispatch:
 
 jobs:
@@ -27,6 +27,6 @@ jobs:
         context: .
         file: ./Dockerfile
         push: true
-        tags: taovoid/qbitrace:latest,taovoid/qbitrace:${{ env.VERSION }}
+        tags: taovoid/qbitrace:dev
         platforms: linux/amd64,linux/arm64
         build-args: PAT=${{ secrets.PERSONAL_ACCESS_TOKEN }}
