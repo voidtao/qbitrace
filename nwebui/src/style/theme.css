@@ -9,26 +9,37 @@
   --header-background: rgba(var(--p) / 0.6); /* 添加透明度的 primary 颜色 */
   --header-text: var(--pc); /* primary-content 颜色 */
   --sidebar-background: var(--b2); /* DaisyUI 的 base-200 变量 */
+  /* 背景图片相关 */
+  --bg-image: none; /* 默认无背景图片 */
+  --bg-opacity: 0.1; /* 背景图片透明度 */
+  --bg-blend-mode: multiply; /* 背景混合模式 */
+  --bg-position: center; /* 背景位置 */
+  --bg-size: cover; /* 背景大小 */
+  --bg-repeat: no-repeat; /* 背景不重复 */
+  --bg-attachment: fixed; /* 背景固定 */
 }
 
-@theme {
-  --color-primary: #d8bfd8;
-  --color-primary-focus: #a855f7;
-  --color-primary-content: #ffffff;
+/* 全局背景图片设置 */
+body.has-bg-image {
+  position: relative;
+}
 
-  --color-secondary: #93c5fd;
-  --color-secondary-focus: #60a5fa;
-  --color-secondary-content: #ffffff;
-
-  --color-accent: #f9a8d4;
-  --color-accent-focus: #f472b6;
-  --color-accent-content: #ffffff;
-
-  --background-color-layout: #ffffff;
-  --background-color-header: #c084fc;
-  --background-color-sidebar: #f3e8ff;
-
-  --text-color-header: #ffffff;
+body.has-bg-image::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: var(--bg-image);
+  background-position: var(--bg-position);
+  background-size: var(--bg-size);
+  background-repeat: var(--bg-repeat);
+  background-attachment: var(--bg-attachment);
+  opacity: var(--bg-opacity);
+  mix-blend-mode: var(--bg-blend-mode);
+  pointer-events: none;
+  z-index: -1;
 }
 
 /* 针对base/downloader和base/notification页面的样式 */

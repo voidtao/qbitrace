@@ -135,6 +135,11 @@ export default {
           detail: { theme: this.setting.theme }
         }));
         
+        // 发布背景图片变化事件，通知 App.vue 更新背景
+        window.dispatchEvent(new CustomEvent('background-changed', {
+          detail: { background: this.setting.background }
+        }));
+        
         await this.$message().success('修改成功, 部分设置可能需要刷新页面生效.');
         this.get();
       } catch (e) {

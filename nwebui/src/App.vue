@@ -11,7 +11,8 @@ export default {
   },
   data () {
     return {
-      theme: 'pastel'
+      theme: 'pastel',
+      background: ''
     };
   },
   methods: {
@@ -19,20 +20,39 @@ export default {
       document.documentElement.setAttribute('data-theme', theme);
       this.theme = theme;
     },
-    async checkTheme() {
+    updateBackground(backgroundUrl) {
+      if (backgroundUrl && backgroundUrl.trim() !== '') {
+        document.body.classList.add('has-bg-image');
+        document.documentElement.style.setProperty('--bg-image', `url('${backgroundUrl}')`);
+        this.background = backgroundUrl;
+      } else {
+        document.body.classList.remove('has-bg-image');
+        document.documentElement.style.removeProperty('--bg-image');
+        this.background = '';
+      }
+    },
+    async checkSettings() {
       try {
         const response = await this.$api().setting.get();
-        if (response.data && response.data.theme) {
-          this.updateTheme(response.data.theme);
+        if (response.data) {
+          // 更新主题
+          if (response.data.theme) {
+            this.updateTheme(response.data.theme);
+          }
+          
+          // 更新背景图片
+          if (response.data.background) {
+            this.updateBackground(response.data.background);
+          }
         }
       } catch (error) {
-        console.error('获取主题设置失败', error);
+        console.error('获取设置失败', error);
       }
     }
   },
   async mounted() {
-    // 初始加载时检查主题设置
-    await this.checkTheme();
+    // 初始加载时检查主题和背景设置
+    await this.checkSettings();
     
     // 监听主题变化的事件
     window.addEventListener('theme-changed', (event) => {
@@ -40,10 +60,18 @@ export default {
         this.updateTheme(event.detail.theme);
       }
     });
+    
+    // 监听背景变化的事件
+    window.addEventListener('background-changed', (event) => {
+      if (event.detail) {
+        this.updateBackground(event.detail.background);
+      }
+    });
   },
   beforeUnmount() {
     // 移除事件监听器
     window.removeEventListener('theme-changed', this.updateTheme);
+    window.removeEventListener('background-changed', this.updateBackground);
   }
 };
 </script>
