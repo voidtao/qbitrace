@@ -12,25 +12,21 @@
             </label>
             <div class="flex flex-wrap gap-4">
               <label class="label cursor-pointer">
-                <input type="radio" name="theme" value="light" v-model="setting.theme" class="radio radio-primary mr-2" />
-                <span class="label-text">亮色</span>
+                <input type="radio" name="theme" value="pastel" v-model="setting.theme" class="radio radio-primary mr-2" />
+                <span class="label-text">可爱</span>
               </label>
               <label class="label cursor-pointer">
-                <input type="radio" name="theme" value="dark" v-model="setting.theme" class="radio radio-primary mr-2" />
+                <input type="radio" name="theme" value="dim" v-model="setting.theme" class="radio radio-primary mr-2" />
                 <span class="label-text">暗色</span>
               </label>
               <label class="label cursor-pointer">
-                <input type="radio" name="theme" value="follow" v-model="setting.theme" class="radio radio-primary mr-2" />
-                <span class="label-text">跟随系统</span>
-              </label>
-              <label class="label cursor-pointer">
-                <input type="radio" name="theme" value="cyber" v-model="setting.theme" class="radio radio-primary mr-2" />
-                <span class="label-text">赛博</span>
+                <input type="radio" name="theme" value="cmyk" v-model="setting.theme" class="radio radio-primary mr-2" />
+                <span class="label-text">亮色</span>
               </label>
             </div>
           </div>
 
-          <div class="form-control" v-if="setting.theme === 'cyber'">
+          <div class="form-control">
             <label class="label">
               <span class="label-text">背景图片</span>
             </label>
@@ -121,7 +117,7 @@ export default {
       try {
         const s = (await this.$api().setting.get()).data;
         this.setting = {
-          theme: s.theme || 'follow',
+          theme: s.theme || 'pastel',
           background: s.background,
           wechatCover: s.wechatCover,
           dashboardContent: s.dashboardContent || []
@@ -133,6 +129,12 @@ export default {
     async modify() {
       try {
         await this.$api().setting.modify(this.setting);
+        
+        // 发布主题变化事件，通知 App.vue 更新主题
+        window.dispatchEvent(new CustomEvent('theme-changed', { 
+          detail: { theme: this.setting.theme }
+        }));
+        
         await this.$message().success('修改成功, 部分设置可能需要刷新页面生效.');
         this.get();
       } catch (e) {

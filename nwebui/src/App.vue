@@ -11,8 +11,39 @@ export default {
   },
   data () {
     return {
-      theme: 'light'
+      theme: 'pastel'
     };
+  },
+  methods: {
+    updateTheme(theme) {
+      document.documentElement.setAttribute('data-theme', theme);
+      this.theme = theme;
+    },
+    async checkTheme() {
+      try {
+        const response = await this.$api().setting.get();
+        if (response.data && response.data.theme) {
+          this.updateTheme(response.data.theme);
+        }
+      } catch (error) {
+        console.error('获取主题设置失败', error);
+      }
+    }
+  },
+  async mounted() {
+    // 初始加载时检查主题设置
+    await this.checkTheme();
+    
+    // 监听主题变化的事件
+    window.addEventListener('theme-changed', (event) => {
+      if (event.detail && event.detail.theme) {
+        this.updateTheme(event.detail.theme);
+      }
+    });
+  },
+  beforeUnmount() {
+    // 移除事件监听器
+    window.removeEventListener('theme-changed', this.updateTheme);
   }
 };
 </script>
