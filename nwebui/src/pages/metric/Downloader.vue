@@ -152,7 +152,7 @@ export default {
     this.listDownloader();
     this.interval = setInterval(() => {
       this.listDownloader();
-    }, 5000);
+    }, 30000);
   },
   beforeUnmount() {
     if (this.interval) {

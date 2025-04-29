@@ -3,7 +3,6 @@ const session = require('express-session');
 const proxy = require('express-http-proxy');
 const redis = require('redis');
 const path = require('path');
-const fs = require('fs');
 
 const config = require('../libs/config');
 const logger = require('../libs/logger');
@@ -27,11 +26,7 @@ const checkAuth = async function (req, res, next) {
   const pathname = req._parsedOriginalUrl.pathname;
   const excludePath = [
     '/api/user/login',
-    '/api/setting/getBackground.less',
-    '/api/setting/getCss.css',
-    '/user/login',
-    '/service-worker.js',
-    '/service-worker.js.map'
+    '/user/login'
   ];
   if (req.session?.user && ['/', '/user/login'].includes(pathname)) {
     return res.redirect(302, '/index');
@@ -172,26 +167,14 @@ module.exports = function (app, express, router) {
 
   app.use('/api', router);
   app.use('/proxy/client/:client', clientProxy);
-  app.use('/assets/styles/theme.less', (req, res) => {
-    const _path = path.join(__dirname, '../static/assets/styles/' + (global.theme || 'follow') + '.less');
-    if (!_path.startsWith(path.join(__dirname, '../static/'))) {
-      res.status(404);
-      return res.end('Not Found');
-    }
-    return res.download(_path, (err) => {
-      if (!err) return;
-      logger.error(err);
-      res.status(404);
-      return res.end('Not Found');
-    });
-  });
+
   app.use('*', (req, res, next) => {
     const pathname = req._parsedOriginalUrl.pathname;
     if (pathname === '/favicon.ico') {
       res.status(404);
       return res.end('Not Found');
     }
-    if (pathname.startsWith('/assets') || pathname.startsWith('/workbox') || pathname.startsWith('/service-worker.js')) {
+    if (pathname.startsWith('/assets') || pathname.startsWith('/workbox')) {
       const _path = path.join(__dirname, '../static', pathname);
       if (!_path.startsWith(path.join(__dirname, '../static/'))) {
         res.status(404);
@@ -203,18 +186,6 @@ module.exports = function (app, express, router) {
         res.status(404);
         return res.end('Not Found');
       });
-    }
-    try {
-      let indexHTML = fs.readFileSync(path.join(__dirname, '../static/index.html'), 'utf-8');
-      if (global.theme === 'dark') {
-        indexHTML = indexHTML.replace('<meta name="theme-color" content="#0099E3">', '<meta name="theme-color" content="#000">');
-      }
-      indexHTML = indexHTML.replace('qbitrace-THEME', global.theme);
-      res.send(indexHTML);
-    } catch (err) {
-      logger.error(err);
-      res.status(404);
-      res.end('Not Found');
     }
   });
 };

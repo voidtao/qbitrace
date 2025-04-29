@@ -8,29 +8,31 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <div class="stat bg-base-200/50 rounded-lg p-4">
             <div class="stat-title text-base-content/80">主版本</div>
-            <div class="stat-value text-primary">{{ version.version }}</div>
-          </div>
-          
-          <div class="stat bg-base-200/50 rounded-lg p-4">
-            <div class="stat-title text-base-content/80">编译版本</div>
-            <div class="stat-value">
+            <div class="stat-value text-primary custom-stat-size">
               <a 
                 class="link link-primary hover:text-primary-focus transition-colors duration-200" 
                 @click="gotoVersion"
               >
-                {{ version.head }}
+                {{ version.version }}
               </a>
             </div>
           </div>
           
           <div class="stat bg-base-200/50 rounded-lg p-4">
+            <div class="stat-title text-base-content/80">编译版本</div>
+            <div class="stat-value custom-stat-size">
+              {{ version.head }}
+            </div>
+          </div>
+          
+          <div class="stat bg-base-200/50 rounded-lg p-4">
             <div class="stat-title text-base-content/80">发布时间</div>
-            <div class="stat-value">{{ version.updateTime }}</div>
+            <div class="stat-value custom-stat-size">{{ version.updateTime }}</div>
           </div>
           
           <div class="stat bg-base-200/50 rounded-lg p-4">
             <div class="stat-title text-base-content/80">更新信息</div>
-            <div class="stat-value text-base">{{ version.commitInfo }}</div>
+            <div class="stat-value custom-stat-size">{{ version.commitInfo }}</div>
           </div>
         </div>
 
@@ -93,5 +95,10 @@ export default {
 <style scoped>
 .container {
   max-width: 1440px;
+}
+
+.custom-stat-size {
+  font-size: 1.4rem; /* 约为原字体大小的70% */
+  line-height: 1.8rem;
 }
 </style>
