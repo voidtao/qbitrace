@@ -95,8 +95,6 @@ docker run -d --name qbitrace --restart unless-stopped --network host -v /app/qb
 1. `log4js` 的 `defaultParseCallStack error`  
    参见 [log4js-node #1413](https://github.com/log4js-node/log4js-node/issues/1413)
 
-2. base/downloader 通知工具、rss规则、rss任务、删种规则、定时脚本界面的排序
-
 
 ---
 

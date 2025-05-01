@@ -22,6 +22,19 @@ import SettingBackup from '@/pages/setting/Backup.vue';
 import HistoryRss from '@/pages/history/Rss.vue';
 import Login from '@/pages/user/Login.vue';
 
+const createLayoutRoute = (path, component, title) => ({
+  path,
+  component: Layout,
+  redirect: path,
+  children: [
+    {
+      path: '',
+      component,
+      meta: { title }
+    }
+  ]
+});
+
 const user = {
   path: 'user',
   component: Index,
@@ -51,275 +64,25 @@ const index = {
   ]
 };
 
-const metricDownloaderRoute = {
-  path: 'metric/downloader',
-  component: Layout,
-  redirect: 'metric/downloader',
-  children: [
-    {
-      path: '',
-      component: MetricDownloader,
-      meta: {
-        title: '下载器 - 数据监控'
-      }
-    }
-  ]
-};
-
-const ruleDeleteRoute = {
-  path: 'rule/delete',
-  component: Layout,
-  redirect: 'rule/delete',
-  children: [
-    {
-      path: '',
-      component: RuleDelete,
-      meta: {
-        title: '删种规则 - 规则组件'
-      }
-    }
-  ]
-};
-
-const ruleRssRoute = {
-  path: 'rule/rss',
-  component: Layout,
-  redirect: 'rule/rss',
-  children: [
-    {
-      path: '',
-      component: RuleRss,
-      meta: {
-        title: 'RSS 规则 - 规则组件'
-      }
-    }
-  ]
-};
-
-const baseDownloaderRoute = {
-  path: 'base/downloader',
-  component: Layout,
-  redirect: 'base/downloader',
-  children: [
-    {
-      path: '',
-      component: BaseDownloader,
-      meta: {
-        title: '下载器 - 基础组件'
-      }
-    }
-  ]
-};
-
-const baseNotificationRoute = {
-  path: 'base/notification',
-  component: Layout,
-  redirect: 'base/notification',
-  children: [
-    {
-      path: '',
-      component: BaseNotification,
-      meta: {
-        title: '通知工具 - 基础组件'
-      }
-    }
-  ]
-};
-
-const infoInfoRoute = {
-  path: 'info/info',
-  component: Layout,
-  redirect: 'info/info',
-  children: [
-    {
-      path: '',
-      component: InfoInfo,
-      meta: {
-        title: '相关信息'
-      }
-    }
-  ]
-};
-
-const infoLogRoute = {
-  path: 'info/log',
-  component: Layout,
-  redirect: 'info/log',
-  children: [
-    {
-      path: '',
-      component: InfoLog,
-      meta: {
-        title: '系统日志'
-      }
-    }
-  ]
-};
-
-const settingBaseRoute = {
-  path: 'setting/base',
-  component: Layout,
-  redirect: 'setting/base',
-  children: [
-    {
-      path: '',
-      component: SettingBase,
-      meta: {
-        title: '基础设置 - 系统设置'
-      }
-    }
-  ]
-};
-
-const settingStyleRoute = {
-  path: 'setting/style',
-  component: Layout,
-  redirect: 'setting/style',
-  children: [
-    {
-      path: '',
-      component: SettingStyle,
-      meta: {
-        title: '主题设置 - 系统设置'
-      }
-    }
-  ]
-};
-
-const settingSecurityRoute = {
-  path: 'setting/security',
-  component: Layout,
-  redirect: 'setting/security',
-  children: [
-    {
-      path: '',
-      component: SettingSecurity,
-      meta: {
-        title: '安全设置 - 系统设置'
-      }
-    }
-  ]
-};
-
-const settingBackupRoute = {
-  path: 'setting/backup',
-  component: Layout,
-  redirect: 'setting/backup',
-  children: [
-    {
-      path: '',
-      component: SettingBackup,
-      meta: {
-        title: '备份还原 - 系统设置'
-      }
-    }
-  ]
-};
-
-const taskRssRoute = {
-  path: 'task/rss',
-  component: Layout,
-  redirect: 'task/rss',
-  children: [
-    {
-      path: '',
-      component: TaskRss,
-      meta: {
-        title: 'Rss 任务 - 任务配置'
-      }
-    }
-  ]
-};
-
-const taskScriptRoute = {
-  path: 'task/script',
-  component: Layout,
-  redirect: 'task/script',
-  children: [
-    {
-      path: '',
-      component: TaskScript,
-      meta: {
-        title: '定时脚本 - 任务配置'
-      }
-    }
-  ]
-};
-
-const historyRssRoute = {
-  path: 'history/rss',
-  component: Layout,
-  redirect: 'history/rss',
-  children: [
-    {
-      path: '',
-      component: HistoryRss,
-      meta: {
-        title: 'RSS 历史 - 任务历史'
-      }
-    }
-  ]
-};
-
-const toolNetworkTestRoute = {
-  path: 'tool/networkTest',
-  component: Layout,
-  redirect: 'tool/networkTest',
-  children: [
-    {
-      path: '',
-      component: ToolNetworkTest,
-      meta: {
-        title: '网络测试 - 常用工具'
-      }
-    }
-  ]
-};
-
-const toolHostsRoute = {
-  path: 'tool/hosts',
-  component: Layout,
-  redirect: 'tool/hosts',
-  children: [
-    {
-      path: '',
-      component: ToolHosts,
-      meta: {
-        title: '修改 HOSTS - 常用工具'
-      }
-    }
-  ]
-};
-
-const toolProxyRoute = {
-  path: 'tool/proxy',
-  component: Layout,
-  redirect: 'tool/proxy',
-  children: [
-    {
-      path: '',
-      component: ToolProxy,
-      meta: {
-        title: 'HTTP 代理 - 常用工具'
-      }
-    }
-  ]
-};
-
-const toolClientLogRoute = {
-  path: 'tool/clientLog',
-  component: Layout,
-  redirect: 'tool/clientLog',
-  children: [
-    {
-      path: '',
-      component: ToolClientLog,
-      meta: {
-        title: '下载器日志 - 常用工具'
-      }
-    }
-  ]
-};
+// 使用工厂函数创建路由
+const metricDownloaderRoute = createLayoutRoute('metric/downloader', MetricDownloader, '下载器 - 数据监控');
+const ruleDeleteRoute = createLayoutRoute('rule/delete', RuleDelete, '删种规则 - 规则组件');
+const ruleRssRoute = createLayoutRoute('rule/rss', RuleRss, 'RSS 规则 - 规则组件');
+const baseDownloaderRoute = createLayoutRoute('base/downloader', BaseDownloader, '下载器 - 基础组件');
+const baseNotificationRoute = createLayoutRoute('base/notification', BaseNotification, '通知工具 - 基础组件');
+const infoInfoRoute = createLayoutRoute('info/info', InfoInfo, '相关信息');
+const infoLogRoute = createLayoutRoute('info/log', InfoLog, '系统日志');
+const settingBaseRoute = createLayoutRoute('setting/base', SettingBase, '基础设置 - 系统设置');
+const settingStyleRoute = createLayoutRoute('setting/style', SettingStyle, '主题设置 - 系统设置');
+const settingSecurityRoute = createLayoutRoute('setting/security', SettingSecurity, '安全设置 - 系统设置');
+const settingBackupRoute = createLayoutRoute('setting/backup', SettingBackup, '备份还原 - 系统设置');
+const taskRssRoute = createLayoutRoute('task/rss', TaskRss, 'Rss 任务 - 任务配置');
+const taskScriptRoute = createLayoutRoute('task/script', TaskScript, '定时脚本 - 任务配置');
+const historyRssRoute = createLayoutRoute('history/rss', HistoryRss, 'RSS 历史 - 任务历史');
+const toolNetworkTestRoute = createLayoutRoute('tool/networkTest', ToolNetworkTest, '网络测试 - 常用工具');
+const toolHostsRoute = createLayoutRoute('tool/hosts', ToolHosts, '修改 HOSTS - 常用工具');
+const toolProxyRoute = createLayoutRoute('tool/proxy', ToolProxy, 'HTTP 代理 - 常用工具');
+const toolClientLogRoute = createLayoutRoute('tool/clientLog', ToolClientLog, '下载器日志 - 常用工具');
 
 const routes = [
   {
