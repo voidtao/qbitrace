@@ -79,7 +79,10 @@
           </div>
 
           <div class="form-control mt-4">
-            <button type="submit" class="btn btn-primary w-full md:w-auto">保存</button>
+            <button type="submit" class="btn btn-primary w-full md:w-auto">
+              <fa-icon :icon="['fas','save']" class="mr-2" />
+              保存配置
+            </button>
           </div>
         </form>
       </div>
@@ -98,9 +101,6 @@ export default {
         {
           key: 'downloader',
           text: '客户端'
-        }, {
-          key: 'tracker',
-          text: 'Tracker 统计'
         }
       ]
     }

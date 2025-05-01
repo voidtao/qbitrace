@@ -6,7 +6,7 @@
     <div class="card bg-base-100 shadow-xs hover:shadow-md transition-all duration-300">
       <div class="card-body">
         <h2 class="card-title mb-6 text-base-content">
-          <i class="fas fa-globe mr-2 text-primary"></i>
+          <fa-icon :icon="['fas','globe']" class="mr-2 text-primary" />
           HTTP 代理设置
         </h2>
         
@@ -40,14 +40,14 @@
           
           <div class="form-control mt-6">
             <button class="btn btn-primary w-full md:w-auto" @click="save">
-              <i class="fas fa-save mr-2"></i>
+              <fa-icon :icon="['fas','save']" class="mr-2" />
               保存
             </button>
           </div>
         </div>
 
         <div class="alert alert-info bg-info/10 text-info-content shadow-xs">
-          <i class="fas fa-info-circle mr-2 text-info"></i>
+          <fa-icon :icon="['fas','info-circle']" class="mr-2 text-info" />
           <div>
             <div class="font-medium">说明:</div>
             <ul class="list-disc list-inside mt-2 space-y-1 text-sm text-base-content/80">

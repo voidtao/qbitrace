@@ -33,12 +33,12 @@
                 <td>
                   <div class="flex gap-2">
                     <button class="btn btn-sm btn-secondary btn-outline" @click="modifyClick(script)">
-                      <i class="fas fa-edit mr-1"></i>
+                      <fa-icon :icon="['fas', 'edit']" class="mr-1" />
                       编辑
                     </button>
                     <div class="dropdown dropdown-end">
                       <label tabindex="0" class="btn btn-sm btn-error btn-outline">
-                        <i class="fas fa-trash-alt mr-1"></i>
+                        <fa-icon :icon="['fas', 'trash-alt']" class="mr-1" />
                         删除
                       </label>
                       <div tabindex="0" class="dropdown-content menu p-2 shadow-lg bg-base-100 rounded-lg w-52">
@@ -60,7 +60,7 @@
     <div class="card bg-base-100 shadow-xs hover:shadow-md transition-all duration-300">
       <div class="card-body">
         <h2 class="card-title mb-6 text-base-content">
-          <i class="fas fa-edit mr-2 text-primary"></i>
+          <fa-icon :icon="['fas', 'edit']" class="mr-2 text-primary" />
           新增 | 编辑定时脚本
         </h2>
         <form @submit.prevent="modifyScript" class="space-y-6">
@@ -120,7 +120,7 @@
                 required
               ></textarea>
               <span class="text-xs text-base-content/60 mt-2">
-                <i class="fas fa-info-circle mr-1"></i>
+                <fa-icon :icon="['fas', 'info-circle']" class="mr-1" />
                 自定义JavaScript代码，可使用内置API如logger.info()等
               </span>
             </div>
@@ -130,15 +130,15 @@
           <div class="form-control mt-8">
             <div class="flex flex-col md:flex-row gap-4">
               <button type="submit" class="btn btn-primary flex-1">
-                <i class="fas fa-save mr-2"></i>
+                <fa-icon :icon="['fas', 'save']" class="mr-2" />
                 保存脚本
               </button>
               <button type="button" class="btn btn-secondary flex-1" @click="run">
-                <i class="fas fa-play mr-2"></i>
+                <fa-icon :icon="['fas', 'play']" class="mr-2" />
                 立即执行
               </button>
               <button type="button" class="btn btn-ghost flex-1" @click="clearScript">
-                <i class="fas fa-trash-alt mr-2"></i>
+                <fa-icon :icon="['fas', 'trash-alt']" class="mr-2" />
                 清空表单
               </button>
             </div>

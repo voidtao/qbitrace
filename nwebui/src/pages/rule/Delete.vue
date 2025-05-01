@@ -26,12 +26,12 @@
                 <td>
                   <div class="flex gap-2">
                     <button class="btn btn-sm btn-secondary btn-outline" @click="modifyClick(rule)">
-                      <i class="fas fa-edit mr-1"></i>
+                      <fa-icon :icon="['fas','edit']" class="mr-1" />
                       编辑
                     </button>
                     <div class="dropdown dropdown-end">
                       <label tabindex="0" class="btn btn-sm btn-error btn-outline">
-                        <i class="fas fa-trash-alt mr-1"></i>
+                        <fa-icon :icon="['fas','trash-alt']" class="mr-1" />
                         删除
                       </label>
                       <div tabindex="0" class="dropdown-content menu p-2 shadow-lg bg-base-100 rounded-lg w-52">
@@ -56,7 +56,7 @@
     <div class="card bg-base-100 shadow-xs hover:shadow-md transition-all duration-300">
       <div class="card-body">
         <h2 class="card-title mb-6 text-base-content">
-          <i class="fas fa-edit mr-2 text-primary"></i>
+          <fa-icon :icon="['fas','edit']" class="mr-2 text-primary" />
           新增 | 编辑删种规则
         </h2>
         <form @submit.prevent="modifyDeleteRule" class="space-y-6">
@@ -171,7 +171,7 @@
               <option value="javascript" class="text-base-content/80">JavaScript脚本</option>
             </select>
             <span class="text-xs text-base-content/60 mt-2 block">
-              <i class="fas fa-info-circle mr-1"></i>
+              <fa-icon :icon="['fas','info-circle']" class="mr-1" />
               选择规则类型：普通规则使用条件匹配，JavaScript脚本使用自定义代码
             </span>
           </div>
@@ -185,7 +185,7 @@
                 class="btn btn-primary btn-sm btn-outline" 
                 @click="deleteRule.conditions.push({ ...condition })"
               >
-                <i class="fas fa-plus mr-2"></i>
+                <fa-icon :icon="['fas','plus']" class="mr-2" />
                 新增条件
               </button>
             </div>
@@ -247,7 +247,7 @@
                         class="btn btn-sm btn-error btn-outline"
                         @click="deleteRule.conditions.splice(index, 1)"
                       >
-                        <i class="fas fa-trash-alt"></i>
+                        <fa-icon :icon="['fas','trash-alt']" />
                       </button>
                     </td>
                   </tr>
@@ -260,7 +260,7 @@
               </table>
             </div>
             <span class="text-xs text-base-content/60 mt-4 block">
-              <i class="fas fa-info-circle mr-1"></i>
+              <fa-icon :icon="['fas','info-circle']" class="mr-1" />
               所有条件都满足时才会触发删种操作
             </span>
           </div>
@@ -275,7 +275,7 @@
               required
             ></textarea>
             <span class="text-xs text-base-content/60 mt-2 block">
-              <i class="fas fa-info-circle mr-1"></i>
+              <fa-icon :icon="['fas','info-circle']" class="mr-1" />
               返回true表示需要删除该种子，可使用内置API如logger.info()等
             </span>
           </div>
@@ -287,7 +287,7 @@
                 type="submit" 
                 class="btn btn-primary flex-1"
               >
-                <i class="fas fa-save mr-2"></i>
+                <fa-icon :icon="['fas','save']" class="mr-2" />
                 保存规则
               </button>
               <button 
@@ -295,7 +295,7 @@
                 class="btn btn-ghost flex-1"
                 @click="clearDeleteRule"
               >
-                <i class="fas fa-trash-alt mr-2"></i>
+                <fa-icon :icon="['fas','trash-alt']" class="mr-2" />
                 清空表单
               </button>
             </div>
@@ -308,7 +308,7 @@
     <div class="card bg-base-100 shadow-xs hover:shadow-md transition-all duration-300 mt-8">
       <div class="card-body">
         <h2 class="card-title mb-4 text-base-content">
-          <i class="fas fa-info-circle mr-2 text-info"></i>
+          <fa-icon :icon="['fas','info-circle']" class="mr-2 text-info" />
           条件说明
         </h2>
         <div class="space-y-2 text-base-content/80">

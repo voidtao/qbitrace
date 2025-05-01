@@ -95,7 +95,8 @@ docker run -d --name qbitrace --restart unless-stopped --network host -v /app/qb
 1. `log4js` 的 `defaultParseCallStack error`  
    参见 [log4js-node #1413](https://github.com/log4js-node/log4js-node/issues/1413)
 
-2. 使用cyber主题时，如果不填写背景图片，会出现一个undefined报错，暂且定位是前端问题，由于本人不擅前端，且这个报错不影响任何的功能，故暂且忽略它。
+2. base/downloader 通知工具、rss规则、rss任务、删种规则、定时脚本界面的排序
+
 
 ---
 

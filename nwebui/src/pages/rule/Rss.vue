@@ -43,18 +43,18 @@
                   <div class="flex gap-2">
                     <button class="btn btn-sm btn-primary btn-outline" 
                             @click="cloneClick(rule)">
-                      <i class="fas fa-copy mr-1"></i>
+                      <fa-icon :icon="['fas', 'copy']" class="mr-1" />
                       克隆
                     </button>
                     <button class="btn btn-sm btn-secondary btn-outline" 
                             @click="modifyClick(rule)">
-                      <i class="fas fa-edit mr-1"></i>
+                      <fa-icon :icon="['fas', 'edit']" class="mr-1" />
                       编辑
                     </button>
                     <div class="dropdown dropdown-end">
                       <label tabindex="0" 
                              class="btn btn-sm btn-error btn-outline">
-                        <i class="fas fa-trash-alt mr-1"></i>
+                        <fa-icon :icon="['fas', 'trash-alt']" class="mr-1" />
                         删除
                       </label>
                       <div tabindex="0" 
@@ -78,7 +78,7 @@
     <div class="card bg-base-100 shadow-xs hover:shadow-md transition-all duration-300">
       <div class="card-body">
         <h2 class="card-title mb-6 text-base-content">
-          <i class="fas fa-edit mr-2 text-primary"></i>
+          <fa-icon :icon="['fas', 'edit']" class="mr-2 text-primary" />
           新增 | 编辑 RSS 规则
         </h2>
         <form @submit.prevent="modifyRssRule" class="space-y-6">
@@ -172,7 +172,7 @@
               <option value="javascript" class="text-base-content/80">JavaScript脚本</option>
             </select>
             <span class="text-xs text-base-content/60 mt-2">
-              <i class="fas fa-info-circle mr-1"></i>
+              <fa-icon :icon="['fas', 'info-circle']" class="mr-1" />
               选择规则类型：普通规则使用条件匹配，JavaScript脚本使用自定义代码
             </span>
           </div>
@@ -185,7 +185,7 @@
                 class="btn btn-primary btn-sm btn-outline"
                 @click="rssRule.conditions.push({ ...condition })"
               >
-                <i class="fas fa-plus mr-2"></i>
+                <fa-icon :icon="['fas', 'plus']" class="mr-2" />
                 新增条件
               </button>
             </div>
@@ -248,7 +248,7 @@
                         class="btn btn-sm btn-error btn-outline"
                         @click="rssRule.conditions.splice(index, 1)"
                       >
-                        <i class="fas fa-trash-alt"></i>
+                        <fa-icon :icon="['fas', 'trash-alt']" />
                       </button>
                     </td>
                   </tr>
@@ -257,7 +257,7 @@
             </div>
             
             <span class="text-xs text-base-content/60 mt-4 block">
-              <i class="fas fa-info-circle mr-1"></i>
+              <fa-icon :icon="['fas', 'info-circle']" class="mr-1" />
               所有条件都满足时才会匹配该规则
             </span>
           </div>
@@ -271,7 +271,7 @@
               required
             ></textarea>
             <span class="text-xs text-base-content/60 mt-2">
-              <i class="fas fa-info-circle mr-1"></i>
+              <fa-icon :icon="['fas', 'info-circle']" class="mr-1" />
               返回true表示匹配该规则，可使用内置API如logger.info()等
             </span>
           </div>
@@ -283,7 +283,7 @@
                 type="submit" 
                 class="btn btn-primary flex-1"
               >
-                <i class="fas fa-save mr-2"></i>
+                <fa-icon :icon="['fas', 'save']" class="mr-2" />
                 保存规则
               </button>
               <button 
@@ -291,7 +291,7 @@
                 class="btn btn-ghost flex-1"
                 @click="clearRssRule"
               >
-                <i class="fas fa-trash-alt mr-2"></i>
+                <fa-icon :icon="['fas', 'trash-alt']" class="mr-2" />
                 清空表单
               </button>
             </div>

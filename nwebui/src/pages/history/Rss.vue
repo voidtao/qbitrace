@@ -4,7 +4,7 @@
     <div class="divider"></div>
     
     <div class="alert alert-warning bg-warning/10 text-warning-content mb-6 shadow-xs">
-      <i class="fas fa-exclamation-triangle mr-2"></i>
+      <fa-icon :icon="['fas','exclamation-triangle']" class="mr-2" />
       <span>遇到问题请先查阅 Wiki 中的常见问题，若仍未解决再到交流群咨询</span>
     </div>
 
@@ -55,26 +55,26 @@
               :disabled="loading"
             >
               <span v-if="loading" class="loading loading-spinner loading-sm mr-1"></span>
-              <i v-else class="fas fa-search mr-1"></i>
+              <fa-icon v-else :icon="['fas','search']" class="mr-1" />
               筛选
             </button>
           </div>
         </div>
 
         <h2 class="card-title mb-6 text-base-content">
-          <i class="fas fa-history mr-2 text-primary"></i>
+          <fa-icon :icon="['fas','history']" class="mr-2 text-primary" />
           历史记录
         </h2>
         <div class="overflow-x-auto">
           <table class="table table-zebra w-full">
             <thead>
               <tr class="bg-base-200/50">
-                <th class="text-base-content/70">RSS</th>
-                <th class="text-base-content/70">种子名称</th>
-                <th class="text-base-content/70">大小</th>
-                <th class="text-base-content/70">记录时间</th>
-                <th class="text-base-content/70">状态</th>
-                <th class="text-base-content/70">操作</th>
+                <th class="text-base-content/70">rss源</th>
+                <th class="text-base-content/70 text-center">种子名称</th>
+                <th class="text-base-content/70 text-center">种子大小</th>
+                <th class="text-base-content/70 text-center">记录时间</th>
+                <th class="text-base-content/70 text-center">rss状态</th>
+                <th class="text-base-content/70 text-center">操作</th>
               </tr>
             </thead>
             <tbody>
@@ -87,31 +87,19 @@
                 <td class="text-base-content/80">{{ record.name }}</td>
                 <td class="text-base-content/80">{{ $formatSize(record.size) }}</td>
                 <td class="text-base-content/80">{{ record.recordTime ? $moment(record.recordTime * 1000).format('YYYY-MM-DD HH:mm:ss') : '-' }}</td>
-                <td>
-                  <span class="badge badge-sm" :class="{
-                    'badge-success': record.recordNote === 'success',
-                    'badge-error': record.recordNote === 'error',
-                    'badge-warning': record.recordNote.indexOf('wish') !== -1,
-                    'badge-info': record.recordNote === 'skip'
-                  }">
-                    {{ record.recordNote.indexOf('wish') !== -1 ? '豆瓣' : 
-                       record.recordNote === 'success' ? '成功' :
-                       record.recordNote === 'error' ? '失败' : 
-                       record.recordNote === 'skip' ? '跳过' : record.recordNote }}
-                  </span>
-                </td>
+                <td class="text-base-content/80 font-small">{{ record.recordNote }}</td>
                 <td>
                   <div class="flex gap-2">
                     <button 
                       class="btn btn-sm btn-secondary btn-outline" 
                       @click="gotoDetail(record)"
                     >
-                      <i class="fas fa-external-link-alt mr-1"></i>
+                      <fa-icon :icon="['fas','external-link-alt']" class="mr-1" />
                       打开
                     </button>
                     <div class="dropdown dropdown-end">
-                      <label tabindex="0" class="btn btn-sm btn-error btn-outline">
-                        <i class="fas fa-trash-alt mr-1"></i>
+                      <label tabindex="0" class="btn btn-sm btn-error btn-outline w-20">
+                        <fa-icon :icon="['fas','trash-alt']" class="mr-1" />
                         删除
                       </label>
                       <div tabindex="0" class="dropdown-content menu p-2 shadow-lg bg-base-100 rounded-lg w-52">
@@ -139,7 +127,7 @@
               @click="() => { qs.page--; listHistory(); }"
               :disabled="qs.page === 1 || loading"
             >
-              <i class="fas fa-chevron-left"></i>
+              <fa-icon :icon="['fas','chevron-left']" />
             </button>
             <button class="join-item btn">
               第 {{ qs.page }} 页
@@ -150,7 +138,7 @@
               @click="() => { qs.page++; listHistory(); }"
               :disabled="torrents.length < qs.length || loading"
             >
-              <i class="fas fa-chevron-right"></i>
+              <fa-icon :icon="['fas','chevron-right']" />
             </button>
           </div>
         </div>

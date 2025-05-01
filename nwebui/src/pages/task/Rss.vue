@@ -30,7 +30,7 @@
                     <label class="label cursor-pointer justify-start">
                       <input
                         type="checkbox"
-                        class="toggle toggle-primary toggle-sm"
+                        class="toggle toggle-primary toggle-md"
                         :checked="rss.enable"
                         @change="enableTask(rss)"
                       />
@@ -56,18 +56,18 @@
                   <div class="flex gap-2">
                     <button class="btn btn-sm btn-primary btn-outline"
                             @click="modifyClick(rss)">
-                      <i class="fas fa-edit mr-1"></i>
+                      <fa-icon :icon="['fas', 'edit']" class="mr-1" />
                       编辑
                     </button>
                     <button class="btn btn-sm btn-secondary btn-outline"
                             @click="cloneClick(rss)">
-                      <i class="fas fa-copy mr-1"></i>
+                      <fa-icon :icon="['fas', 'copy']" class="mr-1" />
                       克隆
                     </button>
                     <div class="dropdown dropdown-end">
                       <label tabindex="0"
                              class="btn btn-sm btn-error btn-outline">
-                        <i class="fas fa-trash-alt mr-1"></i>
+                        <fa-icon :icon="['fas', 'trash-alt']" class="mr-1" />
                         删除
                       </label>
                       <div tabindex="0"
@@ -92,7 +92,7 @@
     <div class="card bg-base-100 shadow-xs hover:shadow-md transition-all duration-300">
       <div class="card-body">
         <h2 class="card-title mb-6 text-base-content">
-          <i class="fas fa-rss mr-2 text-primary"></i>
+          <fa-icon :icon="['fas', 'rss']" class="mr-2 text-primary" />
           新增 | 编辑 RSS 任务
         </h2>
         <form @submit.prevent="modifyRss" class="space-y-6">
@@ -245,7 +245,7 @@
                 class="btn btn-primary btn-sm btn-outline"
                 @click="rss.rssUrls.push('')"
               >
-                <i class="fas fa-plus mr-2"></i>
+                <fa-icon :icon="['fas', 'plus']" class="mr-2" />
                 添加URL
               </button>
             </div>
@@ -271,13 +271,13 @@
                   class="btn btn-error btn-sm btn-outline"
                   @click="rss.rssUrls = rss.rssUrls.filter((_, i) => i !== index)"
                 >
-                  <i class="fas fa-trash-alt"></i>
+                  <fa-icon :icon="['fas', 'trash-alt']" />
                 </button>
               </div>
             </div>
 
             <span class="text-xs text-base-content/60 mt-4 block">
-              <i class="fas fa-info-circle mr-1"></i>
+              <fa-icon :icon="['fas', 'info-circle']" class="mr-1" />
               添加多个RSS订阅源，系统将自动合并处理
             </span>
           </div>
@@ -658,7 +658,7 @@
                 type="submit"
                 class="btn btn-primary flex-1"
               >
-                <i class="fas fa-save mr-2"></i>
+                <fa-icon :icon="['fas', 'save']" class="mr-2" />
                 保存设置
               </button>
               <button
@@ -667,7 +667,7 @@
                 @click="showDryrunModal"
                 :disabled="!rss.rssUrls || rss.rssUrls.length === 0 || !rss.rssUrls[0]"
               >
-                <i class="fas fa-vial mr-2"></i>
+                <fa-icon :icon="['fas', 'vial']" class="mr-2" />
                 试运行
               </button>
               <button
@@ -675,7 +675,7 @@
                 class="btn btn-ghost flex-1"
                 @click="clearForm"
               >
-                <i class="fas fa-times mr-2"></i>
+                <fa-icon :icon="['fas', 'times']" class="mr-2" />
                 清空表单
               </button>
             </div>
@@ -690,7 +690,7 @@
     <div class="modal-box w-11/12 max-w-5xl">
       <h3 class="font-bold text-lg mb-4">RSS 试运行结果</h3>
       <div class="alert alert-info mb-4">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+        <fa-icon :icon="['fas', 'info-circle']" class="mr-1" />
         <span>
           注意事项: 试运行仅判断是否符合 RSS 规则，不检测种子免费或 HR 状态。
           <br>

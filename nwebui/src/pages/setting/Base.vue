@@ -91,6 +91,7 @@
           <div class="form-control mt-8">
             <button type="submit" 
                     class="btn btn-primary w-full md:w-auto transition-all duration-200 hover:shadow-lg">
+              <fa-icon :icon="['fas','save']" class="mr-2" />
               保存设置
             </button>
           </div>

@@ -29,7 +29,7 @@
                 <td>
                   <input
                     type="checkbox"
-                    class="toggle toggle-primary toggle-sm"
+                    class="toggle toggle-primary toggle-md"
                     :checked="record.enable"
                     :disabled="record.used"
                     @change="enableDownloader(record)"
@@ -55,20 +55,20 @@
                 <td>
                   <div class="flex gap-2">
                     <button class="btn btn-xs btn-outline btn-info" @click="goto(record)">
-                      <i class="fas fa-external-link-alt mr-1"></i>打开
+                      <fa-icon :icon="['fas', 'external-link-alt']" class="mr-1" />打开
                     </button>
                     <div class="dropdown dropdown-end">
                       <label tabindex="0" class="btn btn-xs btn-outline btn-secondary">
-                        <i class="fas fa-ellipsis-h mr-1"></i>操作
+                        <fa-icon :icon="['fas', 'ellipsis-h']" class="mr-1" />操作
                       </label>
                       <ul tabindex="0" class="dropdown-content z-1 menu p-2 shadow-lg bg-base-100 rounded-lg w-32">
-                        <li><a @click="modifyClick(record)"><i class="fas fa-edit w-4 mr-2"></i>编辑</a></li>
-                        <li><a @click="cloneClick(record)"><i class="fas fa-copy w-4 mr-2"></i>克隆</a></li>
-                        <li><a @click="gotoLog(record)"><i class="fas fa-file-alt w-4 mr-2"></i>日志</a></li>
+                        <li><a @click="modifyClick(record)"><fa-icon :icon="['fas', 'edit']" class="w-4 mr-2" />编辑</a></li>
+                        <li><a @click="cloneClick(record)"><fa-icon :icon="['fas', 'copy']" class="w-4 mr-2" />克隆</a></li>
+                        <li><a @click="gotoLog(record)"><fa-icon :icon="['fas', 'file-alt']" class="w-4 mr-2" />日志</a></li>
                         <li><hr class="my-1 border-base-300"></li>
                         <li>
                           <details>
-                             <summary class="text-error"><i class="fas fa-trash-alt w-4 mr-2"></i>删除</summary>
+                             <summary class="text-error"><fa-icon :icon="['fas', 'trash-alt']" class="w-4 mr-2" />删除</summary>
                              <ul class="p-2 bg-base-100 rounded-t-none">
                                <li><a class="text-error" @click="deleteDownloader(record)">确认删除</a></li>
                              </ul>
@@ -89,7 +89,7 @@
     <div class="card bg-base-100 shadow-xs hover:shadow-md transition-all duration-300">
       <div class="card-body">
         <h2 class="card-title mb-6 text-base-content/90">
-          <i class="fas fa-edit mr-2 text-primary"></i>
+          <fa-icon :icon="['fas', 'edit']" class="mr-2 text-primary" />
           新增 | 编辑下载器
         </h2>
         
@@ -171,7 +171,7 @@
                       type="checkbox"
                       v-model="downloader.enable"
                       :disabled="downloader.used"
-                      class="toggle toggle-primary toggle-sm"
+                      class="toggle toggle-primary toggle-md"
                     />
                   </label>
                   <span class="text-xs text-base-content/60 mt-1">选择是否启用下载器</span>
@@ -202,7 +202,7 @@
                     <input
                       type="checkbox"
                       v-model="downloader.pushNotify"
-                      class="toggle toggle-primary toggle-sm"
+                      class="toggle toggle-primary toggle-md"
                     />
                   </label>
                   <span class="text-xs text-base-content/60 mt-1">启用后，删种等操作会发送通知</span>
@@ -227,7 +227,7 @@
                     <input
                       type="checkbox"
                       v-model="downloader.pushMonitor"
-                      class="toggle toggle-primary toggle-sm"
+                      class="toggle toggle-primary toggle-md"
                     />
                   </label>
                    <span class="text-xs text-base-content/60 mt-1">启用后，下载器异常会发送通知</span>
@@ -258,7 +258,7 @@
                     <input
                       type="checkbox"
                       v-model="downloader.autoReannounce"
-                      class="toggle toggle-primary toggle-sm"
+                      class="toggle toggle-primary toggle-md"
                     />
                   </label>
                   <span class="text-xs text-base-content/60 mt-1">添加种子 2 分钟后自动汇报 Tracker</span>
@@ -270,7 +270,7 @@
                     <input
                       type="checkbox"
                       v-model="downloader.firstLastPiecePrio"
-                      class="toggle toggle-primary toggle-sm"
+                      class="toggle toggle-primary toggle-md"
                     />
                   </label>
                   <span class="text-xs text-base-content/60 mt-1">同 qBittorrent 设置</span>
@@ -361,7 +361,7 @@
                     <input
                       type="checkbox"
                       v-model="downloader.spaceAlarm"
-                      class="toggle toggle-primary toggle-sm"
+                      class="toggle toggle-primary toggle-md"
                     />
                   </label>
                   <span class="text-xs text-base-content/60 mt-1">启用后，空间低于阈值会发送通知</span>
@@ -400,7 +400,7 @@
                 <input
                   type="checkbox"
                   v-model="downloader.autoDelete"
-                  class="toggle toggle-primary toggle-sm"
+                  class="toggle toggle-primary toggle-md"
                 />
               </label>
             </div>
@@ -470,11 +470,11 @@
           <div class="form-control pt-4">
              <div class="flex flex-col md:flex-row gap-4">
                 <button type="submit" class="btn btn-primary flex-1">
-                  <i class="fas fa-save mr-2"></i>
+                  <fa-icon :icon="['fas', 'save']" class="mr-2" />
                   {{ downloader.id ? '保存修改' : '确认新增' }}
                 </button>
                 <button type="button" class="btn btn-ghost flex-1" @click="clearDownloader">
-                  <i class="fas fa-times mr-2"></i>
+                  <fa-icon :icon="['fas', 'times']" class="mr-2" />
                   清空表单
                 </button>
              </div>
@@ -560,7 +560,6 @@ export default {
     },
     async modifyDownloader() {
       try {
-        // 与webui保持一致，直接传递对象
         await this.$api().downloader.modify({ ...this.downloader });
         this.$message().success((this.downloader.id ? '编辑' : '新增') + '成功, 列表正在刷新...');
         setTimeout(() => this.listDownloader(), 1000);
@@ -588,7 +587,6 @@ export default {
     },
     async enableDownloader(record) {
       try {
-        // 与webui保持一致，传递整个记录
         await this.$api().downloader.modify({ ...record });
         this.$message().success('修改成功, 列表正在刷新...');
         setTimeout(() => this.listDownloader(), 1000);
@@ -598,13 +596,11 @@ export default {
       }
     },
     modifyClick(record) {
-      // 与webui保持一致的浅拷贝
       this.downloader = { ...record };
       // 滚动到表单
       this.$el.querySelector('form').scrollIntoView({ behavior: 'smooth' });
     },
     cloneClick(record) {
-      // 与webui保持一致的克隆方式
       this.downloader = { ...record, deleteRules: [...record.deleteRules] };
       this.downloader.id = null;
       this.downloader.alias = this.downloader.alias + '-克隆';
@@ -638,8 +634,6 @@ export default {
 </script>
 
 <style scoped>
-/* Add Font Awesome if not globally available */
-@import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css");
 
 .container {
   max-width: 1440px;

@@ -39,7 +39,7 @@
         <div class="divider"></div>
 
         <div class="alert alert-info bg-info/10 text-info-content">
-          <i class="fas fa-code-branch"></i>
+          <fa-icon :icon="['fas','code-branch']"/>
           <span>
             本项目基于
             <a 

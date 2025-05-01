@@ -12,37 +12,37 @@
           <table v-else class="table table-zebra w-full">
             <thead>
               <tr>
-                <th class="cursor-pointer" @click="sortBy('alias')">
+                <th class="text-base-content/70" @click="sortBy('alias')">
                   别名
                   <span v-if="sortKey === 'alias'" class="ml-1">
                     {{ sortOrder === 'asc' ? '↑' : '↓' }}
                   </span>
                 </th>
-                <th class="cursor-pointer" @click="sortBy('uploadSpeed')">
+                <th class="text-base-content/70" @click="sortBy('uploadSpeed')">
                   实时速度
                   <span v-if="sortKey === 'uploadSpeed'" class="ml-1">
                     {{ sortOrder === 'asc' ? '↑' : '↓' }}
                   </span>
                 </th>
-                <th class="cursor-pointer" @click="sortBy('seedingCount')">
+                <th class="text-base-content/70" @click="sortBy('seedingCount')">
                   当前任务
                   <span v-if="sortKey === 'seedingCount'" class="ml-1">
                     {{ sortOrder === 'asc' ? '↑' : '↓' }}
                   </span>
                 </th>
-                <th class="cursor-pointer" @click="sortBy('allTimeUpload')">
+                <th class="text-base-content/70" @click="sortBy('allTimeUpload')">
                   累计数据
                   <span v-if="sortKey === 'allTimeUpload'" class="ml-1">
                     {{ sortOrder === 'asc' ? '↑' : '↓' }}
                   </span>
                 </th>
-                <th class="cursor-pointer" @click="sortBy('usedSpace')">
+                <th class="text-base-content/70" @click="sortBy('usedSpace')">
                   做种大小
                   <span v-if="sortKey === 'usedSpace'" class="ml-1">
                     {{ sortOrder === 'asc' ? '↑' : '↓' }}
                   </span>
                 </th>
-                <th class="cursor-pointer" @click="sortBy('freeSpaceOnDisk')">
+                <th class="text-base-content/70" @click="sortBy('freeSpaceOnDisk')">
                   剩余空间
                   <span v-if="sortKey === 'freeSpaceOnDisk'" class="ml-1">
                     {{ sortOrder === 'asc' ? '↑' : '↓' }}

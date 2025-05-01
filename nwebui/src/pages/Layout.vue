@@ -5,10 +5,10 @@
       <!-- 侧边栏 - 只在非移动设备上显示 -->
       <div class="sidebar-container">
         <div class="h-full flex flex-col">
-          <div class="p-4 header-bg">
+          <div class="p-3 header-bg">
             <div class="flex items-center cursor-pointer" @click="gotoWiki">
-              <img src="/assets/images/logo.svg" class="w-7 h-7" alt="logo"/>
-              <span class="text-lg font-bold ml-2 text-header">qbitrace</span>
+              <img src="/assets/images/logo.svg" class="w-6 h-6" alt="logo"/>
+              <span class="text-sm font-bold ml-2 text-header">qbitrace</span>
             </div>
           </div>
           

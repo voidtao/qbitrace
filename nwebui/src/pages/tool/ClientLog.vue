@@ -6,7 +6,7 @@
     <div class="card bg-base-100 shadow-xs hover:shadow-md transition-all duration-300">
       <div class="card-body">
         <h2 class="card-title mb-6 text-base-content">
-          <i class="fas fa-file-alt mr-2 text-primary"></i>
+          <fa-icon :icon="['fas','file-alt']" class="mr-2 text-primary" />
           下载器日志
         </h2>
         
@@ -21,7 +21,7 @@
                 @click="currentPage = Math.max(1, currentPage - 1)"
                 :disabled="currentPage === 1"
               >
-                <i class="fas fa-chevron-left"></i>
+                <fa-icon :icon="['fas','chevron-left']" />
               </button>
               <button class="join-item btn btn-sm">
                 第 {{ currentPage }}/{{ totalPages }} 页
@@ -31,7 +31,7 @@
                 @click="currentPage = Math.min(totalPages, currentPage + 1)"
                 :disabled="currentPage === totalPages"
               >
-                <i class="fas fa-chevron-right"></i>
+                <fa-icon :icon="['fas','chevron-right']" />
               </button>
             </div>
           </div>
@@ -69,7 +69,7 @@
               @click="currentPage = Math.max(1, currentPage - 1)"
               :disabled="currentPage === 1"
             >
-              <i class="fas fa-chevron-left"></i>
+              <fa-icon :icon="['fas','chevron-left']" />
             </button>
             <button class="join-item btn">
               第 {{ currentPage }} 页
@@ -80,7 +80,7 @@
               @click="currentPage = Math.min(totalPages, currentPage + 1)"
               :disabled="currentPage === totalPages"
             >
-              <i class="fas fa-chevron-right"></i>
+              <fa-icon :icon="['fas','chevron-right']" />
             </button>
           </div>
         </div>

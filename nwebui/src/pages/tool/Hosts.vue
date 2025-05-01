@@ -6,7 +6,7 @@
     <div class="card bg-base-100 shadow-xs hover:shadow-md transition-all duration-300">
       <div class="card-body">
         <h2 class="card-title mb-6 text-base-content">
-          <i class="fas fa-network-wired mr-2 text-primary"></i>
+          <fa-icon :icon="['fas','network-wired']" class="mr-2 text-primary" />
           修改系统 Hosts
         </h2>
         
@@ -24,22 +24,22 @@
 
           <div class="flex flex-wrap gap-2">
             <button class="btn btn-primary" @click="save">
-              <i class="fas fa-save mr-1"></i>
+              <fa-icon :icon="['fas','save']" class="mr-1" />
               保存
             </button>
             <button class="btn btn-secondary btn-outline" @click="_export">
-              <i class="fas fa-file-export mr-1"></i>
+              <fa-icon :icon="['fas','file-export']" class="mr-1" />
               导出
             </button>
             <button class="btn btn-accent btn-outline" @click="_import">
-              <i class="fas fa-file-import mr-1"></i>
+              <fa-icon :icon="['fas','file-import']" class="mr-1" />
               导入
             </button>
           </div>
         </div>
 
         <div class="alert alert-info bg-info/10 text-info-content shadow-xs">
-          <i class="fas fa-info-circle mr-2 text-info"></i>
+          <fa-icon :icon="['fas','info-circle']" class="mr-2 text-info" />
           <div>
             <div class="font-medium">说明:</div>
             <ol class="list-decimal list-inside mt-2 space-y-1 text-sm text-base-content/80">

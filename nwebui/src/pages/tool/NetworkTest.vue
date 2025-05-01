@@ -6,7 +6,7 @@
     <div class="card bg-base-100 shadow-xs hover:shadow-md transition-all duration-300">
       <div class="card-body">
         <h2 class="card-title mb-6 text-base-content">
-          <i class="fas fa-network-wired mr-2 text-primary"></i>
+          <fa-icon :icon="['fas','network-wired']" class="mr-2 text-primary" />
           网络连通性测试
         </h2>
         
@@ -43,7 +43,7 @@
             
             <div class="form-control mt-4">
               <button type="submit" class="btn btn-primary w-full md:w-auto">
-                <i class="fas fa-play mr-2"></i>
+                <fa-icon :icon="['fas','play']" class="mr-2" />
                 执行测试
               </button>
             </div>
@@ -56,7 +56,7 @@
     <div class="card bg-base-100 shadow-xs hover:shadow-md transition-all duration-300 mt-8">
       <div class="card-body">
         <h2 class="card-title mb-4 text-base-content">
-          <i class="fas fa-terminal mr-2 text-primary"></i>
+          <fa-icon :icon="['fas','terminal']" class="mr-2 text-primary" />
           测试结果
         </h2>
         <div class="form-control">

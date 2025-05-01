@@ -17,7 +17,7 @@
               />
             </div>
             <span class="text-xs text-base-content/60">
-              <i class="fas fa-file-archive mr-1"></i>
+              <fa-icon :icon="['fas','file-archive']" class="mr-1" />
               备份时是否备份种子文件，如不备份，恢复时将清空所有已有种子
             </span>
           </div>
@@ -30,7 +30,7 @@
             
             <div class="mt-2">
               <button type="button" class="btn btn-primary" @click="backupqbitrace">
-                <i class="fas fa-download mr-2"></i>
+                <fa-icon :icon="['fas','download']" class="mr-2" />
                 下载备份
               </button>
             </div>
@@ -50,7 +50,7 @@
                 @change="handleUpload"
               />
               <button type="button" class="btn btn-primary btn-danger">
-                <i class="fas fa-upload mr-2"></i>
+                <fa-icon :icon="['fas','upload']" class="mr-2" />
                 点击选择文件
               </button>
             </div>

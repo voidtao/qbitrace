@@ -8,7 +8,7 @@
         <form @submit.prevent="modify" class="space-y-6">
           <!-- 安全提示 -->
           <div class="alert alert-info bg-info/10 text-info-content mb-6">
-            <i class="fas fa-shield-alt"></i>
+            <fa-icon :icon="['fas','shield-alt']" class="mr-2 text-info" />
             <span>请谨慎修改安全设置，确保记住您的登录凭据</span>
           </div>
           <!-- 用户名输入 -->
@@ -85,11 +85,10 @@
             <span class="text-xs text-base-content/60">默认不信任不安全的证书，勾选后信任所有 SSL 证书</span>
           </div>
 
-          <!-- 保存按钮 -->
           <div class="form-control mt-8">
             <button type="submit" class="btn btn-primary w-full md:w-auto">
-              <i class="fas fa-save mr-2"></i>
-              保存设置
+              <fa-icon :icon="['fas','save']" class="mr-2" />
+              保存配置
             </button>
           </div>
         </form>
