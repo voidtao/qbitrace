@@ -10,7 +10,14 @@
           <table class="table table-zebra w-full">
             <thead>
               <tr class="bg-base-200/50">
-                <th class="text-base-content/70">别名</th>
+                <th class="text-base-content/70 cursor-pointer" @click="sortBy('id')">
+                  ID
+                  <fa-icon v-if="sortKey === 'id'" :icon="['fas', sortOrder === 'asc' ? 'sort-up' : 'sort-down']" class="ml-1" />
+                </th>
+                <th class="text-base-content/70 cursor-pointer" @click="sortBy('alias')">
+                  别名
+                  <fa-icon v-if="sortKey === 'alias'" :icon="['fas', sortOrder === 'asc' ? 'sort-up' : 'sort-down']" class="ml-1" />
+                </th>
                 <th class="text-base-content/70">类型</th>
                 <th class="text-base-content/70">持续时间</th>
                 <th class="text-base-content/70">优先级</th>
@@ -18,7 +25,8 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="rule in deleteRuleList" :key="rule.id" class="hover:bg-base-200/30 transition-colors duration-200">
+              <tr v-for="rule in sortedDeleteRuleList" :key="rule.id" class="hover:bg-base-200/30 transition-colors duration-200">
+                <td class="text-base-content/80">{{ rule.id }}</td>
                 <td class="text-base-content/80 font-medium">{{ rule.alias }}</td>
                 <td class="text-base-content/80">{{ rule.type === 'normal' ? '普通' : 'JavaScript' }}</td>
                 <td class="text-base-content/80">{{ rule.fitTime || '-' }}</td>
@@ -44,8 +52,8 @@
                   </div>
                 </td>
               </tr>
-              <tr v-if="deleteRuleList.length === 0">
-                <td colspan="5" class="text-center text-base-content/60 py-4">暂无删种规则</td>
+              <tr v-if="sortedDeleteRuleList.length === 0">
+                <td colspan="6" class="text-center text-base-content/60 py-4">暂无删种规则</td>
               </tr>
             </tbody>
           </table>
@@ -331,57 +339,7 @@
 <script>
 export default {
   data() {
-    const columns = [
-      {
-        title: 'ID',
-        dataIndex: 'id',
-        width: 18,
-        sorter: (a, b) => a.id.localeCompare(b.id),
-        fixed: true
-      }, {
-        title: '别名',
-        dataIndex: 'alias',
-        sorter: (a, b) => a.alias.localeCompare(b.alias),
-        width: 30
-      }, {
-        title: '持续时间',
-        dataIndex: 'fitTime',
-        width: 30
-      }, {
-        title: '优先级',
-        dataIndex: 'priority',
-        width: 10
-      }, {
-        title: '类型',
-        dataIndex: 'type',
-        width: 15
-      }, {
-        title: '操作',
-        width: 20
-      }
-    ];
-    const conditionColumns = [
-      {
-        title: '选项',
-        dataIndex: 'key',
-        width: 18
-      }, {
-        title: '比较类型',
-        dataIndex: 'compareType',
-        width: 18
-      }, {
-        title: '值',
-        dataIndex: 'value',
-        width: 90
-      }, {
-        title: '操作',
-        dataIndex: 'option',
-        width: 30
-      }
-    ];
     return {
-      columns,
-      conditionColumns,
       conditionKeys: [{
         name: '种子名称',
         key: 'name'
@@ -469,7 +427,7 @@ export default {
       defaultDeleteRule: {
         conditions: [],
         alias: '',
-        type: '',
+        type: 'normal', // Default type to normal
         priority: 0,
         code: '(maindata, torrent) => {\n' +
               '  return false;\n' +
@@ -480,17 +438,33 @@ export default {
         compareType: '',
         value: ''
       },
-      loading: true
+      sortKey: 'alias', // Default sort key
+      sortOrder: 'asc' // Default sort order
     };
   },
+  computed: {
+    sortedDeleteRuleList() {
+      return [...this.deleteRuleList].sort((a, b) => {
+        let modifier = 1;
+        if (this.sortOrder === 'desc') modifier = -1;
+
+        const valA = a[this.sortKey];
+        const valB = b[this.sortKey];
+
+        // Handle potential null/undefined or different types if necessary
+        if (typeof valA === 'number' && typeof valB === 'number') {
+          return (valA - valB) * modifier;
+        } else {
+          const strA = String(valA).toLowerCase();
+          const strB = String(valB).toLowerCase();
+          if (strA < strB) return -1 * modifier;
+          if (strA > strB) return 1 * modifier;
+          return 0;
+        }
+      });
+    }
+  },
   methods: {
-    isMobile() {
-      if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-        return true;
-      } else {
-        return false;
-      }
-    },
     async listDeleteRule() {
       try {
         const res = await this.$api().deleteRule.list();
@@ -526,7 +500,19 @@ export default {
       }
     },
     clearDeleteRule() {
-      this.deleteRule = { ...this.defaultDeleteRule, conditions: [{ ...this.condition }] };
+      this.deleteRule = { 
+        ...this.defaultDeleteRule, 
+        conditions: [{ ...this.condition }],
+        type: 'normal' // Ensure type is set on clear
+      };
+    },
+    sortBy(key) {
+      if (this.sortKey === key) {
+        this.sortOrder = this.sortOrder === 'asc' ? 'desc' : 'asc';
+      } else {
+        this.sortKey = key;
+        this.sortOrder = 'asc';
+      }
     }
   },
   async mounted() {

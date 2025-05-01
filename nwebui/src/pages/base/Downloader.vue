@@ -11,8 +11,14 @@
           <table class="table table-zebra w-full">
             <thead>
               <tr class="bg-base-200/50">
-                <th class="text-base-content/70">ID</th>
-                <th class="text-base-content/70">别名</th>
+                <th class="text-base-content/70 cursor-pointer" @click="sortBy('id')">
+                  ID
+                  <fa-icon v-if="sortKey === 'id'" :icon="['fas', sortOrder === 'asc' ? 'sort-up' : 'sort-down']" class="ml-1" />
+                </th>
+                <th class="text-base-content/70 cursor-pointer" @click="sortBy('alias')">
+                  别名
+                  <fa-icon v-if="sortKey === 'alias'" :icon="['fas', sortOrder === 'asc' ? 'sort-up' : 'sort-down']" class="ml-1" />
+                </th>
                 <th class="text-base-content/70">启用</th>
                 <th class="text-base-content/70">URL</th>
                 <th class="text-base-content/70">自动删种</th>
@@ -21,7 +27,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="record in downloaders" 
+              <tr v-for="record in sortedDownloaders" 
                   :key="record.id"
                   class="hover:bg-base-200/30 transition-colors duration-200">
                 <td class="text-base-content/80 text-sm">{{ record.id }}</td>
@@ -54,16 +60,18 @@
                 </td>
                 <td>
                   <div class="flex gap-2">
-                    <button class="btn btn-xs btn-outline btn-info" @click="goto(record)">
-                      <fa-icon :icon="['fas', 'external-link-alt']" class="mr-1" />打开
+                    <button class="btn btn-sm btn-outline btn-primary" @click="modifyClick(record)">
+                      <fa-icon :icon="['fas', 'edit']" class="mr-1" />编辑
+                    </button>
+                    <button class="btn btn-sm btn-outline btn-secondary" @click="cloneClick(record)">
+                      <fa-icon :icon="['fas', 'copy']" class="mr-1" />克隆
                     </button>
                     <div class="dropdown dropdown-end">
-                      <label tabindex="0" class="btn btn-xs btn-outline btn-secondary">
-                        <fa-icon :icon="['fas', 'ellipsis-h']" class="mr-1" />操作
+                      <label tabindex="0" class="btn btn-sm btn-outline btn-info">
+                        <fa-icon :icon="['fas', 'ellipsis-h']" class="mr-1" />更多
                       </label>
                       <ul tabindex="0" class="dropdown-content z-1 menu p-2 shadow-lg bg-base-100 rounded-lg w-32">
-                        <li><a @click="modifyClick(record)"><fa-icon :icon="['fas', 'edit']" class="w-4 mr-2" />编辑</a></li>
-                        <li><a @click="cloneClick(record)"><fa-icon :icon="['fas', 'copy']" class="w-4 mr-2" />克隆</a></li>
+                        <li><a @click="goto(record)"><fa-icon :icon="['fas', 'external-link-alt']" class="w-4 mr-2" />打开</a></li>
                         <li><a @click="gotoLog(record)"><fa-icon :icon="['fas', 'file-alt']" class="w-4 mr-2" />日志</a></li>
                         <li><hr class="my-1 border-base-300"></li>
                         <li>
@@ -389,8 +397,7 @@
                 </div>
             </div>
           </div>
-          
-          <!-- 自动删种设置 -->
+
           <div class="bg-base-200/50 rounded-lg p-4 space-y-4">
             <h3 class="font-medium text-base-content/80 mb-2">自动删种</h3>
             
@@ -522,8 +529,33 @@ export default {
         minFreeSpace: '',
         minFreeSpaceUnit: 'GiB',
         maxLeechNum: ''
-      }
+      },
+      sortKey: 'alias', // Default sort key
+      sortOrder: 'asc' // Default sort order (renamed from sortDirection)
     };
+  },
+  computed: {
+    sortedDownloaders() {
+      return [...this.downloaders].sort((a, b) => {
+        let modifier = 1;
+        if (this.sortOrder === 'desc') modifier = -1; // Use sortOrder
+
+        const valA = a[this.sortKey];
+        const valB = b[this.sortKey];
+
+        // Handle potential null/undefined or different types if necessary
+        if (typeof valA === 'number' && typeof valB === 'number') {
+          return (valA - valB) * modifier;
+        } else {
+          // Use toLowerCase for case-insensitive string comparison like in Script.vue
+          const strA = String(valA).toLowerCase();
+          const strB = String(valB).toLowerCase();
+          if (strA < strB) return -1 * modifier;
+          if (strA > strB) return 1 * modifier;
+          return 0;
+        }
+      });
+    }
   },
   methods: {
     isMobile() {
@@ -619,6 +651,14 @@ export default {
     },
     gotoLog(record) {
       window.open(`/tool/clientLog?id=${record.id}`, '_blank');
+    },
+    sortBy(key) {
+      if (this.sortKey === key) {
+        this.sortOrder = this.sortOrder === 'asc' ? 'desc' : 'asc'; // Use sortOrder
+      } else {
+        this.sortKey = key;
+        this.sortOrder = 'asc'; // Use sortOrder
+      }
     }
   },
   async mounted() {

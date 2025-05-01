@@ -3,7 +3,6 @@
     <h1 class="text-2xl font-bold mb-4">通知工具管理</h1>
     <div class="divider"></div>
 
-    <!-- 规则列表 Card -->
     <div class="card bg-base-100 shadow-xs hover:shadow-md transition-all duration-300 mb-8">
       <div class="card-body">
         <h2 class="card-title mb-6 text-base-content">通知工具列表</h2>
@@ -11,8 +10,14 @@
           <table class="table table-zebra w-full">
             <thead>
               <tr class="bg-base-200/50">
-                <th class="text-base-content/70">ID</th>
-                <th class="text-base-content/70">别名</th>
+                <th class="text-base-content/70 cursor-pointer" @click="sortBy('id')">
+                  ID
+                  <fa-icon v-if="sortKey === 'id'" :icon="['fas', sortOrder === 'asc' ? 'sort-up' : 'sort-down']" class="ml-1" />
+                </th>
+                <th class="text-base-content/70 cursor-pointer" @click="sortBy('alias')">
+                  别名
+                  <fa-icon v-if="sortKey === 'alias'" :icon="['fas', sortOrder === 'asc' ? 'sort-up' : 'sort-down']" class="ml-1" />
+                </th>
                 <th class="text-base-content/70">推送类型</th>
                 <th class="text-base-content/70">启用</th>
                 <th class="text-base-content/70">状态</th>
@@ -20,7 +25,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="record in notifications" :key="record.id" class="hover:bg-base-200/30 transition-colors duration-200">
+              <tr v-for="record in sortedNotifications" :key="record.id" class="hover:bg-base-200/30 transition-colors duration-200">
                 <td class="text-base-content/80">{{ record.id }}</td>
                 <td class="text-base-content/80 font-medium">{{ record.alias }}</td>
                 <td class="text-base-content/80">{{ record.type }}</td>
@@ -208,7 +213,6 @@
               </div>
             </template>
 
-            <!-- Ntfy 配置 -->
             <template v-if="notification.type === 'ntfy'">
               <div class="form-control">
                 <label class="label">
@@ -371,30 +375,7 @@
 <script>
 export default {
   data() {
-    const columns = [
-      {
-        title: 'ID',
-        dataIndex: 'id',
-        width: 18,
-        sorter: (a, b) => a.id.localeCompare(b.id),
-        fixed: true
-      }, {
-        title: '别名',
-        dataIndex: 'alias',
-        sorter: (a, b) => a.alias.localeCompare(b.alias),
-        defaultSortOrder: 'ascend',
-        width: 30
-      }, {
-        title: '推送类型',
-        dataIndex: 'type',
-        width: 30
-      }, {
-        title: '操作',
-        width: 20
-      }
-    ];
     return {
-      columns,
       notifications: [],
       notification: [],
       pushType: [
@@ -443,18 +424,26 @@ export default {
         id: '',
         pushType: []
       },
-      loading: true,
-      registCode: []
+      sortKey: 'alias',
+      sortOrder: 'asc'
     };
   },
+  computed: {
+    sortedNotifications() {
+      return [...this.notifications].sort((a, b) => {
+        let modifier = 1;
+        if (this.sortOrder === 'desc') modifier = -1;
+
+        const valA = a[this.sortKey];
+        const valB = b[this.sortKey];
+
+        if (valA < valB) return -1 * modifier;
+        if (valA > valB) return 1 * modifier;
+        return 0;
+      });
+    }
+  },
   methods: {
-    isMobile() {
-      if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-        return true;
-      } else {
-        return false;
-      }
-    },
     async listNotification() {
       try {
         const res = await this.$api().notification.list();
@@ -465,8 +454,9 @@ export default {
     },
     async modifyNotification() {
       try {
-        await this.$api().notification.modify({ ...this.notification });
-        this.$message().success((this.notification.id ? '编辑' : '新增') + '成功, 列表正在刷新...');
+        const payload = typeof this.notification === 'object' && this.notification !== null ? { ...this.notification } : {};
+        await this.$api().notification.modify(payload);
+        this.$message().success((payload.id ? '编辑' : '新增') + '成功, 列表正在刷新...');
         setTimeout(() => this.listNotification(), 1000);
         this.clearNotification();
       } catch (e) {
@@ -474,7 +464,11 @@ export default {
       }
     },
     modifyClick(row) {
-      this.notification = { ...row, pushType: this.pushType.map(item => item.key).filter(item => row.pushType.indexOf(item) !== -1) };
+      const currentPushTypes = Array.isArray(row.pushType) ? row.pushType : [];
+      this.notification = {
+        ...row,
+        pushType: this.pushType.map(item => item.key).filter(key => currentPushTypes.includes(key))
+      };
     },
     clearNotification() {
       this.notification = { ...this.defaultNotification, pushType: [] };
@@ -491,6 +485,17 @@ export default {
       } catch (e) {
         this.$message().error(e.message);
       }
+    },
+    async enableNotification(record) {
+      console.warn('enableNotification method not fully implemented.', record);
+    },
+    sortBy(key) {
+      if (this.sortKey === key) {
+        this.sortOrder = this.sortOrder === 'asc' ? 'desc' : 'asc';
+      } else {
+        this.sortKey = key;
+        this.sortOrder = 'asc';
+      }
     }
   },
   async mounted() {
@@ -502,6 +507,6 @@ export default {
 
 <style scoped>
 .container {
-  max-width: 1440px; /* Keep max-width if desired */
+  max-width: 1440px;
 }
 </style>

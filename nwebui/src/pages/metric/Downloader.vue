@@ -12,41 +12,29 @@
           <table v-else class="table table-zebra w-full">
             <thead>
               <tr>
-                <th class="text-base-content/70" @click="sortBy('alias')">
+                <th class="text-base-content/70 cursor-pointer" @click="sortBy('alias')">
                   别名
-                  <span v-if="sortKey === 'alias'" class="ml-1">
-                    {{ sortOrder === 'asc' ? '↑' : '↓' }}
-                  </span>
+                  <fa-icon v-if="sortKey === 'alias'" :icon="['fas', sortOrder === 'asc' ? 'sort-up' : 'sort-down']" class="ml-1" />
                 </th>
-                <th class="text-base-content/70" @click="sortBy('uploadSpeed')">
+                <th class="text-base-content/70 cursor-pointer" @click="sortBy('uploadSpeed')">
                   实时速度
-                  <span v-if="sortKey === 'uploadSpeed'" class="ml-1">
-                    {{ sortOrder === 'asc' ? '↑' : '↓' }}
-                  </span>
+                  <fa-icon v-if="sortKey === 'uploadSpeed'" :icon="['fas', sortOrder === 'asc' ? 'sort-up' : 'sort-down']" class="ml-1" />
                 </th>
-                <th class="text-base-content/70" @click="sortBy('seedingCount')">
+                <th class="text-base-content/70 cursor-pointer" @click="sortBy('seedingCount')">
                   当前任务
-                  <span v-if="sortKey === 'seedingCount'" class="ml-1">
-                    {{ sortOrder === 'asc' ? '↑' : '↓' }}
-                  </span>
+                  <fa-icon v-if="sortKey === 'seedingCount'" :icon="['fas', sortOrder === 'asc' ? 'sort-up' : 'sort-down']" class="ml-1" />
                 </th>
-                <th class="text-base-content/70" @click="sortBy('allTimeUpload')">
+                <th class="text-base-content/70 cursor-pointer" @click="sortBy('allTimeUpload')">
                   累计数据
-                  <span v-if="sortKey === 'allTimeUpload'" class="ml-1">
-                    {{ sortOrder === 'asc' ? '↑' : '↓' }}
-                  </span>
+                  <fa-icon v-if="sortKey === 'allTimeUpload'" :icon="['fas', sortOrder === 'asc' ? 'sort-up' : 'sort-down']" class="ml-1" />
                 </th>
-                <th class="text-base-content/70" @click="sortBy('usedSpace')">
+                <th class="text-base-content/70 cursor-pointer" @click="sortBy('usedSpace')">
                   做种大小
-                  <span v-if="sortKey === 'usedSpace'" class="ml-1">
-                    {{ sortOrder === 'asc' ? '↑' : '↓' }}
-                  </span>
+                  <fa-icon v-if="sortKey === 'usedSpace'" :icon="['fas', sortOrder === 'asc' ? 'sort-up' : 'sort-down']" class="ml-1" />
                 </th>
-                <th class="text-base-content/70" @click="sortBy('freeSpaceOnDisk')">
+                <th class="text-base-content/70 cursor-pointer" @click="sortBy('freeSpaceOnDisk')">
                   剩余空间
-                  <span v-if="sortKey === 'freeSpaceOnDisk'" class="ml-1">
-                    {{ sortOrder === 'asc' ? '↑' : '↓' }}
-                  </span>
+                  <fa-icon v-if="sortKey === 'freeSpaceOnDisk'" :icon="['fas', sortOrder === 'asc' ? 'sort-up' : 'sort-down']" class="ml-1" />
                 </th>
               </tr>
             </thead>
@@ -88,7 +76,7 @@ export default {
     return {
       loading: false,
       downloaders: [],
-      sortKey: 'alias',
+      sortKey: 'freeSpaceOnDisk',
       sortOrder: 'asc',
       pageSize: 20,
       currentPage: 1
@@ -97,18 +85,22 @@ export default {
   computed: {
     sortedDownloaders() {
       return [...this.downloaders].sort((a, b) => {
-        let valueA = a[this.sortKey];
-        let valueB = b[this.sortKey];
+        let modifier = 1;
+        if (this.sortOrder === 'desc') modifier = -1;
 
-        if (this.sortKey === 'alias') {
-          return this.sortOrder === 'asc'
-            ? valueA.localeCompare(valueB)
-            : valueB.localeCompare(valueA);
+        const valA = a[this.sortKey];
+        const valB = b[this.sortKey];
+
+        // Handle potential null/undefined or different types if necessary
+        if (typeof valA === 'number' && typeof valB === 'number') {
+          return (valA - valB) * modifier;
+        } else {
+          const strA = String(valA).toLowerCase();
+          const strB = String(valB).toLowerCase();
+          if (strA < strB) return -1 * modifier;
+          if (strA > strB) return 1 * modifier;
+          return 0;
         }
-
-        return this.sortOrder === 'asc'
-          ? valueA - valueB
-          : valueB - valueA;
       });
     },
     paginatedDownloaders() {

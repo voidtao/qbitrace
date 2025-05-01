@@ -10,15 +10,21 @@
           <table class="table table-zebra w-full">
             <thead>
               <tr class="bg-base-200/50">
-                <th class="text-base-content/70">ID</th>
-                <th class="text-base-content/70">别名</th>
+                <th class="text-base-content/70 cursor-pointer" @click="sortBy('id')">
+                  ID
+                  <fa-icon v-if="sortKey === 'id'" :icon="['fas', sortOrder === 'asc' ? 'sort-up' : 'sort-down']" class="ml-1" />
+                </th>
+                <th class="text-base-content/70 cursor-pointer" @click="sortBy('alias')">
+                  别名
+                  <fa-icon v-if="sortKey === 'alias'" :icon="['fas', sortOrder === 'asc' ? 'sort-up' : 'sort-down']" class="ml-1" />
+                </th>
                 <th class="text-base-content/70">下载器</th>
                 <th class="text-base-content/70">优先级</th>
                 <th class="text-base-content/70">操作</th>
               </tr>
             </thead>
             <tbody>
-              <tr v-for="rule in rssRuleList" 
+              <tr v-for="rule in sortedRssRuleList" 
                   :key="rule.id"
                   class="hover:bg-base-200/30 transition-colors duration-200">
                 <td class="text-base-content/80">{{ rule.id }}</td>
@@ -305,50 +311,7 @@
 <script>
 export default {
   data() {
-    const columns = [
-      {
-        title: 'ID',
-        dataIndex: 'id',
-        width: 18,
-        sorter: (a, b) => a.id.localeCompare(b.id),
-        fixed: true
-      }, {
-        title: '别名',
-        dataIndex: 'alias',
-        sorter: (a, b) => a.alias.localeCompare(b.alias),
-        defaultSortOrder: 'ascend',
-        width: 30
-      }, {
-        title: '下载器',
-        dataIndex: 'downloader',
-        width: 20
-      }, {
-        title: '操作',
-        width: 20
-      }
-    ];
-    const conditionColumns = [
-      {
-        title: '选项',
-        dataIndex: 'key',
-        width: 18
-      }, {
-        title: '比较类型',
-        dataIndex: 'compareType',
-        width: 18
-      }, {
-        title: '值',
-        dataIndex: 'value',
-        width: 90
-      }, {
-        title: '操作',
-        dataIndex: 'option',
-        width: 30
-      }
-    ];
     return {
-      columns,
-      conditionColumns,
       conditionKeys: [{
         name: '种子名称',
         key: 'name'
@@ -364,32 +327,46 @@ export default {
         compareType: '',
         value: ''
       },
-      rssRule: {},
-      defaultRssRule: {
-        conditions: [{
-          key: '',
-          compareType: '',
-          value: ''
-        }],
+      rssRule: { 
+        conditions: [{ key: '', compareType: '', value: '' }],
         alias: '',
-        type: '',
-        code: '(torrent) => {\n' +
-              '  return false;\n' +
-              '}'
+        type: 'normal', 
+        code: '(torrent) => {\n  return false;\n}'
       },
-      loading: true,
+      defaultRssRule: {
+        conditions: [{ key: '', compareType: '', value: '' }],
+        alias: '',
+        type: 'normal', 
+        code: '(torrent) => {\n  return false;\n}'
+      },
       downloaders: [],
-      rssRuleList: []
+      rssRuleList: [],
+      sortKey: 'alias', 
+      sortOrder: 'asc' 
     };
   },
+  computed: {
+    sortedRssRuleList() {
+      return [...this.rssRuleList].sort((a, b) => {
+        let modifier = 1;
+        if (this.sortOrder === 'desc') modifier = -1;
+
+        const valA = a[this.sortKey];
+        const valB = b[this.sortKey];
+
+        if (typeof valA === 'number' && typeof valB === 'number') {
+          return (valA - valB) * modifier;
+        } else {
+          const strA = String(valA).toLowerCase();
+          const strB = String(valB).toLowerCase();
+          if (strA < strB) return -1 * modifier;
+          if (strA > strB) return 1 * modifier;
+          return 0;
+        }
+      });
+    }
+  },
   methods: {
-    isMobile() {
-      if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-        return true;
-      } else {
-        return false;
-      }
-    },
     async listRssRule() {
       try {
         const res = await this.$api().rssRule.list();
@@ -446,11 +423,22 @@ export default {
       }
     },
     clearRssRule() {
-      this.rssRule = { ...this.defaultRssRule, conditions: [{ ...this.condition }] };
+      this.rssRule = { 
+        ...this.defaultRssRule, 
+        conditions: [{ ...this.condition }] 
+      };
+    },
+    sortBy(key) {
+      if (this.sortKey === key) {
+        this.sortOrder = this.sortOrder === 'asc' ? 'desc' : 'asc';
+      } else {
+        this.sortKey = key;
+        this.sortOrder = 'asc';
+      }
     }
   },
   async mounted() {
-    this.clearRssRule();
+    this.clearRssRule(); 
     this.listDownloader();
     await this.listRssRule();
   }

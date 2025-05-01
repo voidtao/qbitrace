@@ -10,15 +10,21 @@
           <table class="table table-zebra w-full">
             <thead>
               <tr class="bg-base-200/50">
-                <th class="text-base-content/70">ID</th>
-                <th class="text-base-content/70">别名</th>
+                <th class="text-base-content/70 cursor-pointer" @click="sortBy('id')">
+                  ID
+                  <fa-icon v-if="sortKey === 'id'" :icon="['fas', sortOrder === 'asc' ? 'sort-up' : 'sort-down']" class="ml-1" />
+                </th>
+                <th class="text-base-content/70 cursor-pointer" @click="sortBy('alias')">
+                  别名
+                  <fa-icon v-if="sortKey === 'alias'" :icon="['fas', sortOrder === 'asc' ? 'sort-up' : 'sort-down']" class="ml-1" />
+                </th>
                 <th class="text-base-content/70">启用</th>
                 <th class="text-base-content/70">周期</th>
                 <th class="text-base-content/70">操作</th>
               </tr>
             </thead>
             <tbody>
-              <tr v-for="script in scripts" :key="script.id" class="hover:bg-base-200/30 transition-colors duration-200">
+              <tr v-for="script in sortedScripts" :key="script.id" class="hover:bg-base-200/30 transition-colors duration-200">
                 <td class="text-base-content/80">{{ script.id }}</td>
                 <td class="text-base-content/80 font-medium">{{ script.alias }}</td>
                 <td>
@@ -152,31 +158,7 @@
 <script>
 export default {
   data() {
-    const columns = [
-      {
-        title: 'ID',
-        dataIndex: 'id',
-        width: 18,
-        fixed: true
-      }, {
-        title: '别名',
-        dataIndex: 'alias',
-        width: 20
-      }, {
-        title: '启用',
-        dataIndex: 'enable',
-        width: 15
-      }, {
-        title: '周期',
-        dataIndex: 'cron',
-        width: 24
-      }, {
-        title: '操作',
-        width: 24
-      }
-    ];
     return {
-      columns,
       scripts: [],
       script: {},
       defaultScript: {
@@ -184,17 +166,34 @@ export default {
         cron: '* * * * *',
         script: 'logger.info(\'qbitrace IS THE BEST!\')'
       },
-      loading: true
+      loading: true,
+      sortKey: 'alias', // Default sort key
+      sortOrder: 'asc' // Default sort order
     };
   },
+  computed: {
+    sortedScripts() {
+      return [...this.scripts].sort((a, b) => {
+        let modifier = 1;
+        if (this.sortOrder === 'desc') modifier = -1;
+
+        const valA = a[this.sortKey];
+        const valB = b[this.sortKey];
+
+        // Handle potential null/undefined or different types if necessary
+        if (typeof valA === 'number' && typeof valB === 'number') {
+          return (valA - valB) * modifier;
+        } else {
+          const strA = String(valA).toLowerCase();
+          const strB = String(valB).toLowerCase();
+          if (strA < strB) return -1 * modifier;
+          if (strA > strB) return 1 * modifier;
+          return 0;
+        }
+      });
+    }
+  },
   methods: {
-    isMobile() {
-      if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-        return true;
-      } else {
-        return false;
-      }
-    },
     async listScript() {
       this.loading = true;
       try {
@@ -240,6 +239,14 @@ export default {
       this.script = {
         ...this.defaultScript
       };
+    },
+    sortBy(key) {
+      if (this.sortKey === key) {
+        this.sortOrder = this.sortOrder === 'asc' ? 'desc' : 'asc';
+      } else {
+        this.sortKey = key;
+        this.sortOrder = 'asc';
+      }
     }
   },
   async mounted() {
