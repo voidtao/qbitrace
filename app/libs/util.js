@@ -4,17 +4,12 @@ const path = require('path');
 const uuid = require('uuid');
 const tar = require('tar');
 const md5 = require('md5-node');
-const CryptoJS = require('crypto-js');
-const cron = require('node-cron');
 const request = require('request');
 const Database = require('better-sqlite3');
 const puppeteer = require('puppeteer-extra');
 const StealthPlugin = require('puppeteer-extra-plugin-stealth');
 const url = require('url');
-const { JSDOM } = require('jsdom');
-const moment = require('moment');
 const redlock = require('./redlock');
-
 const logger = require('./logger');
 const scrape = require('./scrape');
 

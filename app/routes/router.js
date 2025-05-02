@@ -1,7 +1,6 @@
 const Multipart = require('connect-multiparty');
 const session = require('express-session');
 const proxy = require('express-http-proxy');
-const redis = require('redis');
 const path = require('path');
 
 const config = require('../libs/config');
@@ -9,18 +8,25 @@ const logger = require('../libs/logger');
 const ctrl = require('../controller');
 const util = require('../libs/util');
 
-const client = redis.createClient(config.getRedisConfig());
-const RedisStore = require('connect-redis')(session);
+const { createClient } = require('redis');
+const { RedisStore } = require('connect-redis');
+const client = createClient(config.getRedisConfig());
 
-const multipartMiddleware = new Multipart();
+// 连接到 Redis 服务器并添加适当的错误处理
+client.connect()
+  .then(() => logger.info('Redis session store connected'))
+  .catch((err) => logger.error('Redis session store connection error:', err));
 
 client.on('error', (err) => {
-  logger.error('Redis:', err);
+  logger.error('Redis session store error:', err);
 });
 
-const redisConfig = config.getRedisConfig();
-redisConfig.client = client;
-redisConfig.prefix = 'qbitrace:sess:';
+const redisStore = new RedisStore({
+  client: client,
+  prefix: 'qbitrace:sess:'
+});
+
+const multipartMiddleware = new Multipart();
 
 const checkAuth = async function (req, res, next) {
   const pathname = req._parsedOriginalUrl.pathname;
@@ -88,7 +94,7 @@ module.exports = function (app, express, router) {
     resave: false,
     rolling: true,
     saveUninitialized: false,
-    store: new RedisStore(redisConfig),
+    store: redisStore,
     secret: 'sses:xetrev',
     cookie: {
       maxAge: 1000 * 60 * 60 * 24 * 30
@@ -182,7 +188,7 @@ module.exports = function (app, express, router) {
       }
       return res.download(_path, (err) => {
         if (!err) return;
-        logger.error(err);
+        logger.error(err);t
         res.status(404);
         return res.end('Not Found');
       });
