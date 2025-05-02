@@ -1,7 +1,7 @@
 FROM debian:stable AS builder
 ARG PAT
 RUN apt-get update && apt-get upgrade -y && apt-get install -y git bash && \
-    git clone https://${PAT}@github.com/voidtao/qbitrace.git /pt/qbitrace && \
+    git clone -b dev https://${PAT}@github.com/voidtao/qbitrace.git /pt/qbitrace && \
     cd /pt/qbitrace && \
     bash install.sh
 
