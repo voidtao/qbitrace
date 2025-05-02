@@ -245,7 +245,7 @@ class Rss {
       }
       if (this.scrapeFree) {
         try {
-          if (!await util.scrapeFree(torrent.link, this.cookie)) {
+          if (!(await util.scrapeFree(torrent.link, this.cookie))) {
             const isScraped = await redis.get(`qbitrace:scrape:free:${torrent.hash}`);
             if (this.sleepTime && (moment().unix() - +this.sleepTime) < torrent.pubTime && !isScraped) {
               logger.info(this.alias, '已设置等待时间', this.sleepTime, ', ', torrent.name, '发布时间为', moment(torrent.pubTime * 1000).format('YYYY-MM-DD HH:mm:ss'), ', 跳过');

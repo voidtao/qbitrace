@@ -2,7 +2,6 @@ const qb = require('../libs/client/qb');
 const util = require('../libs/util');
 const de = require('../libs/client/de');
 const tr = require('../libs/client/tr');
-const redis = require('../libs/redis');
 const moment = require('moment');
 const logger = require('../libs/logger');
 const cron = require('node-cron');

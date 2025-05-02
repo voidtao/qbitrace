@@ -9,7 +9,7 @@ loggerConfig.appenders.error.layout.tokens = {
   redis: (logEvent) => {
     const f = async () => {
       if (!redis) redis = require('./redis');
-      const errorList = JSON.parse((await redis.get('qbitrace:error:list') || '[]'));
+      const errorList = JSON.parse(((await redis.get('qbitrace:error:list')) || '[]'));
       delete logEvent.data.cert;
       errorList.push(logEvent.data);
       while (errorList.length > 5) {

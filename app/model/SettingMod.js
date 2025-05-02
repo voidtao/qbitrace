@@ -77,7 +77,7 @@ class SettingMod {
     const addCount = (await util.getRecord('select count(*) as addCount from torrent_r where record_type = 1')).addCount;
     const rejectCount = (await util.getRecord('select count(*) as rejectCount from torrent_r where record_type = 2')).rejectCount;
     const deleteCount = (await util.getRecord('select count(*) as deleteCount from torrent_d')).deleteCount;
-    const errors = global.ignoreError ? [] : JSON.parse(await redis.get('qbitrace:error:list') || '[]');
+    const errors = global.ignoreError ? [] : JSON.parse((await redis.get('qbitrace:error:list')) || '[]');
     await redis.set('qbitrace:error:list', '[]');
     return {
       dashboardContent: global.dashboardContent,

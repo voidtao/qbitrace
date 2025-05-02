@@ -33,14 +33,9 @@ docker run -d --name qbitrace --restart unless-stopped --network host -v /app/qb
    - 现直接删了，建议改为外部 Python 脚本定期任务处理
 
 2. **更新所有软件包至新版本，以下除外：**  
-   - `ant-design-vue` 4.x 废弃了 less。
-   - `less`、`less-loader` 升级后会报错内联 JS 问题。
-
    - `bencode` 2.0.3 后转向 esm，没有必须进行混用的升级项。
    - `redis`、`connect-redis` 新调用方式，没有必须升级的功能 。
-   
    - `eslint` 9.x 改动配置文件，自动转换效果差  
-
 
 3. **部分结构调整，符合 ECMA 14 规范**
 
@@ -82,11 +77,12 @@ docker run -d --name qbitrace --restart unless-stopped --network host -v /app/qb
    - 不再补充记录真实hash，torrent_r中的hash仅用于去重
 
 13. **更改缓存方式**
-   - 现在缓存为在./app/common/Rss.js统一进行，缓存50秒，而不在./app/libs/rss.js进行。
+   - 现在缓存为在app/common/Rss.js统一进行，缓存50秒，而不在app/libs/rss.js进行。
    - 缓存的应用场景为对相同rss链接创建多个任务，其他场景请调大rss周期。
 ---
 
 ## 计划的修改
+   - i18n支持（但感觉没有必要，外站大多有irc，而本软件核心为rss。） 
 
 ---
 
