@@ -12,7 +12,6 @@ const { createClient } = require('redis');
 const { RedisStore } = require('connect-redis');
 const client = createClient(config.getRedisConfig());
 
-// 连接到 Redis 服务器并添加适当的错误处理
 client.connect()
   .then(() => logger.info('Redis session store connected'))
   .catch((err) => logger.error('Redis session store connection error:', err));
@@ -174,8 +173,8 @@ module.exports = function (app, express, router) {
   app.use('/api', router);
   app.use('/proxy/client/:client', clientProxy);
 
-  app.use('*', (req, res, next) => {
-    const pathname = req._parsedOriginalUrl.pathname;
+  app.use((req, res, next) => {
+    const pathname = req.path;
     if (pathname === '/favicon.ico') {
       res.status(404);
       return res.end('Not Found');
@@ -188,10 +187,17 @@ module.exports = function (app, express, router) {
       }
       return res.download(_path, (err) => {
         if (!err) return;
-        logger.error(err);t
+        logger.error(err);
         res.status(404);
         return res.end('Not Found');
       });
     }
+    const uiPath = path.join(__dirname, '../static/index.html');
+    res.sendFile(uiPath, (err) => {
+      if (err) {
+        logger.error('Error sending frontend app:', err);
+        res.status(500).send('Internal Server Error');
+      }
+    });
   });
 };

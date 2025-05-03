@@ -56,7 +56,7 @@ const init = function () {
   global.transparent = setting.transparent;
   global.background = setting.background;
   global.wechatCover = setting.wechatCover;
-  global.theme = setting.theme || 'light';
+  global.theme = setting.theme || 'pastel';
   global.siteInfo = setting.siteInfo || {
     hide: [],
     hideName: [],
