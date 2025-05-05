@@ -50,6 +50,16 @@ body.has-bg-image::before {
   padding: 1rem;
 }
 
+.table {
+  width: 100% !important;
+  table-layout: auto !important;
+}
+.table th, .table td {
+  min-width: fit-content;
+  white-space: normal;
+  overflow-wrap: break-word;
+}
+
 /* 移动端适配优化 */
 @media (max-width: 768px) {
   .container {

@@ -47,15 +47,15 @@
                 <td class="text-base-content/80">{{ rule.priority || 0 }}</td>
                 <td>
                   <div class="flex gap-2">
-                    <button class="btn btn-sm btn-primary btn-outline" 
-                            @click="cloneClick(rule)">
-                      <fa-icon :icon="['fas', 'copy']" class="mr-1" />
-                      克隆
-                    </button>
                     <button class="btn btn-sm btn-secondary btn-outline" 
                             @click="modifyClick(rule)">
                       <fa-icon :icon="['fas', 'edit']" class="mr-1" />
                       编辑
+                    </button>
+                    <button class="btn btn-sm btn-primary btn-outline" 
+                            @click="cloneClick(rule)">
+                      <fa-icon :icon="['fas', 'copy']" class="mr-1" />
+                      克隆
                     </button>
                     <div class="dropdown dropdown-end">
                       <label tabindex="0" 
@@ -399,6 +399,7 @@ export default {
       this.rssRule = { ...row };
     },
     cloneClick(row) {
+      this.clearRssRule(); // Clear any existing form data to ensure a fresh state
       this.rssRule = { ...row, id: undefined };
     },
     async deleteRssRule(row) {

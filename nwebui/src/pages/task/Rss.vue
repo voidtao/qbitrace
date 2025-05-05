@@ -892,6 +892,7 @@ export default {
       this.rss = { ...row };
     },
     cloneClick(row) {
+      this.clearRss(); // Clear any existing form data to ensure a fresh state
       this.rss = JSON.parse(JSON.stringify(row));
       this.rss.id = null;
       this.rss.alias = this.rss.alias + '-克隆';

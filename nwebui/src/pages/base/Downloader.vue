@@ -637,6 +637,7 @@ export default {
       this.$el.querySelector('form').scrollIntoView({ behavior: 'smooth' });
     },
     cloneClick(record) {
+      this.clearDownloader(); // Clear any existing form data to ensure a fresh state
       this.downloader = { ...record, deleteRules: [...record.deleteRules] };
       this.downloader.id = null;
       this.downloader.alias = this.downloader.alias + '-克隆';
