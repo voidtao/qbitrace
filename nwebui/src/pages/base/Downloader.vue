@@ -619,10 +619,14 @@ export default {
     },
     async enableDownloader(record) {
       try {
-        await this.$api().downloader.modify({ ...record });
+        // Create a modified record with toggled enable status
+        const updatedRecord = { 
+          ...record, 
+          enable: !record.enable 
+        };
+        await this.$api().downloader.modify(updatedRecord);
         this.$message().success('修改成功, 列表正在刷新...');
         setTimeout(() => this.listDownloader(), 1000);
-        this.clearDownloader();
       } catch (e) {
         this.$message().error(e.message);
       }

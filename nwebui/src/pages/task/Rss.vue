@@ -809,21 +809,15 @@ export default {
   computed: {
     sortedRssList() {
       return [...this.rssList].sort((a, b) => {
-        let modifier = 1;
-        if (this.sortOrder === 'desc') modifier = -1;
-
+        const modifier = this.sortOrder === 'desc' ? -1 : 1;
         const valA = a[this.sortKey];
         const valB = b[this.sortKey];
 
-        // Handle potential null/undefined or different types if necessary
+        // Handle numeric and string comparisons with a single approach
         if (typeof valA === 'number' && typeof valB === 'number') {
           return (valA - valB) * modifier;
         } else {
-          const strA = String(valA).toLowerCase();
-          const strB = String(valB).toLowerCase();
-          if (strA < strB) return -1 * modifier;
-          if (strA > strB) return 1 * modifier;
-          return 0;
+          return String(valA).toLowerCase().localeCompare(String(valB).toLowerCase()) * modifier;
         }
       });
     }
@@ -882,10 +876,14 @@ export default {
     },
     async enableTask(record) {
       try {
-        await this.$api().rss.modify({ ...record });
+        // Create a modified record with toggled enable status
+        const updatedRecord = { 
+          ...record, 
+          enable: !record.enable 
+        };
+        await this.$api().rss.modify(updatedRecord);
         this.$message().success('修改成功, 列表正在刷新...');
         setTimeout(() => this.listRss(), 1000);
-        this.clearRss();
       } catch (e) {
         this.$message().error(e.message);
       }

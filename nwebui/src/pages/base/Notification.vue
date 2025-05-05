@@ -487,7 +487,17 @@ export default {
       }
     },
     async enableNotification(record) {
-      console.warn('enableNotification method not fully implemented.', record);
+      try {
+        const updatedRecord = { 
+          ...record, 
+          enable: !record.enable 
+        };
+        await this.$api().notification.modify(updatedRecord);
+        this.$message().success('修改成功, 列表正在刷新...');
+        setTimeout(() => this.listNotification(), 1000);
+      } catch (e) {
+        this.$message().error(e.message);
+      }
     },
     sortBy(key) {
       if (this.sortKey === key) {
