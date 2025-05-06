@@ -54,7 +54,12 @@ body.has-bg-image::before {
   width: 100% !important;
   table-layout: auto !important;
 }
-.table th, .table td {
+.table th {
+  min-width: fit-content;
+  white-space: nowrap;
+  overflow-wrap: normal;
+}
+.table td {
   min-width: fit-content;
   white-space: normal;
   overflow-wrap: break-word;
