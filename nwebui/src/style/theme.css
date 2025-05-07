@@ -9,7 +9,7 @@
   --header-text: var(--pc); /* primary-content 颜色 */
   --sidebar-background: var(--b2); /* DaisyUI 的 base-200 变量 */
   --bg-image: none; /* 默认无背景图片 */
-  --bg-opacity: 0.1; /* 背景图片透明度 */
+  --bg-opacity: 0.2; /* 背景图片透明度 */
   --bg-blend-mode: multiply; /* 背景混合模式 */
   --bg-position: center; /* 背景位置 */
   --bg-size: cover; /* 背景大小 */

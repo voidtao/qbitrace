@@ -9,7 +9,7 @@
         <div class="card-body">
           <h3 class="text-lg font-bold">今日添加</h3>
           <p class="text-sm text-base-content/70">ACCEPT</p>
-          <p class="text-xl font-bold text-primary">{{runInfo.addCountToday}}</p>
+          <p class="text-xl font-bold">{{runInfo.addCountToday}}</p>
         </div>
       </div>
       
@@ -17,18 +17,18 @@
         <div class="card-body">
           <h3 class="text-lg font-bold">今日拒绝</h3>
           <p class="text-sm text-base-content/70">REJECT</p>
-          <p class="text-xl font-bold text-primary">{{runInfo.rejectCountToday}}</p>
+          <p class="text-xl font-bold">{{runInfo.rejectCountToday}}</p>
         </div>
       </div>
     </div>
     
     <!-- 累计统计卡片 -->
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-      <div class="card bg-accent/10 shadow-xs hover:shadow-md border border-accent/20">
+      <div class="card bg-base-100 shadow-xs hover:shadow-md border border-base-200">
         <div class="card-body">
           <h3 class="text-lg font-bold">累计上传</h3>
           <p class="text-sm text-base-content/70">UPLOAD</p>
-          <p class="text-xl font-bold text-accent">{{$formatSize(runInfo.uploaded)}}</p>
+          <p class="text-xl font-bold">{{$formatSize(runInfo.uploaded)}}</p>
         </div>
       </div>
       
@@ -60,8 +60,7 @@
     <!-- 下载器卡片 -->
     <div v-if="runInfo.dashboardContent?.filter(item => item === 'downloader')[0]" class="grid grid-cols-1 md:grid-cols-2 gap-4">
       <div v-for="(downloader, index) in downloaders" :key="downloader.id" 
-           class="card bg-base-100 shadow-xs hover:shadow-md border cursor-pointer transition-all duration-300"
-           :class="{ 'bg-primary/10 border-primary/20': index === 0, 'border-base-200': index !== 0 }"
+           class="card bg-base-100 shadow-xs hover:shadow-md border cursor-pointer transition-all duration-300 border-base-200"
            @click="gotoClient(`/proxy/client/${downloader.id}/`)">
         <div class="card-body">
           <h2 class="card-title">{{ downloader.alias }}</h2>
