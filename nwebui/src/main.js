@@ -18,7 +18,6 @@ import {
   DataZoomComponent,
   ToolboxComponent
 } from 'echarts/components';
-import VChart from 'vue-echarts';
 import 'zrender/lib/svg/svg';
 import VueLazyLoad from 'vue-lazyload-next';
 import md5 from 'md5-node';
@@ -46,12 +45,6 @@ const app = createApp(App);
 
 app.use(VueLazyLoad, {
   loading: '/assets/images/loading.gif'
-});
-
-app.component('v-chart', VChart);
-
-app.component('v-nodes', (_, { attrs }) => {
-  return attrs.vnodes;
 });
 
 app.component('fa-icon', FontAwesomeIcon);
