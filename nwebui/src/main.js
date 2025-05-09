@@ -4,7 +4,6 @@ import moment from 'moment';
 import { createApp, ref, defineComponent } from 'vue';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { fas } from '@fortawesome/free-solid-svg-icons';
-import { fab } from '@fortawesome/free-brands-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { use } from 'echarts/core';
 import { CanvasRenderer } from 'echarts/renderers';
@@ -25,7 +24,6 @@ import md5 from 'md5-node';
 import router from './routes';
 
 library.add(fas);
-library.add(fab);
 
 use([
   CanvasRenderer,

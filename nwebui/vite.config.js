@@ -13,6 +13,7 @@ export default defineConfig({
     vue(),
     VitePWA({
       registerType: 'autoUpdate',
+      manifestFilename: 'manifest.json', // Moved from manifest object
       manifest: {
         name: 'qbitrace',
         short_name: 'qbitrace',
