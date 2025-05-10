@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <!-- PC端布局 -->
-    <div class="hidden md:flex">
+    <div v-if="!isMobileLayout" class="hidden md:flex">
       <!-- 侧边栏 - 只在非移动设备上显示 -->
       <div class="sidebar-container">
         <div class="h-full flex flex-col">
@@ -68,12 +68,12 @@
 
       <!-- PC端内容区域 -->
       <div class="content-container">
-        <router-view></router-view>
+        <router-view :key="$route.fullPath + '-pc'"></router-view>
       </div>
     </div>
 
     <!-- 移动端布局 -->
-    <div class="drawer block md:hidden w-full h-full">
+    <div v-else class="drawer block md:hidden w-full h-full">
       <input id="drawer" type="checkbox" class="drawer-toggle" v-model="visible"/>
       <div class="drawer-content flex flex-col">
         <div class="navbar bg-base-100 shadow-xs fixed top-0 left-0 right-0 z-10">
@@ -90,7 +90,7 @@
           </div>
         </div>
         <div class="pt-16 pb-4 flex-1 overflow-y-auto">
-          <router-view></router-view>
+          <router-view :key="$route.fullPath + '-mobile'"></router-view>
         </div>
       </div>
       <div class="drawer-side z-20">
@@ -168,10 +168,14 @@ export default {
       selectedKeys: [],
       openKeys: [],
       visible: false,
-      menu: []
+      menu: [],
+      isMobileLayout: false // 新增状态来控制布局
     };
   },
   methods: {
+    updateLayoutType() {
+      this.isMobileLayout = window.innerWidth < 768; // Tailwind 'md' breakpoint
+    },
     isMobile () {
       if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
         return true;
@@ -211,6 +215,9 @@ export default {
     }
   },
   async mounted () {
+    this.updateLayoutType(); // 初始化布局类型
+    window.addEventListener('resize', this.updateLayoutType); // 监听窗口大小变化
+
     this.selectedKeys = [this.$route.path];
     try {
       const res = await this.$api().user.get();
@@ -232,6 +239,7 @@ export default {
     window.addEventListener('resize', this.setVh);
   },
   beforeUnmount() {
+    window.removeEventListener('resize', this.updateLayoutType);
     window.removeEventListener('resize', this.setVh);
   }
 };
@@ -310,7 +318,12 @@ export default {
 }
 
 /* 添加移动设备下的内容区样式，覆盖默认样式 */
-@media (max-width: 768px) {
+@media (max-width: 767px) {
+  .drawer-side {
+    --mobile-drawer-key-font-size: 1.3rem;
+    --mobile-drawer-key-padding: 0.75rem 1rem;
+  }
+
   /* Explicitly hide the PC layout container on screens smaller than md */
   .app-container > .hidden.md\:flex {
     display: none;
@@ -330,14 +343,25 @@ export default {
     padding: 1.25rem;
     padding-top: calc(4rem + 1.25rem);
   }
-}
 
-/* 移动端抽屉菜单中的文本样式，增加字体大小 */
-@media (max-width: 768px) {
+  /* Ensure drawer flush to left */
+  .drawer-side {
+    margin: 0;
+  }
+  /* Make overlay cover full screen */
+  .drawer-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+  }
+
+  /* 移动端抽屉菜单中的文本样式，增加字体大小 */
   .drawer-side .menu a,
   .drawer-side .menu summary {
-    font-size: 1.3rem !important; /* 增加字体大小到原来的1.5倍左右 */
-    padding: 0.75rem 1rem; /* 增加内边距 */
+    font-size: var(--mobile-drawer-key-font-size) !important; /* 增加字体大小到原来的1.5倍左右 */
+    padding: var(--mobile-drawer-key-padding); /* 增加内边距 */
     width: 100%; /* 确保宽度占满父元素 */
   }
   
@@ -352,31 +376,16 @@ export default {
   }
   
   .drawer-side .header-bg {
-    padding: 0.75rem 1rem; /* 增加头部区域的内边距 */
+    padding: var(--mobile-drawer-key-padding); /* 增加头部区域的内边距 */
   }
   
   .drawer-side .header-bg .text-lg {
-    font-size: 1.3rem !important; /* 增加标题文本大小 */
+    font-size: var(--mobile-drawer-key-font-size) !important; /* 增加标题文本大小 */
   }
   
   .drawer-side .header-bg img {
     width: 1.75rem !important;
     height: 1.75rem !important;
-  }
-  
-  .content-container {
-    margin-left: 0;
-    width: 100%;
-  }
-  
-  .drawer-content {
-    min-height: 100vh;
-    height: calc(var(--vh, 1vh) * 100);
-  }
-  
-  .drawer-content > div:nth-child(2) {
-    padding: 1.25rem;
-    padding-top: calc(4rem + 1.25rem);
   }
 }
 </style>

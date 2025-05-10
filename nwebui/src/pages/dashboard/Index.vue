@@ -159,27 +159,28 @@ export default {
         await this.$message().error(e.message);
       }
     },
-    async listDownloader() {
+    async updateDownloaders() {
       try {
         const res = await this.$api().downloader.listMainInfo();
-        this.downloaders = res.data
-          .sort((a, b) => a.alias.localeCompare(b.alias))
-          .map(item => ({
+        const sortedData = res.data.sort((a, b) => a.alias.localeCompare(b.alias));
+        
+        if (this.downloaders.length === 0) {
+          this.downloaders = sortedData.map(item => ({
             ...item,
-            speedChart: JSON.parse(JSON.stringify(this.speedChart))
+            speedChart: JSON.parse(JSON.stringify(this.speedChart)),
+            uploadSpeed: item.uploadSpeed || 0,
+            downloadSpeed: item.downloadSpeed || 0
           }));
-      } catch (e) {
-        await this.$message().error(e.message);
-      }
-    },
-    async listDownloaderInfo() {
-      try {
-        const res = await this.$api().downloader.listMainInfo();
-        for (const downloader of this.downloaders) {
-          const upload = res.data.filter(item => item.id === downloader.id)[0]?.uploadSpeed || 0;
-          const download = res.data.filter(item => item.id === downloader.id)[0]?.downloadSpeed || 0;
-          downloader.uploadSpeed = upload;
-          downloader.downloadSpeed = download;
+        } else {
+          for (const downloader of this.downloaders) {
+            const updatedData = sortedData.find(item => item.id === downloader.id);
+            if (updatedData) {
+              downloader.uploadSpeed = updatedData.uploadSpeed || 0;
+              downloader.downloadSpeed = updatedData.downloadSpeed || 0;
+              downloader.allTimeUpload = updatedData.allTimeUpload;
+              downloader.allTimeDownload = updatedData.allTimeDownload;
+            }
+          }
         }
       } catch (e) {
         await this.$message().error(e.message);
@@ -193,14 +194,13 @@ export default {
     await this.getRunInfo();
     const downloader = !!this.runInfo.dashboardContent.filter(item => item === 'downloader')[0];
     if (downloader) {
-      this.listDownloader();
-      this.listDownloaderInfo();
+      await this.updateDownloaders();
+      this.interval = setInterval(() => {
+        if (downloader) {
+          this.updateDownloaders();
+        }
+      }, 3000);
     }
-    this.interval = setInterval(() => {
-      if (downloader) {
-        this.listDownloaderInfo();
-      }
-    }, 3000);
   },
   beforeUnmount() {
     clearInterval(this.interval);
