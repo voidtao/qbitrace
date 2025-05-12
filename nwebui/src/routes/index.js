@@ -5,6 +5,7 @@ import DashboardIndex from '@/pages/dashboard/Index.vue';
 import BaseDownloader from '@/pages/base/Downloader.vue';
 import BaseNotification from '@/pages/base/Notification.vue';
 import MetricDownloader from '@/pages/metric/Downloader.vue';
+import MetricAnalytics from '@/pages/metric/Analytics.vue'; // 新增导入
 import RuleDelete from '@/pages/rule/Delete.vue';
 import RuleRss from '@/pages/rule/Rss.vue';
 import TaskRss from '@/pages/task/Rss.vue';
@@ -66,6 +67,7 @@ const index = {
 
 // 使用工厂函数创建路由
 const metricDownloaderRoute = createLayoutRoute('metric/downloader', MetricDownloader, '下载器 - 数据监控');
+const metricAnalyticsRoute = createLayoutRoute('metric/analytics', MetricAnalytics, '数据分析'); // 新增路由
 const ruleDeleteRoute = createLayoutRoute('rule/delete', RuleDelete, '删种规则 - 规则组件');
 const ruleRssRoute = createLayoutRoute('rule/rss', RuleRss, 'RSS 规则 - 规则组件');
 const baseDownloaderRoute = createLayoutRoute('base/downloader', BaseDownloader, '下载器 - 基础组件');
@@ -109,7 +111,8 @@ const routes = [
       settingSecurityRoute,
       infoLogRoute,
       settingBackupRoute,
-      infoInfoRoute
+      infoInfoRoute,
+      metricAnalyticsRoute // 新增路由
     ]
   }
 ];

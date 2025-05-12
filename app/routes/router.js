@@ -144,11 +144,14 @@ module.exports = function (app, express, router) {
   router.post('/rssRule/add', ctrl.RssRule.add);
   router.post('/rssRule/modify', ctrl.RssRule.modify);
   router.post('/rssRule/delete', ctrl.RssRule.delete);
-
   router.get('/torrent/list', ctrl.Torrent.list);
   router.get('/torrent/listHistory', ctrl.Torrent.listHistory);
   router.get('/torrent/info', ctrl.Torrent.info);
   router.get('/torrent/getBulkLinkList', ctrl.Torrent.getBulkLinkList);
+  
+  router.get('/analytics/getHistoricalData', ctrl.Analytics.getHistoricalData);
+  router.get('/analytics/getSummary', ctrl.Analytics.getSummary);
+  router.get('/analytics/getClients', ctrl.Analytics.getClients);
   router.get('/torrent/getDelInfo', ctrl.Torrent.getDelInfo);
   router.post('/torrent/deleteTorrent', ctrl.Torrent.deleteTorrent);
 

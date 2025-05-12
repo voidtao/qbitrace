@@ -8,6 +8,7 @@ import rss from './rss';
 import script from './script';
 import torrent from './torrent';
 import log from './log';
+import analytics from './analytics';
 
 const api = {
   user,
@@ -19,7 +20,8 @@ const api = {
   rss,
   script,
   torrent,
-  log
+  log,
+  analytics
 };
 
 export default () => { return api; };

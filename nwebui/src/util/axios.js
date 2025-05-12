@@ -1,9 +1,10 @@
 import axios from 'axios';
 
-const get = async (url) => {
+const get = async (url, config = {}) => {
   try {
     const res = await axios.get(url, {
-      validateStatus: () => true
+      validateStatus: () => true,
+      ...config
     });
     if (!res.data.success) {
       throw new Error(res.data.message);

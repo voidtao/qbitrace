@@ -1,6 +1,5 @@
 node_modules
 app/static
-webui/public/assets/styles
 storage
 develop
 app/redis.conf

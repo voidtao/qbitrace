@@ -30,7 +30,6 @@ mkdir -p \
   storage/data/push \
   storage/data/script \
   storage/data/setting \
-  webui/public/assets/styles \
   storage/logs \
   storage/db \
   storage/torrents

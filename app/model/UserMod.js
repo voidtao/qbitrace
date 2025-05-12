@@ -25,6 +25,10 @@ class UserMod {
         path: '/metric/downloader',
         icon: ['fas', 'chart-line'],
       }, {
+        title: '数据分析',
+        path: '/metric/analytics',
+        icon: ['fas', 'magnifying-glass-chart'],
+      }, {
         title: 'qbittorrent',
         path: '/base/downloader',
         icon: ['fas', 'download'],
