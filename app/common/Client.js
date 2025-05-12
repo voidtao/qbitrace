@@ -428,7 +428,7 @@ class Client {
           await util.sleep(2000);
           logger.info(torrent.name, '等待 2s 完毕, 执行删种');
           await util.runRecord('INSERT INTO torrent_d (hash, name, size, uploaded, downloaded, ratio, add_time, delete_time, seed_time, category, clientid, delete_rule) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',  
-            [torrent.hash, torrent.name, torrent.size, torrent.uploaded, torrent.downloaded, torrent.ratio, torrent.addedTime, moment().unix(), torrent.originProp.seeding_time, torrent.category, this.alias, `删种规则: ${rule.alias}`]);
+            [torrent.hash, torrent.name, torrent.size, torrent.uploaded, torrent.downloaded, torrent.ratio, torrent.addedTime, moment().unix(), torrent.originProp.seeding_time, torrent.category, this.id, `删种规则: ${rule.alias}`]);
           const deleteFiles = await this.deleteTorrent(torrent, rule);
           deletedTorrentHash.push(torrent.hash);
           if (!deleteFiles) {
