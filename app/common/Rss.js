@@ -159,7 +159,6 @@ class Rss {
     const torrent = { ..._torrent };
     if (rule.type === 'javascript') {
       try {
-        // eslint-disable-next-line no-eval
         return (eval(rule.code))(torrent);
       } catch (e) {
         logger.error(this.alias, 'Rss 规则', rule.alias, '存在语法错误\n', e);
@@ -358,51 +357,72 @@ class Rss {
       torrents = await Promise.all(this.urls.map(async url => {
         const cacheKey = `qbitrace:rss:${url}`;
         const lockKey = `${cacheKey}:lock`;
-        const lock = await redis.set(lockKey, 'locked', 'NX', 'EX', 50); // 60 秒锁定时间
-        if (!lock) {
-          logger.info(`Rss 任务 ${this.alias} 正在等待缓存`);
-          // 等待缓存数据
-          while (true) {
-            const cachedTorrents = await redis.get(cacheKey);
-            if (cachedTorrents) {
-              logger.info(`Rss 任务 ${this.alias} 使用缓存`);
-              try {
-                return JSON.parse(cachedTorrents); // 解析缓存的数据
-              } catch (e) {
-                logger.error(`解析缓存数据失败: ${e.message}`);
-                return []; // 返回空数组以继续处理
-              }
-            }
-            await new Promise(resolve => setTimeout(resolve, 200)); // 等待 0.2 秒后重试
-          }
-        }
-        // 1. 从缓存中获取结果
+        // 先尝试获取缓存
         const cachedTorrents = await redis.get(cacheKey);
         if (cachedTorrents) {
           logger.info(`Rss 任务 ${this.alias} 使用缓存`);
           try {
-            await redis.del(lockKey); // 释放锁
-            return JSON.parse(cachedTorrents); // 解析缓存的数据
+            return JSON.parse(cachedTorrents);
           } catch (e) {
             logger.error(`解析缓存数据失败: ${e.message}`);
-            await redis.del(lockKey); // 释放锁
-            return []; // 返回空数组以继续处理
           }
         }
-        // 2. 如果缓存中没有结果，则请求 RSS 地址
-        const torrents = await rss.getTorrents(url);
-        // 3. 将结果缓存一段时间
-        try {
-          await redis.setWithExpire(cacheKey, JSON.stringify(torrents), 50); // 120 秒
-          logger.info(`Rss 任务 ${this.alias} 缓存`);
-        } catch (e) {
-          logger.error(`缓存数据失败: ${e.message}`);
-        } finally {
-          await redis.del(lockKey); // 释放锁
+
+        // 尝试获取锁
+        const lock = await redis.set(lockKey, 'locked', 'NX', 'EX', 50);
+        if (!lock) {
+          // 等待其他进程处理,最多等待10秒
+          const maxRetries = 50; // 10秒 = 50 * 200ms
+          let retries = 0;
+          
+          while (retries < maxRetries) {
+            const newCachedTorrents = await redis.get(cacheKey);
+            if (newCachedTorrents) {
+              logger.info(`Rss 任务 ${this.alias} 使用新缓存`);
+              try {
+                return JSON.parse(newCachedTorrents);
+              } catch (e) {
+                logger.error(`解析缓存数据失败: ${e.message}`);
+                break;
+              }
+            }
+            await new Promise(resolve => setTimeout(resolve, 200));
+            retries++;
+          }
+          
+          logger.warn(`Rss 任务 ${this.alias} 等待缓存超时`);
+          return [];
         }
-        return torrents;
+
+        try {
+          // 获取到锁后再次检查缓存(双重检查)
+          const doubleCheckCache = await redis.get(cacheKey);
+          if (doubleCheckCache) {
+            logger.info(`Rss 任务 ${this.alias} 使用双重检查缓存`);
+            try {
+              return JSON.parse(doubleCheckCache);
+            } catch (e) {
+              logger.error(`解析缓存数据失败: ${e.message}`);
+            }
+          }
+
+          // 请求RSS获取数据
+          const torrents = await rss.getTorrents(url);
+          
+          // 缓存结果
+          try {
+            await redis.setWithExpire(cacheKey, JSON.stringify(torrents), 50);
+            logger.info(`Rss 任务 ${this.alias} 写入缓存`);
+          } catch (e) {
+            logger.error(`缓存数据失败: ${e.message}`);
+          }
+          
+          return torrents;
+        } finally {
+          await redis.del(lockKey);
+        }
       }));
-      torrents = torrents.flat(); // 使用 flat 展平数组
+      torrents = torrents.flat();
     }
     for (const torrent of torrents) {
       const availableClients = this.clientArr
