@@ -382,7 +382,7 @@ class Client {
         continue;
       }
       const now = moment().unix();
-      if (now - torrent.addedTime <= 180 && now - torrent.addTime >= 120) {
+      if (now - torrent.addedTime <= 200) {
         await this.reannounceTorrent(torrent);
         this.reannouncedHash.push(torrent.hash);
       }

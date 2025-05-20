@@ -35,12 +35,14 @@ const checkAuth = async function (req, res, next) {
   ];
   if (req.session?.user && ['/', '/user/login'].includes(pathname)) {
     return res.redirect(302, '/index');
-  }
-  if (excludePath.includes(pathname) ||
+  }  if (excludePath.includes(pathname) ||
     pathname.startsWith('/assets') ||
     pathname.startsWith('/workbox') ||
     pathname.startsWith('/api/openapi') ||
-    pathname === '/favicon.ico') {
+    pathname === '/favicon.ico' ||
+    pathname === '/manifest.json' ||
+    pathname === '/registerSW.js' ||
+    pathname === '/sw.js') {
     return next();
   }
   if (!req.session?.user && !pathname.startsWith('/api')) {
@@ -181,14 +183,20 @@ module.exports = function (app, express, router) {
     if (pathname === '/favicon.ico') {
       res.status(404);
       return res.end('Not Found');
-    }
-    if (pathname.startsWith('/assets') || pathname.startsWith('/workbox')) {
+    }    // 处理静态资源文件
+    if (pathname.startsWith('/assets') || 
+        pathname.startsWith('/workbox') || 
+        pathname === '/manifest.json' ||
+        pathname === '/registerSW.js' ||
+        pathname === '/sw.js') {
       const _path = path.join(__dirname, '../static', pathname);
+      // 安全检查：确保请求的文件在 static 目录下
       if (!_path.startsWith(path.join(__dirname, '../static/'))) {
         res.status(404);
         return res.end('Not Found');
       }
-      return res.download(_path, (err) => {
+      // 使用 sendFile 替代 download，更适合静态资源
+      return res.sendFile(_path, (err) => {
         if (!err) return;
         logger.error(err);
         res.status(404);
