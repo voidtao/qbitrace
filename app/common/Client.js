@@ -370,7 +370,13 @@ class Client {
     }
     return isDeleteFiles;
   };
-
+  
+  async deleteTorrentSimple (hash, deleteFiles = true) {
+    if (this._client.type === 'qBittorrent') {
+      await this.client.deleteTorrent(this.clientUrl, this.cookie, hash, deleteFiles);
+    }
+  }
+  
   async autoReannounce () {
     if (!this.maindata) return;
     logger.debug(this.alias, moment().format(), '启动重新汇报任务');
