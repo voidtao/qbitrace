@@ -77,10 +77,6 @@ class UserMod {
         path: '/setting/base',
         icon: ['fas', 'gears']
       }, {
-        title: '主题设置',
-        path: '/setting/style',
-        icon: ['fas', 'wand-magic-sparkles']
-      }, {
         title: '安全设置',
         path: '/setting/security',
         icon: ['fas', 'fingerprint']

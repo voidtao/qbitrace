@@ -17,7 +17,6 @@ import ToolClientLog from '@/pages/tool/ClientLog.vue';
 import InfoInfo from '@/pages/info/Info.vue';
 import InfoLog from '@/pages/info/Log.vue';
 import SettingBase from '@/pages/setting/Base.vue';
-import SettingStyle from '@/pages/setting/Style.vue';
 import SettingSecurity from '@/pages/setting/Security.vue';
 import SettingBackup from '@/pages/setting/Backup.vue';
 import HistoryRss from '@/pages/history/Rss.vue';
@@ -75,7 +74,6 @@ const baseNotificationRoute = createLayoutRoute('base/notification', BaseNotific
 const infoInfoRoute = createLayoutRoute('info/info', InfoInfo, '相关信息');
 const infoLogRoute = createLayoutRoute('info/log', InfoLog, '系统日志');
 const settingBaseRoute = createLayoutRoute('setting/base', SettingBase, '基础设置 - 系统设置');
-const settingStyleRoute = createLayoutRoute('setting/style', SettingStyle, '主题设置 - 系统设置');
 const settingSecurityRoute = createLayoutRoute('setting/security', SettingSecurity, '安全设置 - 系统设置');
 const settingBackupRoute = createLayoutRoute('setting/backup', SettingBackup, '备份还原 - 系统设置');
 const taskRssRoute = createLayoutRoute('task/rss', TaskRss, 'Rss 任务 - 任务配置');
@@ -107,7 +105,6 @@ const routes = [
       toolProxyRoute,
       toolClientLogRoute,
       settingBaseRoute,
-      settingStyleRoute,
       settingSecurityRoute,
       infoLogRoute,
       settingBackupRoute,
