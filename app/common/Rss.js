@@ -369,7 +369,7 @@ class Rss {
         }
 
         // 尝试获取锁
-        const lock = await redis.set(lockKey, 'locked', 'NX', 'EX', 50);
+        const lock = await redis.set(lockKey, 'locked', { NX: true, EX: 50 });
         if (!lock) {
           // 等待其他进程处理,最多等待10秒
           const maxRetries = 50; // 10秒 = 50 * 200ms
