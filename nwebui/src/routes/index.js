@@ -5,14 +5,12 @@ import DashboardIndex from '@/pages/dashboard/Index.vue';
 import BaseDownloader from '@/pages/base/Downloader.vue';
 import BaseNotification from '@/pages/base/Notification.vue';
 import MetricDownloader from '@/pages/metric/Downloader.vue';
-import MetricAnalytics from '@/pages/metric/Analytics.vue'; // 新增导入
+import MetricAnalytics from '@/pages/metric/Analytics.vue';
 import RuleDelete from '@/pages/rule/Delete.vue';
 import RuleRss from '@/pages/rule/Rss.vue';
 import TaskRss from '@/pages/task/Rss.vue';
 import TaskScript from '@/pages/task/Script.vue';
 import ToolNetworkTest from '@/pages/tool/NetworkTest.vue';
-import ToolHosts from '@/pages/tool/Hosts.vue';
-import ToolProxy from '@/pages/tool/Proxy.vue';
 import ToolClientLog from '@/pages/tool/ClientLog.vue';
 import InfoInfo from '@/pages/info/Info.vue';
 import InfoLog from '@/pages/info/Log.vue';
@@ -65,24 +63,22 @@ const index = {
 };
 
 // 使用工厂函数创建路由
-const metricDownloaderRoute = createLayoutRoute('metric/downloader', MetricDownloader, '下载器 - 数据监控');
-const metricAnalyticsRoute = createLayoutRoute('metric/analytics', MetricAnalytics, '数据分析'); // 新增路由
-const ruleDeleteRoute = createLayoutRoute('rule/delete', RuleDelete, '删种规则 - 规则组件');
-const ruleRssRoute = createLayoutRoute('rule/rss', RuleRss, 'RSS 规则 - 规则组件');
-const baseDownloaderRoute = createLayoutRoute('base/downloader', BaseDownloader, '下载器 - 基础组件');
-const baseNotificationRoute = createLayoutRoute('base/notification', BaseNotification, '通知工具 - 基础组件');
+const metricDownloaderRoute = createLayoutRoute('metric/downloader', MetricDownloader, '下载器');
+const metricAnalyticsRoute = createLayoutRoute('metric/analytics', MetricAnalytics, '数据分析'); 
+const ruleDeleteRoute = createLayoutRoute('rule/delete', RuleDelete, '删种规则');
+const ruleRssRoute = createLayoutRoute('rule/rss', RuleRss, 'RSS 规则');
+const baseDownloaderRoute = createLayoutRoute('base/downloader', BaseDownloader, '下载器');
+const baseNotificationRoute = createLayoutRoute('base/notification', BaseNotification, '通知工具');
 const infoInfoRoute = createLayoutRoute('info/info', InfoInfo, '相关信息');
 const infoLogRoute = createLayoutRoute('info/log', InfoLog, '系统日志');
-const settingBaseRoute = createLayoutRoute('setting/base', SettingBase, '基础设置 - 系统设置');
-const settingSecurityRoute = createLayoutRoute('setting/security', SettingSecurity, '安全设置 - 系统设置');
-const settingBackupRoute = createLayoutRoute('setting/backup', SettingBackup, '备份还原 - 系统设置');
-const taskRssRoute = createLayoutRoute('task/rss', TaskRss, 'Rss 任务 - 任务配置');
-const taskScriptRoute = createLayoutRoute('task/script', TaskScript, '定时脚本 - 任务配置');
-const historyRssRoute = createLayoutRoute('history/rss', HistoryRss, 'RSS 历史 - 任务历史');
-const toolNetworkTestRoute = createLayoutRoute('tool/networkTest', ToolNetworkTest, '网络测试 - 常用工具');
-const toolHostsRoute = createLayoutRoute('tool/hosts', ToolHosts, '修改 HOSTS - 常用工具');
-const toolProxyRoute = createLayoutRoute('tool/proxy', ToolProxy, 'HTTP 代理 - 常用工具');
-const toolClientLogRoute = createLayoutRoute('tool/clientLog', ToolClientLog, '下载器日志 - 常用工具');
+const settingBaseRoute = createLayoutRoute('setting/base', SettingBase, '基础设置');
+const settingSecurityRoute = createLayoutRoute('setting/security', SettingSecurity, '安全设置');
+const settingBackupRoute = createLayoutRoute('setting/backup', SettingBackup, '备份还原');
+const taskRssRoute = createLayoutRoute('task/rss', TaskRss, 'Rss 任务');
+const taskScriptRoute = createLayoutRoute('task/script', TaskScript, '定时脚本');
+const historyRssRoute = createLayoutRoute('history/rss', HistoryRss, 'RSS 历史');
+const toolNetworkTestRoute = createLayoutRoute('tool/networkTest', ToolNetworkTest, '网络工具');
+const toolClientLogRoute = createLayoutRoute('tool/clientLog', ToolClientLog, '下载器日志');
 
 const routes = [
   {
@@ -101,8 +97,6 @@ const routes = [
       taskScriptRoute,
       historyRssRoute,
       toolNetworkTestRoute,
-      toolHostsRoute,
-      toolProxyRoute,
       toolClientLogRoute,
       settingBaseRoute,
       settingSecurityRoute,

@@ -57,17 +57,9 @@ class UserMod {
         path: '/history/rss',
         icon: ['fas', 'clock-rotate-left'],
       }, {
-        title: '网络测试',
+        title: '网络工具',
         path: '/tool/networkTest',
         icon: ['fas', 'toolbox'],
-      }, {
-        title: '修改 HOSTS',
-        path: '/tool/hosts',
-        icon: ['fas', 'route']
-      }, {
-        title: 'HTTP 代理',
-        path: '/tool/proxy',
-        icon: ['fas', 'globe']
       }, {
         title: '下载器日志',
         path: '/tool/clientLog',
