@@ -1,161 +1,102 @@
 <template>
-  <div class="app-container">
-    <!-- PC端布局 -->
-    <div v-if="!isMobileLayout" class="hidden md:flex">
-      <!-- 侧边栏 - 只在非移动设备上显示 -->
-      <div class="sidebar-container">
-        <div class="h-full flex flex-col">
-          <div class="p-3 header-bg">
-            <div class="flex items-center cursor-pointer" @click="gotoWiki">
-              <img src="/assets/images/logo.svg" class="w-6 h-6" alt="logo"/>
-              <span class="text-sm font-bold ml-2 text-header">qbitrace</span>
-            </div>
-          </div>
-          
-          <div class="flex-1 overflow-y-auto sidebar-scroll">
-            <ul class="menu p-3 text-base-content">
-              <template v-for="item of menu">
-                <li v-if="!item.hidden && !item.sub" class="my-1">
-                  <a 
-                    class="rounded-lg transition-colors duration-200 hover:bg-primary hover:bg-opacity-10 text-sm"
-                    :class="{ 'bg-primary bg-opacity-20 text-primary-content font-medium': selectedKeys.includes(item.path) }"
-                    @click="goto(item.path)"
-                  >
-                    <i class="w-6">
-                      <fa-icon :icon="item.icon"/>
-                    </i>
-                    {{ item.title }}
-                  </a>
-                </li>
-                
-                <li v-if="!item.hidden && item.sub" class="my-1">
-                  <details 
-                    :open="openKeys.includes(item.path)"
-                    class="rounded-lg"
-                  >
-                    <summary class="rounded-lg transition-colors duration-200 hover:bg-primary hover:bg-opacity-10 text-sm">
-                      <i class="w-6">
-                        <fa-icon :icon="item.icon"/>
-                      </i>
-                      {{ item.title }}
-                    </summary>
-                    <ul class="menu menu-compact">
-                      <li 
-                        v-for="subItem of item.sub" 
-                        :key="subItem.path"
-                        v-if="!subItem.hidden"
-                        class="ml-3"
-                      >
-                        <a 
-                          class="rounded-lg transition-colors duration-200 hover:bg-primary hover:bg-opacity-10 text-sm"
-                          :class="{ 'bg-primary bg-opacity-20 text-primary font-medium': selectedKeys.includes(subItem.path) }"
-                          @click="goto(subItem.path)"
-                        >
-                          <i class="w-6">
-                            <fa-icon :icon="subItem.icon"/>
-                          </i>
-                          {{ subItem.title }}
-                        </a>
-                      </li>
-                    </ul>
-                  </details>
-                </li>
-              </template>
-            </ul>
-          </div>
-        </div>
-      </div>
-
-      <!-- PC端内容区域 -->
-      <div class="content-container">
-        <router-view :key="$route.fullPath + '-pc'"></router-view>
-      </div>
-    </div>
-
-    <!-- 移动端布局 -->
-    <div v-else class="drawer block md:hidden w-full h-full">
+  <div class="min-h-screen bg-base-200">
+    <!-- Desktop Layout -->
+    <div class="drawer lg:drawer-open">
       <input id="drawer" type="checkbox" class="drawer-toggle" v-model="visible"/>
+      
+      <!-- Main Content -->
       <div class="drawer-content flex flex-col">
-        <div class="navbar bg-base-100 shadow-xs fixed top-0 left-0 right-0 z-10">
+        <!-- Mobile Header -->
+        <div class="navbar bg-base-100 shadow-sm lg:hidden">
           <div class="flex-none">
             <label for="drawer" class="btn btn-square btn-ghost">
               <fa-icon :icon="['fas', 'bars']"/>
             </label>
           </div>
           <div class="flex-1">
-            <div class="flex items-center">
-              <img src="/assets/images/logo.svg" class="w-7 h-7" alt="logo"/>
+            <div class="flex items-center cursor-pointer" @click="gotoWiki">
+              <img src="/assets/images/logo.svg" class="w-7 h-7 lg:w-6 lg:h-6 mr-4 lg:mr-4 flex-shrink-0" alt="logo"/>
               <span class="text-lg font-bold ml-2">qbitrace</span>
             </div>
           </div>
         </div>
-        <div class="pt-16 pb-4 flex-1 overflow-y-auto">
-          <router-view :key="$route.fullPath + '-mobile'"></router-view>
-        </div>
+        
+        <!-- Page Content -->
+        <main class="flex-1 p-6 lg:p-8">
+          <router-view :key="$route.fullPath"></router-view>
+        </main>
       </div>
-      <div class="drawer-side z-20">
-        <label for="drawer" class="drawer-overlay"></label>
-        <!-- 美化移动端抽屉菜单，使其风格与PC端保持一致 -->
-        <div class="bg-base-100 h-full w-64 overflow-y-auto shadow-lg">
-          <!-- 抽屉内的标题区域，与PC端保持一致 -->
-          <div class="p-4 header-bg mx-2 mt-2 rounded-lg">
-            <div class="flex items-center cursor-pointer" @click="gotoWiki">
-              <img src="/assets/images/logo.svg" class="w-7 h-7" alt="logo"/>
-              <span class="text-lg font-bold ml-2 text-header">qbitrace</span>
+      
+      <!-- Sidebar -->
+      <div class="drawer-side">
+        <label for="drawer" class="drawer-overlay lg:hidden"></label>
+        <aside class="h-screen w-60 lg:w-50 bg-base-100 shadow-lg overflow-y-auto">
+          <!-- Enlarged Logo Header -->
+          <div class="m-2 lg:m-2 rounded-xl">
+            <div 
+              class="flex items-center cursor-pointer rounded-lg pl-6 pr-3 py-4 lg:pl-6 lg:pr-4 lg:py-4 bg-gradient-to-r from-primary/20 to-secondary/20 transition-all duration-200"
+              @click="gotoWiki"
+            >
+              <img src="/assets/images/logo.svg" class="w-7 h-7 mr-4 flex-shrink-0" alt="logo"/>
+              <span class="text-xl font-bold">qbitrace</span>
             </div>
           </div>
           
-          <!-- 菜单内容 - 使用与PC端相同的样式 -->
-          <ul class="menu p-3 text-base-content">
-            <template v-for="item of menu">
-              <li v-if="!item.hidden && !item.sub" class="my-1">
-                <a 
-                  class="rounded-lg transition-colors duration-200 hover:bg-primary hover:bg-opacity-10 text-sm"
-                  :class="{ 'bg-primary bg-opacity-20 text-primary-content font-medium': selectedKeys.includes(item.path) }"
-                  @click="goto(item.path); visible = false"
+          <!-- Navigation Menu -->
+          <nav class="px-2 lg:px-2 pb-2">
+            <template v-for="item in menu" :key="item.path">
+              <!-- Single Menu Item -->
+              <div v-if="!item.hidden && !item.sub" class="mb-1 lg:mb-1">
+                <button 
+                  @click="goto(item.path)"
+                  :class="[
+                    'w-full flex items-center pl-6 pr-3 py-3 lg:pl-6 lg:pr-4 lg:py-2 rounded-lg transition-all duration-200 text-left',
+                    selectedKeys.includes(item.path) 
+                      ? 'bg-primary text-primary-content shadow-md' 
+                      : 'hover:bg-base-200 text-base-content'
+                  ]"
                 >
-                  <i class="w-6">
-                    <fa-icon :icon="item.icon"/>
-                  </i>
-                  {{ item.title }}
-                </a>
-              </li>
+                  <fa-icon :icon="item.icon" class="w-5 h-5 lg:w-4 lg:h-4 mr-6 lg:mr-6 flex-shrink-0"/>
+                  <span class="font-medium">{{ item.title }}</span>
+                </button>
+              </div>
               
-              <li v-if="!item.hidden && item.sub" class="my-1">
-                <details 
-                  :open="openKeys.includes(item.path)"
-                  class="rounded-lg"
-                >
-                  <summary class="rounded-lg transition-colors duration-200 hover:bg-primary hover:bg-opacity-10 text-sm">
-                    <i class="w-6">
-                      <fa-icon :icon="item.icon"/>
-                    </i>
-                    {{ item.title }}
-                  </summary>
-                  <ul class="menu menu-compact">
-                    <li 
-                      v-for="subItem of item.sub" 
-                      :key="subItem.path"
-                      v-if="!subItem.hidden"
-                      class="ml-3"
-                    >
-                      <a 
-                        class="rounded-lg transition-colors duration-200 hover:bg-primary hover:bg-opacity-10 text-sm"
-                        :class="{ 'bg-primary bg-opacity-20 text-primary font-medium': selectedKeys.includes(subItem.path) }"
-                        @click="goto(subItem.path); visible = false"
+              <!-- Menu Group -->
+              <div v-else-if="!item.hidden && item.sub" class="mb-1">
+                <div class="collapse collapse-plus">
+                  <input 
+                    type="checkbox" 
+                    :checked="openKeys.includes(item.path)"
+                    @change="toggleGroup(item.path)"
+                  />
+                  <div class="collapse-title flex items-center px-4 py-3 lg:px-4 lg:py-2 hover:bg-base-200 rounded-lg transition-all duration-200 min-h-0">
+                    <fa-icon :icon="item.icon" class="w-5 h-5 lg:w-4 lg:h-4 mr-6 lg:mr-6"/>
+                    <span class="font-medium lg:text-sm">{{ item.title }}</span>
+                  </div>
+                  <div class="collapse-content px-0">
+                    <div class="ml-4 mt-1 space-y-1">
+                      <button
+                        v-for="subItem in item.sub"
+                        :key="subItem.path"
+                        v-show="!subItem.hidden"
+                        @click="goto(subItem.path)"
+                        :class="[
+                          'w-full flex items-center px-4 py-2 lg:px-2 lg:py-1 rounded-lg transition-all duration-200 text-left text-sm lg:text-xs',
+                          selectedKeys.includes(subItem.path)
+                            ? 'bg-primary text-primary-content shadow-sm'
+                            : 'hover:bg-base-200 text-base-content/80'
+                        ]"
                       >
-                        <i class="w-6">
-                          <fa-icon :icon="subItem.icon"/>
-                        </i>
-                        {{ subItem.title }}
-                      </a>
-                    </li>
-                  </ul>
-                </details>
-              </li>
+                        <fa-icon :icon="subItem.icon" class="w-4 h-4 lg:w-3 lg:h-3 mr-5 lg:mr-5 ml-6 lg:ml-6"/>
+                        <span>{{ subItem.title }}</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </template>
-          </ul>
-        </div>
+          </nav>
+        </aside>
       </div>
     </div>
   </div>
@@ -163,229 +104,139 @@
 
 <script>
 export default {
-  data () {
+  data() {
     return {
       selectedKeys: [],
       openKeys: [],
       visible: false,
-      menu: [],
-      isMobileLayout: false // 新增状态来控制布局
+      menu: []
     };
   },
   methods: {
-    updateLayoutType() {
-      this.isMobileLayout = window.innerWidth < 768; // Tailwind 'md' breakpoint
+    isMobile() {
+      return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
     },
-    isMobile () {
-      if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-        return true;
-      } else {
-        return false;
-      }
-    },
-    async goto (to) {
+    
+    async goto(to) {
       this.$goto(to, this.$router);
-      setTimeout(() => {
-        this.selectedKeys = [this.$route.path];
-        const keys = [];
-        for (const item of this.menu.filter(item => item.sub)) {
-          if (this.$route.path.startsWith(item.path)) {
-            keys.push(item.path);
-          }
-        }
-        this.openKeys = keys;
-      }, 100);
+      this.visible = false;
+      this.selectedKeys = [to];
+      this.openKeys = this.menu
+        .filter(item => item.sub && to.startsWith(item.path))
+        .map(item => item.path);
     },
-    async gotoWiki () {
+    
+    async gotoWiki() {
       window.open('https://wiki.vertex-app.top');
     },
-    setVh() {
-      // 解决移动端100vh问题
-      let vh = window.innerHeight * 0.01;
-      document.documentElement.style.setProperty('--vh', `${vh}px`);
-      
-      // Add meta viewport tag dynamically if needed
-      let viewport = document.querySelector('meta[name="viewport"]');
-      if (!viewport) {
-        viewport = document.createElement('meta');
-        viewport.name = 'viewport';
-        document.head.appendChild(viewport);
+    
+    toggleGroup(path) {
+      const index = this.openKeys.indexOf(path);
+      if (index > -1) {
+        this.openKeys.splice(index, 1);
+      } else {
+        this.openKeys.push(path);
       }
-      viewport.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no';
+    },
+    
+    updateActiveStates() {
+      // Update selected keys
+      this.selectedKeys = [this.$route.path];
+      
+      // Update open keys based on current route
+      this.openKeys = this.menu
+        .filter(item => item.sub && this.$route.path.startsWith(item.path))
+        .map(item => item.path);
+    },
+    
+    setViewportHeight() {
+      // Fix 100vh issue on mobile devices
+      const vh = window.innerHeight * 0.01;
+      document.documentElement.style.setProperty('--vh', `${vh}px`);
     }
   },
-  async mounted () {
-    this.updateLayoutType(); // 初始化布局类型
-    window.addEventListener('resize', this.updateLayoutType); // 监听窗口大小变化
-
-    this.selectedKeys = [this.$route.path];
+  
+  watch: {
+    '$route'(to, from) {
+      // Update active states when route changes
+      this.updateActiveStates();
+    }
+  },
+  
+  async mounted() {
+    // Initialize active states
+    this.updateActiveStates();
+    
     try {
       const res = await this.$api().user.get();
       this.$message().success('欢迎回来');
       this.menu = res.data.menu;
-      const keys = [];
-      for (const item of this.menu.filter(item => item.sub)) {
-        if (this.$route.path.startsWith(item.path)) {
-          keys.push(item.path);
-        }
-      }
-      this.openKeys = keys;
+      
+      // Update active states after menu is loaded
+      this.updateActiveStates();
     } catch (e) {
       this.$message().error(e.message);
     }
     
-    // 设置vh变量用于移动端
-    this.setVh();
-    window.addEventListener('resize', this.setVh);
+    // Set viewport height for mobile
+    this.setViewportHeight();
+    window.addEventListener('resize', this.setViewportHeight);
   },
+  
   beforeUnmount() {
-    window.removeEventListener('resize', this.updateLayoutType);
-    window.removeEventListener('resize', this.setVh);
+    window.removeEventListener('resize', this.setViewportHeight);
   }
 };
 </script>
 
 <style scoped>
-.app-container {
-  display: flex;
+/* Clean modern styles for the layout */
+.min-h-screen {
   min-height: 100vh;
-  height: 100vh;
-  width: 100%;
-  background-color: var(--layout-background);
+  min-height: calc(var(--vh, 1vh) * 100);
 }
 
-/* 调整PC端布局容器 */
-.hidden.md\:flex {
-  display: flex;
-  width: 100%;
-  height: 100%;
-}
-
-.sidebar-container {
-  width: 180px;
-  height: 100vh;
-  background-color: var(--sidebar-background);
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-  position: fixed;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  z-index: 10;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.content-container {
-  flex: 1;
-  margin-left: 180px;
-  height: 100vh;
-  overflow-y: auto;
-  padding: 1.5rem;
-  width: calc(100% - 180px); /* 明确设置宽度为剩余空间 */
-}
-
-.sidebar-scroll {
-  scrollbar-width: thin;
-  overflow-y: auto;
-}
-
-.header-bg {
-  background-color: rgba(189, 152, 227, 0.4);
-  margin: 0.7rem 0.5rem; /* Add margin to create space on both sides */
-  border-radius: 0.5rem; /* Add rounded corners */
-  margin-bottom: -0.4rem; /* Reduce the gap between the top block and navigation bar */
-}
-
-.menu {
-  --menu-active-bg: rgba(var(--p), 0.4); /* Use primary color with 15% opacity */
-}
-
-.menu a {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start; /* Keep text and icons left-aligned */
-  text-align: left;
-  padding-left: 1rem; /* Add padding to center the block within the sidebar */
-}
-
-.drawer-side {
-  background-color: var(--sidebar-background); /* Match the sidebar background */
-  border-radius: 0.5rem; /* Add rounded corners for a more modern look */
-  margin: 0.5rem; /* Add spacing around the drawer */
-  width: 70%; /* 将宽度调整为屏幕的80% */
-  max-width: 320px; /* 设置最大宽度为320px，适合大部分移动设备 */
-}
-
-/* 添加移动设备下的内容区样式，覆盖默认样式 */
-@media (max-width: 767px) {
+/* Mobile drawer improvements */
+@media (max-width: 1023px) {
   .drawer-side {
-    --mobile-drawer-key-font-size: 1.3rem;
-    --mobile-drawer-key-padding: 0.75rem 1rem;
+    z-index: 20;
   }
-
-  /* Explicitly hide the PC layout container on screens smaller than md */
-  .app-container > .hidden.md\:flex {
-    display: none;
-  }
-
-  .content-container {
-    margin-left: 0;
-    width: 100%;
+  
+  .drawer-overlay {
+    background-color: rgba(0, 0, 0, 0.5);
   }
   
   .drawer-content {
     min-height: 100vh;
-    height: calc(var(--vh, 1vh) * 100);
+    min-height: calc(var(--vh, 1vh) * 100);
   }
-  
-  .drawer-content > div:nth-child(2) {
-    padding: 1.25rem;
-    padding-top: calc(4rem + 1.25rem);
-  }
+}
 
-  /* Ensure drawer flush to left */
-  .drawer-side {
-    margin: 0;
-  }
-  /* Make overlay cover full screen */
-  .drawer-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-  }
+/* Enhanced navigation styles */
+.collapse-title {
+  padding-left: 0.5rem !important;
+  padding-right: 1rem !important;
+}
 
-  /* 移动端抽屉菜单中的文本样式，增加字体大小 */
-  .drawer-side .menu a,
-  .drawer-side .menu summary {
-    font-size: var(--mobile-drawer-key-font-size) !important; /* 增加字体大小到原来的1.5倍左右 */
-    padding: var(--mobile-drawer-key-padding); /* 增加内边距 */
-    width: 100%; /* 确保宽度占满父元素 */
+@media (min-width: 1024px) {
+  .collapse-title {
+    padding-left: 0.5rem !important;
+    padding-right: 1rem !important;
   }
-  
-  .drawer-side .menu i {
-    width: 1.5rem !important; /* 扩大图标宽度 */
-    font-size: 1.1rem; /* 增加图标大小 */
-    margin-right: 0.75rem; /* 增加图标与文本间距 */
-  }
-  
-  .drawer-side .menu li {
-    margin: 0.5rem 0; /* 增加菜单项之间的间距 */
-  }
-  
-  .drawer-side .header-bg {
-    padding: var(--mobile-drawer-key-padding); /* 增加头部区域的内边距 */
-  }
-  
-  .drawer-side .header-bg .text-lg {
-    font-size: var(--mobile-drawer-key-font-size) !important; /* 增加标题文本大小 */
-  }
-  
-  .drawer-side .header-bg img {
-    width: 1.75rem !important;
-    height: 1.75rem !important;
-  }
+}
+
+.collapse-content {
+  padding-bottom: 0 !important;
+}
+
+/* Smooth transitions for all interactive elements */
+button, .collapse-title {
+  transition: all 0.2s ease;
+}
+
+/* Focus states for accessibility */
+button:focus-visible {
+  outline: 2px solid hsl(var(--p));
+  outline-offset: 2px;
 }
 </style>
