@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-base-200">
+  <div class="min-h-screen bg-base-200" :style="backgroundStyle">
     <!-- Desktop Layout -->
     <div class="drawer lg:drawer-open">
       <input id="drawer" type="checkbox" class="drawer-toggle" v-model="visible"/>
@@ -109,8 +109,23 @@ export default {
       selectedKeys: [],
       openKeys: [],
       visible: false,
-      menu: []
+      menu: [],
+      backgroundImage: ''
     };
+  },
+  computed: {
+    backgroundStyle() {
+      if (this.backgroundImage) {
+        return {
+          backgroundImage: `url(${this.backgroundImage})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+          backgroundAttachment: 'fixed'
+        };
+      }
+      return {};
+    }
   },
   methods: {
     isMobile() {
@@ -153,7 +168,31 @@ export default {
       // Fix 100vh issue on mobile devices
       const vh = window.innerHeight * 0.01;
       document.documentElement.style.setProperty('--vh', `${vh}px`);
-    }
+    },
+    
+    handleBackgroundChange(event) {
+      this.backgroundImage = event.detail.background || '';
+    },
+    ensureViewportMeta() {
+      let viewport = document.querySelector('meta[name="viewport"]');
+      if (!viewport) {
+        viewport = document.createElement('meta');
+        viewport.name = 'viewport';
+        document.head.appendChild(viewport);
+      }
+      // 与旧版保持一致的内容
+      viewport.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no';
+    },
+    async initBackground() {
+      try {
+        const s = (await this.$api().setting.get()).data;
+        if (s && s.background) {
+          this.backgroundImage = s.background;
+        }
+      } catch (e) {
+        // 静默失败，背景不是关键阻断功能
+      }
+    },
   },
   
   watch: {
@@ -166,25 +205,25 @@ export default {
   async mounted() {
     // Initialize active states
     this.updateActiveStates();
-    
     try {
       const res = await this.$api().user.get();
       this.$message().success('欢迎回来');
       this.menu = res.data.menu;
-      
-      // Update active states after menu is loaded
       this.updateActiveStates();
     } catch (e) {
       this.$message().error(e.message);
     }
-    
-    // Set viewport height for mobile
     this.setViewportHeight();
     window.addEventListener('resize', this.setViewportHeight);
+    window.addEventListener('background-changed', this.handleBackgroundChange);
+    // 兼容旧版：注入 meta viewport & 初始化背景
+    this.ensureViewportMeta();
+    this.initBackground();
   },
   
   beforeUnmount() {
     window.removeEventListener('resize', this.setViewportHeight);
+    window.removeEventListener('background-changed', this.handleBackgroundChange);
   }
 };
 </script>
