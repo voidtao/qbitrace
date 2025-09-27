@@ -38,7 +38,6 @@ const checkAuth = async function (req, res, next) {
   }  if (excludePath.includes(pathname) ||
     pathname.startsWith('/assets') ||
     pathname.startsWith('/workbox') ||
-    pathname.startsWith('/api/openapi') ||
     pathname === '/favicon.ico' ||
     pathname === '/manifest.json' ||
     pathname === '/registerSW.js' ||

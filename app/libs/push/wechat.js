@@ -1,7 +1,6 @@
 const moment = require('moment');
 const logger = require('../logger');
 const util = require('../util');
-const path = require('path');
 
 class Wechat {
   constructor (wechat) {
@@ -16,7 +15,7 @@ class Wechat {
     if (global.wechatProxy) {
       this.WechatUrl = global.wechatProxy;
     } else {
-      this.WechatUrl = this.proxyKey ? 'https://dash.vertex-app.top/proxy/' + this.proxyKey + '/' : 'https://qyapi.weixin.qq.com/';
+      this.WechatUrl = 'https://qyapi.weixin.qq.com/';
     }
   };
 
@@ -55,7 +54,7 @@ class Wechat {
             title: text,
             description: desp,
             url: 'https://wiki.vertex-app.top',
-            picurl: `https://image.vertex-app.top/api/image/cut/0.425/${path.basename(_poster)}/${encodeURIComponent(_poster)}`
+            picurl: _poster
           }
         ]
       };
