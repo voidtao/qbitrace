@@ -74,17 +74,17 @@ const clientProxy = function (req, res, next) {
     res.end('Not Found');
     return;
   }
-  
-  // 检查客户端URL是否是子目录形式
-  const clientUrl = new URL(client.clientUrl);
-  const hasSubPath = clientUrl.pathname !== '/' && clientUrl.pathname !== '';
-  
-  // 如果是子目录形式且请求路径为空或只有斜杠，重定向到带斜杠的路径
-  if (hasSubPath && (req.path === '' || req.path === '/')) {
-    return res.redirect(301, req.originalUrl + '/');
+  // 补全 clientUrl 末尾的 '/'（仅当有 path 且不以 '/' 结尾时）
+  let proxyUrl = client.clientUrl;
+  try {
+    const u = new URL(proxyUrl);
+    if (u.pathname && u.pathname !== '/' && !proxyUrl.endsWith('/')) {
+      proxyUrl += '/';
+    }
+  } catch (e) {
+    // 非法URL，保持原样
   }
-  
-  proxy(client.clientUrl, {
+  proxy(proxyUrl, {
     proxyReqOptDecorator (proxyReqOpts, srcReq) {
       proxyReqOpts.headers.cookie = global.runningClient[clientId] ? global.runningClient[clientId].cookie || '' : '';
       if (proxyReqOpts.headers['content-type'] && proxyReqOpts.headers['content-type'].indexOf('application/x-www-form-urlencoded') !== -1) {
@@ -94,20 +94,7 @@ const clientProxy = function (req, res, next) {
       return proxyReqOpts;
     },
     reqBodyEncoding: null,
-    limit: '30mb',
-    // 确保子目录路径正确处理
-    proxyReqPathResolver: function (req) {
-      const clientUrl = new URL(client.clientUrl);
-      const basePath = clientUrl.pathname.replace(/\/$/, ''); // 移除末尾斜杠
-      let requestPath = req.url;
-      
-      // 如果是子目录形式，确保路径正确拼接
-      if (basePath && basePath !== '/') {
-        return basePath + requestPath;
-      }
-      
-      return requestPath;
-    }
+    limit: '20mb'
   })(req, res, next);
 };
 
