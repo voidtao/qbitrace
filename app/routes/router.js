@@ -74,6 +74,16 @@ const clientProxy = function (req, res, next) {
     res.end('Not Found');
     return;
   }
+  
+  // 检查客户端URL是否是子目录形式
+  const clientUrl = new URL(client.clientUrl);
+  const hasSubPath = clientUrl.pathname !== '/' && clientUrl.pathname !== '';
+  
+  // 如果是子目录形式且请求路径为空或只有斜杠，重定向到带斜杠的路径
+  if (hasSubPath && (req.path === '' || req.path === '/')) {
+    return res.redirect(301, req.originalUrl + '/');
+  }
+  
   proxy(client.clientUrl, {
     proxyReqOptDecorator (proxyReqOpts, srcReq) {
       proxyReqOpts.headers.cookie = global.runningClient[clientId] ? global.runningClient[clientId].cookie || '' : '';
@@ -84,7 +94,20 @@ const clientProxy = function (req, res, next) {
       return proxyReqOpts;
     },
     reqBodyEncoding: null,
-    limit: '20mb'
+    limit: '30mb',
+    // 确保子目录路径正确处理
+    proxyReqPathResolver: function (req) {
+      const clientUrl = new URL(client.clientUrl);
+      const basePath = clientUrl.pathname.replace(/\/$/, ''); // 移除末尾斜杠
+      let requestPath = req.url;
+      
+      // 如果是子目录形式，确保路径正确拼接
+      if (basePath && basePath !== '/') {
+        return basePath + requestPath;
+      }
+      
+      return requestPath;
+    }
   })(req, res, next);
 };
 

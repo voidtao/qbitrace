@@ -227,7 +227,11 @@ class Client {
       this.status = true;
       this.errorCount = 0;
       this.lastCookie = moment().unix();
-      logger.info('下载器', this.alias, '登录成功');
+      if (this.cookie) {
+        logger.info('下载器', this.alias, '登录成功');
+      } else {
+        logger.info('下载器', this.alias, '免密登录成功');
+      }
     } catch (error) {
       logger.error('下载器', this.alias, '登录失败\n', error);
       await this.ntf.clientLoginError(this._client, error.message);
@@ -248,7 +252,7 @@ class Client {
   };
 
   async getMaindata () {
-    if (!this.cookie) {
+    if (this.cookie === undefined || this.cookie === null) {
       this.login();
       return;
     }

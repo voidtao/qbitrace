@@ -140,9 +140,9 @@
                     type="text"
                     v-model="downloader.username"
                     class="input input-bordered w-full bg-base-100 transition-all duration-200 focus:ring-2 focus:ring-primary focus:ring-opacity-50"
-                    placeholder="输入用户名"
-                    required
+                    placeholder="输入用户名 (免密时留空)"
                   />
+                  <span class="text-xs text-base-content/60 mt-1">免密登录时可留空</span>
                 </div>
                 
                 <div class="form-control w-full">
@@ -153,9 +153,9 @@
                     type="password"
                     v-model="downloader.password"
                     class="input input-bordered w-full bg-base-100 transition-all duration-200 focus:ring-2 focus:ring-primary focus:ring-opacity-50"
-                    placeholder="输入密码"
-                    required
+                    placeholder="输入密码 (免密时留空)"
                   />
+                  <span class="text-xs text-base-content/60 mt-1">免密登录时可留空</span>
                 </div>
                 
                 <div class="form-control w-full md:col-span-2">

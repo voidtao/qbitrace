@@ -4,6 +4,21 @@ const url = require('url');
 const fs = require('fs');
 
 exports.login = async function (username, clientUrl, password) {
+  if (!username && !password) {
+    try {
+      // 尝试直接调用API获取版本，测试是否可以免密访问
+      await exports.getApiVersion(clientUrl, '');
+      // 如果成功，清除该clientUrl的API版本缓存并返回空cookie
+      Object.keys(apiVersionCache).forEach(key => {
+        if (key.startsWith(clientUrl)) {
+          delete apiVersionCache[key];
+        }
+      });
+      return ''; // 返回空cookie表示免密登录成功
+    } catch (error) {
+      throw new Error('无法进行免密登录，请提供用户名和密码');
+    }
+  }
   const message = {
     url: clientUrl + '/api/v2/auth/login',
     method: 'POST',
@@ -45,7 +60,8 @@ exports.getApiVersion = async function (clientUrl, cookie) {
 const apiVersionCache = {};
 
 exports.getCachedApiVersion = async function (clientUrl, cookie) {
-  const cacheKey = `${clientUrl}:${cookie}`;
+  // 为免密登录创建特殊的缓存键
+  const cacheKey = `${clientUrl}:${cookie || 'no-auth'}`;
   if (apiVersionCache[cacheKey]) {
     return apiVersionCache[cacheKey];
   }
