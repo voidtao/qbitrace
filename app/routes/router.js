@@ -8,6 +8,7 @@ const logger = require('../libs/logger');
 const ctrl = require('../controller');
 const util = require('../libs/util');
 
+const { URL } = require('url');
 const { createClient } = require('redis');
 const { RedisStore } = require('connect-redis');
 const client = createClient(config.getRedisConfig());
@@ -74,17 +75,30 @@ const clientProxy = function (req, res, next) {
     res.end('Not Found');
     return;
   }
-  // 补全 clientUrl 末尾的 '/'（仅当有 path 且不以 '/' 结尾时）
-  let proxyUrl = client.clientUrl;
-  try {
-    const u = new URL(proxyUrl);
-    if (u.pathname && u.pathname !== '/' && !proxyUrl.endsWith('/')) {
-      proxyUrl += '/';
-    }
-  } catch (e) {
-    // 非法URL，保持原样
-  }
-  proxy(proxyUrl, {
+  proxy(client.clientUrl, {
+    // --- 新增开始 ---
+    // 负责解析和拼接最终的代理路径
+    proxyReqPathResolver: function(req) {
+      // 1. 从目标URL (client.clientUrl) 中提取基础路径
+      let basePath = '';
+      try {
+        // 例如，从 'http://example.com/api/v1' 中得到 '/api/v1'
+        basePath = new URL(client.clientUrl).pathname.replace(/\/+$/, '');
+      } catch (_) {} // 忽略无效URL的错误
+
+      // 2. 获取当前请求的路径
+      const tail = req.url || '/';
+
+      // 3. 将基础路径和当前请求路径安全地拼接起来
+      const pathToSend = basePath + (tail.startsWith('/') ? tail : `/${tail}`);
+      
+      // (可选) 可以在日志中打印实际路径，方便调试
+      // logger.info(`[Proxy-Path] 实际代理路径: ${pathToSend}`);
+
+      return pathToSend;
+    },
+    // --- 新增结束 ---
+
     proxyReqOptDecorator (proxyReqOpts, srcReq) {
       proxyReqOpts.headers.cookie = global.runningClient[clientId] ? global.runningClient[clientId].cookie || '' : '';
       if (proxyReqOpts.headers['content-type'] && proxyReqOpts.headers['content-type'].indexOf('application/x-www-form-urlencoded') !== -1) {
