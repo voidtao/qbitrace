@@ -632,23 +632,34 @@ export default {
       }
     },
     modifyClick(record) {
-      this.downloader = { ...record };
+      this.downloader = {
+        ...record,
+        // 保证为数组，避免 checkbox 组绑定到非数组导致“同时被选中”
+        deleteRules: Array.isArray(record.deleteRules) ? [...record.deleteRules] : [],
+        rejectDeleteRules: Array.isArray(record.rejectDeleteRules) ? [...record.rejectDeleteRules] : []
+      };
       // 滚动到表单
       this.$el.querySelector('form').scrollIntoView({ behavior: 'smooth' });
     },
     cloneClick(record) {
-      this.clearDownloader(); // Clear any existing form data to ensure a fresh state
-      this.downloader = { ...record, deleteRules: [...record.deleteRules] };
+      this.clearDownloader();
+      this.downloader = {
+        ...record,
+        // 深拷贝两组规则，且在缺失字段时提供空数组
+        deleteRules: Array.isArray(record.deleteRules) ? [...record.deleteRules] : [],
+        rejectDeleteRules: Array.isArray(record.rejectDeleteRules) ? [...record.rejectDeleteRules] : []
+      };
       this.downloader.id = null;
       this.downloader.alias = this.downloader.alias + '-克隆';
       // 滚动到表单
       this.$el.querySelector('form').scrollIntoView({ behavior: 'smooth' });
     },
     clearDownloader() {
-      // 重置为默认状态
       this.downloader = {
         ...this.defaultDownloader,
-        deleteRules: []
+        // 显式重置两组规则数组
+        deleteRules: [],
+        rejectDeleteRules: []
       };
     },
     goto(record) {
