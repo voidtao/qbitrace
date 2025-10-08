@@ -78,10 +78,14 @@ docker run -d --name qbitrace --restart unless-stopped --network host -v /app/qb
 13. **更改缓存方式**
    - 现在缓存为在app/common/Rss.js统一进行，缓存50秒，而不在app/libs/rss.js进行。
    - 缓存的应用场景为对相同rss链接创建多个任务，其他场景请调大rss周期。
+
+14. **支持无密码登陆**
+   - 配合autobrr/qui使用，或qbittorrent的免密登陆功能。
 ---
 
 ## 可能计划的修改
    - i18n支持（但感觉没有必要，外站大多聚焦于irc，而本软件核心为rss。） 
+   - 支持qbitorrent 5.1.x的新特性。（计划等qbittorrent5.2.x更新后同步更新，这个对webui的影响更重要）【ps：qbittorrent的webui更新高度依赖于更新公告发布后自己去看源码，其他地方的文档更新延迟很大，佩服qbittorrent-api库的作者能去搞同步更新】
 
 ---
 
