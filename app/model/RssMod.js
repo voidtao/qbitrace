@@ -7,6 +7,8 @@ class RssMod {
   add (options) {
     const id = util.uuid.v4().split('-')[0];
     const rssSet = { ...options };
+    rssSet.pushTargetType = rssSet.pushTargetType || 'downloader';
+    rssSet.webhookUrl = rssSet.webhookUrl || '';
     rssSet.id = id;
     fs.writeFileSync(path.join(__dirname, '../../storage/data/rss/', id + '.json'), JSON.stringify(rssSet, null, 2));
     if (global.runningRss[id]) global.runningRss[id].destroy();
@@ -29,6 +31,8 @@ class RssMod {
     const rssSet = { ...options };
     rssSet.sameServerClients = rssSet.sameServerClients || [];
     rssSet.reseedClients = rssSet.reseedClients || [];
+    rssSet.pushTargetType = rssSet.pushTargetType || 'downloader';
+    rssSet.webhookUrl = rssSet.webhookUrl || '';
     fs.writeFileSync(path.join(__dirname, '../../storage/data/rss/', options.id + '.json'), JSON.stringify(rssSet, null, 2));
     if (global.runningRss[options.id]) global.runningRss[options.id].destroy();
     if (rssSet.enable) global.runningRss[options.id] = new Rss(rssSet);
@@ -42,8 +46,11 @@ class RssMod {
         rss.clientArr = [rss.client];
         delete rss.client;
       }
+      rss.clientArr = rss.clientArr || [];
       rss.acceptRules = rss.acceptRules || [];
       rss.rejectRules = rss.rejectRules || [];
+      rss.pushTargetType = rss.pushTargetType || 'downloader';
+      rss.webhookUrl = rss.webhookUrl || '';
     }
     return rssList;
   };

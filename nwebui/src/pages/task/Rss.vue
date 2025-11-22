@@ -44,7 +44,11 @@
                   </div>
                 </td>
                 <td class="text-base-content/80">
-                  <div class="flex flex-wrap gap-1">
+                  <span v-if="rss.pushTargetType === 'webhook'"
+                        class="badge badge-outline badge-secondary">
+                    Webhook
+                  </span>
+                  <div v-else class="flex flex-wrap gap-1">
                     <span v-for="downloader in downloaders.filter(item => rss.clientArr.indexOf(item.id) !== -1)"
                           :key="downloader.id"
                           class="badge badge-outline badge-primary">
@@ -134,8 +138,40 @@
             </div>
           </div>
 
+          <!-- 推送方式 -->
+          <div class="bg-base-200/50 rounded-lg p-4 space-y-4">
+            <h3 class="font-medium text-base-content/80">推送方式</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <label class="flex items-center gap-3 bg-base-100 rounded-lg p-3 cursor-pointer hover:bg-primary hover:bg-opacity-5 transition-colors duration-200">
+                <input
+                  type="radio"
+                  class="radio radio-primary"
+                  value="downloader"
+                  v-model="rss.pushTargetType"
+                />
+                <div>
+                  <p class="font-medium text-base-content/80">发送到下载器</p>
+                  <p class="text-xs text-base-content/60">沿用现有下载器集群分发方式</p>
+                </div>
+              </label>
+              <label class="flex items-center gap-3 bg-base-100 rounded-lg p-3 cursor-pointer hover:bg-primary hover:bg-opacity-5 transition-colors duration-200">
+                <input
+                  type="radio"
+                  class="radio radio-primary"
+                  value="webhook"
+                  v-model="rss.pushTargetType"
+                />
+                <div>
+                  <p class="font-medium text-base-content/80">发送到 Webhook</p>
+                  <p class="text-xs text-base-content/60">将 JSON 消息推送到自定义服务</p>
+                </div>
+              </label>
+            </div>
+            <span class="text-xs text-base-content/60">可自由切换推送目标，不影响原有规则配置</span>
+          </div>
+
           <!-- 下载器选择 -->
-          <div class="bg-base-200/50 rounded-lg p-4">
+          <div class="bg-base-200/50 rounded-lg p-4" v-if="rss.pushTargetType === 'downloader'">
             <h3 class="font-medium text-base-content/80 mb-4">下载器选择</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               <label
@@ -163,7 +199,7 @@
           </div>
 
           <!-- 下载器设置 -->
-          <div class="bg-base-200/50 rounded-lg p-4 space-y-4">
+          <div class="bg-base-200/50 rounded-lg p-4 space-y-4" v-if="rss.pushTargetType === 'downloader'">
             <h3 class="font-medium text-base-content/80 mb-2">下载器设置</h3>
             <div class="form-control">
               <label class="label">
@@ -239,6 +275,24 @@
                 placeholder="留空或 0 不启用"
               />
               <span class="text-xs text-base-content/60 mt-2">设置下载器可同时进行的最大下载任务数</span>
+            </div>
+          </div>
+
+          <!-- Webhook 设置 -->
+          <div class="bg-base-200/50 rounded-lg p-4 space-y-4" v-if="rss.pushTargetType === 'webhook'">
+            <h3 class="font-medium text-base-content/80 mb-2">Webhook 设置</h3>
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text text-base-content/80">Webhook URL</span>
+              </label>
+              <input
+                type="url"
+                v-model="rss.webhookUrl"
+                class="input input-bordered w-full bg-base-100 transition-all duration-200 focus:ring-2 focus:ring-primary focus:ring-opacity-50"
+                placeholder="输入本地 Webhook 接口地址"
+                :required="rss.pushTargetType === 'webhook'"
+              />
+              <span class="text-xs text-base-content/60 mt-2">将以 POST JSON 的形式传递种子信息</span>
             </div>
           </div>
 
@@ -765,6 +819,8 @@ export default {
       rssRules: [],
       rss: {},
       defaultRss: {
+        pushTargetType: 'downloader',
+        webhookUrl: '',
         clientArr: [],
         enable: false,
         clientSortBy: 'leechingCount',
@@ -881,6 +937,7 @@ export default {
           ...record, 
           enable: !record.enable 
         };
+        this.ensurePushTargetDefaults(updatedRecord);
         await this.$api().rss.modify(updatedRecord);
         this.$message().success('修改成功, 列表正在刷新...');
         setTimeout(() => this.listRss(), 1000);
@@ -890,12 +947,14 @@ export default {
     },
     modifyClick(row) {
       this.rss = { ...row };
+      this.ensurePushTargetDefaults(this.rss);
     },
     cloneClick(row) {
       this.clearRss(); // Clear any existing form data to ensure a fresh state
       this.rss = JSON.parse(JSON.stringify(row));
       this.rss.id = null;
       this.rss.alias = this.rss.alias + '-克隆';
+      this.ensurePushTargetDefaults(this.rss);
     },
     async deleteRss(row) {
       try {
@@ -915,6 +974,7 @@ export default {
         reseedClients: [],
         rssUrls: ['']
       };
+      this.ensurePushTargetDefaults(this.rss);
     },
     showDryrunModal() {
       this.dryrunResult = [];
@@ -932,6 +992,15 @@ export default {
       } else {
         this.sortKey = key;
         this.sortOrder = 'asc';
+      }
+    },
+    ensurePushTargetDefaults(target) {
+      if (!target) return;
+      if (!target.pushTargetType) {
+        target.pushTargetType = 'downloader';
+      }
+      if (typeof target.webhookUrl !== 'string') {
+        target.webhookUrl = '';
       }
     }
   },
